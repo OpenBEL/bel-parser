@@ -122,7 +122,6 @@ void bel_free_ast(bel_ast* ast) {
 
 void bel_free_ast_node(bel_ast_node* node) {
     if (node->type_info->type == TOKEN && node->token->ttype != TOKEN_NIL) {
-        fprintf(stdout, "free token: %u\n", node->type_info->ttype);
         bel_free_ast_node(node->token->left);
         bel_free_ast_node(node->token->right);
     }
@@ -172,12 +171,71 @@ void bel_print_ast_node(bel_ast_node* node) {
     }
 }
 
+void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string) {
+    if (!node) {
+        return;
+    }
+
+    char val[128];
+    switch(node->type_info->type) {
+        case TOKEN:
+            switch(node->type_info->ttype) {
+                case TOKEN_ARG:
+                    strcat(tree_flat_string, "ARG ");
+                    break;
+                case TOKEN_NIL:
+                    strcat(tree_flat_string, "NIL ");
+                    break;
+                case TOKEN_NV:
+                    strcat(tree_flat_string, "NV ");
+                    break;
+                case TOKEN_TERM:
+                    strcat(tree_flat_string, "TERM ");
+                    break;
+            }
+            bel_print_ast_node_flat(node->token->left, tree_flat_string);
+            bel_print_ast_node_flat(node->token->right, tree_flat_string);
+            break;
+        case VALUE:
+            switch(node->type_info->vtype) {
+                case VALUE_FX:
+                    sprintf(val, "fx(%s) ", node->value->value);
+                    strcat(tree_flat_string, val);
+                    break;
+                case VALUE_NIL:
+                    sprintf(val, "nil(%s) ", node->value->value);
+                    strcat(tree_flat_string, val);
+                    break;
+                case VALUE_PFX:
+                    sprintf(val, "pfx(%s) ", node->value->value);
+                    strcat(tree_flat_string, val);
+                    break;
+                case VALUE_VAL:
+                    sprintf(val, "val(%s) ", node->value->value);
+                    strcat(tree_flat_string, val);
+                    break;
+            }
+            break;
+    }
+}
+
 void bel_print_ast(bel_ast* ast) {
     if (!ast) {
         return;
     }
     bel_print_ast_node(ast->root);
     fprintf(stdout, "\n");
+};
+
+void bel_print_ast_flat(bel_ast* ast) {
+    if (!ast) {
+        return;
+    }
+
+    char tree_flat_string[1024];
+    memset(tree_flat_string, '\0', 1024);
+    bel_print_ast_node_flat(ast->root, tree_flat_string);
+    fprintf(stdout, "%s\n", tree_flat_string);
 };
 
 #define VALUE_SIZE     128
@@ -336,7 +394,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "parse failed\n");
             exit(1);
         }
-        bel_print_ast(tree);
+
+        bel_print_ast_flat(tree);
         bel_free_ast(tree);
     }
     fclose(input);
