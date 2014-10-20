@@ -279,12 +279,21 @@ bel_ast* parse_term(char* line, char value[]) {
         IDENT        = [a-zA-Z0-9_]+;
         STRING       = ('"' ('\\\"' | [^"])* '"');
         FUNCTION     = ('proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|'microRNAAbundance'|'m'|'geneAbundance'|'g'|'biologicalProcess'|'bp'|'pathology'|'path'|'complexAbundance'|'complex'|'translocation'|'tloc'|'cellSecretion'|'sec'|'cellSurfaceExpression'|'surf'|'reaction'|'rxn'|'compositeAbundance'|'composite'|'fusion'|'fus'|'degradation'|'deg'|'molecularActivity'|'act'|'catalyticActivity'|'cat'|'kinaseActivity'|'kin'|'phosphataseActivity'|'phos'|'peptidaseActivity'|'pep'|'ribosylationActivity'|'ribo'|'transcriptionalActivity'|'tscript'|'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|'substitution'|'sub'|'truncation'|'trunc'|'reactants'|'products'|'list');
-#      FUNCTION     = ('p'|'r'|'a'|'m'|'g'|'bp');
+#       FUNCTION     = ('p'|'r'|'a'|'m'|'g'|'bp');
 
 #        term =
 #            FUNCTION $vi %FX <>lerr(FX) O_PAREN C_PAREN;
         term =
-            FUNCTION $vi %FX O_PAREN (IDENT $vi ':')? @PFX (STRING $vi | IDENT $vi) %VAL C_PAREN;
+            FUNCTION $vi %FX
+            O_PAREN 
+            (
+                (IDENT $vi ':')? @PFX (STRING $vi | IDENT $vi) %VAL 
+            )
+            (
+                SP* ',' SP*
+                (IDENT $vi ':')? @PFX (STRING $vi | IDENT $vi) %VAL
+            )*
+            C_PAREN;
 
         main :=
             term;
