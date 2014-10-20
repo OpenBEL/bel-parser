@@ -1,0 +1,5 @@
+a(SCHEM:Goserelin)
+p(HGNC:GNRHR)
+complex(SCOMP:"Luteinizing Hormone Complex")
+path(SDIS:"Carcinoma of breast")
+pmod(P)
