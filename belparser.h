@@ -1,9 +1,12 @@
+#include <stdio.h>
+
 #ifndef _BEL_PARSER_H
 #define _BEL_PARSER_H
 
 #define VALUE_SIZE 128
 #define BUFSIZE    1024 * 32 // 32 kilobytes
-char* eof = EOF;
+#define ARG_STACK_SIZE 100
+char* eof;
 
 typedef enum {
     TOKEN,
@@ -92,7 +95,13 @@ void bel_free_ast(bel_ast* ast);
 
 void bel_print_ast_node(bel_ast_node* node);
 
+void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string);
+
 void bel_print_ast(bel_ast* ast);
+
+void bel_print_ast_flat(bel_ast* ast);
+
+char* bel_ast_flat_string(bel_ast* ast);
 
 bel_ast* parse_term(char* line, char value[]);
 

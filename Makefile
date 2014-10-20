@@ -1,24 +1,27 @@
 # variables
 CC="gcc"
 CFLAGS=-ggdb -Wall
+RAGEL_OPTS=-G2 -L
+TEST_LIBS=-lcheck
 
-# default rule
-all: set term error_handling
+all:           clean test
 
-# set ragel parser: generate ragel and compile
-set:
-	ragel -G2 -L set.rl -o set.c
-	$(CC) $(CFLAGS) set.c -o set-parser
+ragel:
+	       ragel $(RAGEL_OPTS) term.rl -o term.c
 
-# term ragel parser: generate ragel and compile
-term:
-	ragel -G2 -L term.rl -o term.c
-	$(CC) $(CFLAGS) term.c -o term-parser
+main:          ragel
+	       $(CC) $(CFLAGS) term.c -o term-parser
 
-error_handling:
-	ragel -G2 -L error_handling.rl -o error_handling.c
-	$(CC) $(CFLAGS) error_handling.c -o error_handling
+test:          term.o tests.o
+	       gcc -o run-tests term.o tests.o $(TEST_LIBS)
+	       ./run-tests
 
-# clean both source and compiled binaries
+tests.o:
+	       checkmk *-test.c > tests.c
+	       $(CC) $(CFLAGS) -c tests.c
+
+term.o:        ragel
+	       $(CC) $(CFLAGS) -c term.c
+
 clean:
-	rm -f set.c term.c set-parser term-parser
+	       rm -f term.c tests.c term.o tests.o run-tests term-parser

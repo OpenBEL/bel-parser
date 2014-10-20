@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include "belparser.h"
 
+char* eof = EOF;
+
 %%{
     machine set;
     write data;
@@ -238,9 +240,16 @@ void bel_print_ast_flat(bel_ast* ast) {
     fprintf(stdout, "%s\n", tree_flat_string);
 };
 
-#define VALUE_SIZE     128
-#define BUFSIZE        1024 * 32 // 32 kilobytes
-#define ARG_STACK_SIZE 100
+char* bel_ast_flat_string(bel_ast* ast) {
+    if (!ast) {
+        return NULL;
+    }
+
+    char tree_flat_string[1024];
+    memset(tree_flat_string, '\0', 1024);
+    bel_print_ast_node_flat(ast->root, tree_flat_string);
+    return tree_flat_string;
+};
 
 bel_ast* parse_term(char* line, char value[]) {
     int            cs;
@@ -368,38 +377,38 @@ bel_ast* parse_term(char* line, char value[]) {
     return ast;
 };
 
-int main(int argc, char *argv[]) {
-    FILE *input;
-    int len;
-    char line[BUFSIZE];
-    char value[VALUE_SIZE];
-
-    if (argc == 2) {
-        input = fopen(argv[1], "rb");
-    } else {
-        input = stdin;
-    }
-
-    while (fgets(line, BUFSIZE, input) != NULL) {
-        len = strlen(line);
-        if (line[len - 1] == '\n') {
-            line[len - 1] = '\0';
-        }
-
-	    memset(value, '\0', VALUE_SIZE);
-	    fprintf(stdout, "parsing line -> %s\n", line);
-        bel_ast* tree = parse_term(line, value);
-
-        if (!tree->root) {
-            fprintf(stderr, "parse failed\n");
-            exit(1);
-        }
-
-        bel_print_ast_flat(tree);
-        bel_free_ast(tree);
-    }
-    fclose(input);
-    return 0;
-}
+/* int main(int argc, char *argv[]) { */
+/*     FILE *input; */
+/*     int len; */
+/*     char line[BUFSIZE]; */
+/*     char value[VALUE_SIZE]; */
+/*  */
+/*     if (argc == 2) { */
+/*         input = fopen(argv[1], "rb"); */
+/*     } else { */
+/*         input = stdin; */
+/*     } */
+/*  */
+/*     while (fgets(line, BUFSIZE, input) != NULL) { */
+/*         len = strlen(line); */
+/*         if (line[len - 1] == '\n') { */
+/*             line[len - 1] = '\0'; */
+/*         } */
+/*  */
+/* 	    memset(value, '\0', VALUE_SIZE); */
+/* 	    fprintf(stdout, "parsing line -> %s\n", line); */
+/*         bel_ast* tree = parse_term(line, value); */
+/*  */
+/*         if (!tree->root) { */
+/*             fprintf(stderr, "parse failed\n"); */
+/*             exit(1); */
+/*         } */
+/*  */
+/*         bel_print_ast_flat(tree); */
+/*         bel_free_ast(tree); */
+/*     } */
+/*     fclose(input); */
+/*     return 0; */
+/* } */
 
 // vim: ft=c sw=4 ts=4 sts=4 expandtab

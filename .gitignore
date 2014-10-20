@@ -1,10 +1,8 @@
-error_handling
-set-parser
-term-parser
-error_handling.c
-set.c
-term.c
+*.o
 *.png
 *.bel
 *.rb
-
+run-tests
+term-parser
+term.c
+tests.c
