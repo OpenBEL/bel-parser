@@ -15,10 +15,10 @@
 
 bel_arg_stack* stack_init(int max) {
     bel_arg_stack* stack;
-    struct bel_ast_node_token *contents;
+    bel_ast_node*  contents;
 
     stack = (bel_arg_stack *) malloc(sizeof(bel_arg_stack));
-    contents = (struct bel_ast_node_token *) malloc(sizeof(bel_ast_node_token) * max);
+    contents = (bel_ast_node *) malloc(sizeof(bel_ast_node) * max);
 
     if (contents == NULL) {
         fprintf(stderr, "Insufficient memory to initialize stack.\n");
@@ -39,7 +39,17 @@ void stack_destory(bel_arg_stack* stack) {
     stack->contents = NULL;
 };
 
-void stack_push(bel_arg_stack* stack, struct bel_ast_node_token element) {
+bel_ast_node* stack_peek(bel_arg_stack* stack) {
+    if (stack_is_full(stack)) {
+        fprintf(stderr, "Can't push element on stack: stack is full.\n");
+        exit(1);
+    }
+
+    bel_ast_node* top = &(stack->contents[stack->top]);
+    return top;
+};
+
+void stack_push(bel_arg_stack* stack, bel_ast_node element) {
     if (stack_is_full(stack)) {
         fprintf(stderr, "Can't push element on stack: stack is full.\n");
         exit(1);
@@ -48,7 +58,7 @@ void stack_push(bel_arg_stack* stack, struct bel_ast_node_token element) {
     stack->contents[++stack->top] = element;
 };
 
-struct bel_ast_node_token stack_pop(bel_arg_stack* stack) {
+bel_ast_node stack_pop(bel_arg_stack* stack) {
     if (stack_is_empty(stack)) {
         fprintf(stderr, "Can't pop element from stack: stack is empty.\n");
         exit(1);
@@ -80,9 +90,12 @@ bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char value[]) {
     bel_ast_node* node;
     char*         copy_value;
 
-    fprintf(stdout, "size of value: %lu, value: %s\n", (sizeof(value)+1), value);
-    copy_value = malloc(sizeof(value) + 1);
-    strcpy(copy_value, value);
+    if (value) {
+        copy_value = (char *) malloc(sizeof(value));
+        strncpy(copy_value, value, sizeof(value));
+    } else {
+        copy_value = NULL;
+    }
 
     node = malloc(sizeof(bel_ast_node));
     node->value = malloc(sizeof(bel_ast_node_value));
@@ -92,10 +105,9 @@ bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char value[]) {
     return node;
 };
 
-bel_ast* bel_new_ast(bel_ast_token_type type) {
+bel_ast* bel_new_ast() {
     bel_ast* ast;
     ast = malloc(sizeof(bel_ast));
-    ast->root = bel_new_ast_node_token(type);
     return ast;
 };
 
@@ -147,18 +159,34 @@ void bel_print_ast(bel_ast* ast) {
         return;
     }
     bel_print_ast_node(ast->root);
+    fprintf(stdout, "\n");
 };
 
-#define VALUE_SIZE 128
-#define BUFSIZE    1024 * 32 // 32 kilobytes
+#define VALUE_SIZE     128
+#define BUFSIZE        1024 * 32 // 32 kilobytes
+#define ARG_STACK_SIZE 100
 
 bel_ast* parse_term(char* line, char value[]) {
-    char *p = line, *pe = line + strlen(line);
-    bel_ast* ast;
-    bel_ast_node* next;
-    bel_ast_node* arg;
-    int cs;
-    int vi = 0;
+    int            cs;
+    char           *p;
+    char           *pe;
+    bel_ast_node*  current_term;
+    bel_ast_node*  current_nv;
+    bel_ast_node*  arg;
+    bel_ast_node*  next_arg;
+    bel_ast*       ast;
+    bel_arg_stack* arg_stack;
+    int            vi;
+
+    p            = line;
+    pe           = line + strlen(line);
+    current_term = NULL;
+    current_nv   = NULL;
+    arg          = NULL;
+    next_arg     = NULL;
+    ast          = bel_new_ast();
+    arg_stack    = stack_init(ARG_STACK_SIZE);
+    vi           = 0;
 
     %%{
         action vi {
@@ -166,38 +194,62 @@ bel_ast* parse_term(char* line, char value[]) {
         }
 
         action FX {
-	        fprintf(stdout, "FX action: %s\n", value);
-            ast = bel_new_ast(TOKEN_TERM);
-            ast->root->token->left  = bel_new_ast_node_value(VALUE_FX,  value);
+            current_term = bel_new_ast_node_token(TOKEN_TERM);
+            current_term->token->left = bel_new_ast_node_value(VALUE_FX,  value);
 
-            arg = bel_new_ast_node_token(TOKEN_NIL);
-            ast->root->token->right = arg;
+            // Set term as AST root; on first term
+            if (!ast->root) {
+                ast->root = current_term;
+            }
+
+            // Create Nil argument as a placeholder; add to stack
+            arg = bel_new_ast_node_token(TOKEN_ARG);
+            arg->token->left  = bel_new_ast_node_token(TOKEN_NIL);
+            arg->token->right = bel_new_ast_node_token(TOKEN_NIL);
+            stack_push(arg_stack, *arg);
+
+            // Set as term argument
+            current_term->token->right = arg;
 
 	        memset(value, '\0', VALUE_SIZE);
             vi = 0;
         }
 
         action PFX {
-	        fprintf(stdout, "PFX action: %s\n", value);
-            next = bel_new_ast_node_token(TOKEN_NV);
-            next->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
-            next->token->right = bel_new_ast_node_value(VALUE_NIL, "\0");
+            bel_ast_node* top = stack_peek(arg_stack);
+            current_nv = bel_new_ast_node_token(TOKEN_NV);
+            current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
+            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, "");
+            top->token->left = current_nv;
 
-            arg = bel_new_ast_node_token(TOKEN_ARG);
-            arg->token->left  = next;
-            arg->token->right = bel_new_ast_node_token(TOKEN_NIL);
+            next_arg = bel_new_ast_node_token(TOKEN_ARG);
+            next_arg->token->left  = bel_new_ast_node_token(TOKEN_NIL);
+            next_arg->token->right = bel_new_ast_node_token(TOKEN_NIL);
+            top->token->right = next_arg;
+            stack_push(arg_stack, *next_arg);
 
-            ast->root->token->right = arg;
-
-	        fprintf(stdout, "end of PFX\n");
 	        memset(value, '\0', VALUE_SIZE);
             vi = 0;
         }
 
         action VAL {
-	        fprintf(stdout, "VAL action: %s\n", value);
-            next->token->right = bel_new_ast_node_value(VALUE_VAL, value);
+            bel_ast_node* top = stack_peek(arg_stack);
+            if (!current_nv) {
+                current_nv = bel_new_ast_node_token(TOKEN_NV);
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
+                top->token->left = current_nv;
 
+                next_arg = bel_new_ast_node_token(TOKEN_ARG);
+                next_arg->token->left  = bel_new_ast_node_token(TOKEN_NIL);
+                next_arg->token->right = bel_new_ast_node_token(TOKEN_NIL);
+                top->token->right = next_arg;
+                stack_push(arg_stack, *next_arg);
+            } else {
+                current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
+            }
+
+            current_nv = 0;
 	        memset(value, '\0', VALUE_SIZE);
             vi = 0;
         }
@@ -224,6 +276,23 @@ bel_ast* parse_term(char* line, char value[]) {
         write exec;
     }%%
 
+    /* if (current_term) { */
+    /*     free(current_term); */
+    /* } */
+    /* if (current_nv) { */
+    /*     free(current_nv); */
+    /* } */
+    /* if (arg) { */
+    /*     free(arg); */
+    /* } */
+    /* if (next_arg) { */
+    /*     free(next_arg); */
+    /* } */
+    if (arg_stack) {
+        free(arg_stack);
+        free(arg_stack->contents);
+    }
+
     return ast;
 };
 
@@ -246,8 +315,8 @@ int main(int argc, char *argv[]) {
             line[len - 1] = '\0';
         }
 
-	memset(value, '\0', VALUE_SIZE);
-	fprintf(stdout, "parsing line -> %s\n", line);
+	    memset(value, '\0', VALUE_SIZE);
+	    /* fprintf(stdout, "parsing line -> %s\n", line); */
         tree = parse_term(line, value);
 
         bel_print_ast(tree);
