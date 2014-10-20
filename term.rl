@@ -32,7 +32,7 @@ bel_arg_stack* stack_init(int max) {
     return stack;
 };
 
-void stack_destory(bel_arg_stack* stack) {
+void stack_destroy(bel_arg_stack* stack) {
     free(stack->contents);
     stack->top = -1;
     stack->max = 0;
@@ -108,7 +108,25 @@ bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char value[]) {
 bel_ast* bel_new_ast() {
     bel_ast* ast;
     ast = malloc(sizeof(bel_ast));
+    ast->root = NULL;
     return ast;
+};
+
+void bel_free_ast(bel_ast* ast) {
+    if (!ast) {
+        return;
+    }
+    bel_free_ast_node(ast->root);
+    free(ast);
+};
+
+void bel_free_ast_node(bel_ast_node* node) {
+    if (node->type_info->type == TOKEN && node->token->ttype != TOKEN_NIL) {
+        fprintf(stdout, "free token: %u\n", node->type_info->ttype);
+        bel_free_ast_node(node->token->left);
+        bel_free_ast_node(node->token->right);
+    }
+    free(node);
 };
 
 void bel_print_ast_node(bel_ast_node* node) {
@@ -276,21 +294,8 @@ bel_ast* parse_term(char* line, char value[]) {
         write exec;
     }%%
 
-    /* if (current_term) { */
-    /*     free(current_term); */
-    /* } */
-    /* if (current_nv) { */
-    /*     free(current_nv); */
-    /* } */
-    /* if (arg) { */
-    /*     free(arg); */
-    /* } */
-    /* if (next_arg) { */
-    /*     free(next_arg); */
-    /* } */
     if (arg_stack) {
-        free(arg_stack);
-        free(arg_stack->contents);
+        stack_destroy(arg_stack);
     }
 
     return ast;
@@ -301,7 +306,6 @@ int main(int argc, char *argv[]) {
     int len;
     char line[BUFSIZE];
     char value[VALUE_SIZE];
-    bel_ast* tree;
 
     if (argc == 2) {
         input = fopen(argv[1], "rb");
@@ -316,10 +320,11 @@ int main(int argc, char *argv[]) {
         }
 
 	    memset(value, '\0', VALUE_SIZE);
-	    /* fprintf(stdout, "parsing line -> %s\n", line); */
-        tree = parse_term(line, value);
+	    fprintf(stdout, "parsing line -> %s\n", line);
+        bel_ast* tree = parse_term(line, value);
 
         bel_print_ast(tree);
+        bel_free_ast(tree);
     }
     fclose(input);
     return 0;

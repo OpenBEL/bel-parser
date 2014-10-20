@@ -68,7 +68,7 @@ typedef struct {
 
 bel_arg_stack* stack_init(int max);
 
-void stack_destory(bel_arg_stack* stack);
+void stack_destroy(bel_arg_stack* stack);
 
 bel_ast_node* stack_peek(bel_arg_stack* stack);
 
@@ -85,6 +85,10 @@ bel_ast_node* bel_new_ast_node_token(bel_ast_token_type type);
 bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char value[]);
 
 bel_ast* bel_new_ast();
+
+void bel_free_ast_node(bel_ast_node* node);
+
+void bel_free_ast(bel_ast* ast);
 
 void bel_print_ast_node(bel_ast_node* node);
 
