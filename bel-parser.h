@@ -3,7 +3,7 @@
 #ifndef _BEL_PARSER_H
 #define _BEL_PARSER_H
 
-#define VALUE_SIZE 128
+#define VALUE_SIZE 1024
 #define BUFSIZE    1024 * 32 // 32 kilobytes
 #define ARG_STACK_SIZE 100
 const char* eof;

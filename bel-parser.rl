@@ -1,10 +1,6 @@
-/*
- * Parses BEL terms.
- */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include "bel-parser.h"
 
 const char* eof = EOF;
@@ -87,8 +83,8 @@ bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char value[]) {
     char*         copy_value;
 
     if (value) {
-        copy_value = (char *) malloc(sizeof(value));
-        strncpy(copy_value, value, sizeof(value));
+        copy_value = malloc(sizeof(char) * (strlen(value) + 1));
+        strcpy(copy_value, value);
     } else {
         copy_value = NULL;
     }
@@ -165,14 +161,14 @@ void bel_print_ast_node(bel_ast_node* node) {
         }
         break;
     }
-}
+};
 
 void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string) {
     if (!node) {
         return;
     }
 
-    char val[128];
+    char val[VALUE_SIZE];
     switch(node->type_info->type) {
         case TOKEN:
             switch(node->type_info->ttype) {
@@ -188,7 +184,7 @@ void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string) {
                 case TOKEN_TERM:
                     strcat(tree_flat_string, "TERM ");
                     break;
-            }
+            };
             bel_print_ast_node_flat(node->token->left, tree_flat_string);
             bel_print_ast_node_flat(node->token->right, tree_flat_string);
             break;
@@ -210,10 +206,10 @@ void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string) {
                     sprintf(val, "val(%s) ", node->value->value);
                     strcat(tree_flat_string, val);
                     break;
-            }
+            };
             break;
-    }
-}
+    };
+};
 
 void bel_print_ast(bel_ast* ast) {
     if (!ast) {
@@ -295,7 +291,7 @@ bel_ast* parse_term(char* line, char value[]) {
             // Set as term argument
             current_term->token->right = arg;
 
-	    memset(value, '\0', VALUE_SIZE);
+            memset(value, '\0', VALUE_SIZE);
             vi = 0;
         }
 
@@ -312,7 +308,7 @@ bel_ast* parse_term(char* line, char value[]) {
             top->token->right = next_arg;
             stack_push(arg_stack, *next_arg);
 
-	    memset(value, '\0', VALUE_SIZE);
+            memset(value, '\0', VALUE_SIZE);
             vi = 0;
         }
 
@@ -334,7 +330,7 @@ bel_ast* parse_term(char* line, char value[]) {
             }
 
             current_nv = 0;
-	        memset(value, '\0', VALUE_SIZE);
+            memset(value, '\0', VALUE_SIZE);
             vi = 0;
         }
 

@@ -1,11 +1,9 @@
 /*
  * Parses BEL terms.
  */
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include "bel-parser.h"
 
 int main(int argc, char *argv[]) {
@@ -26,8 +24,8 @@ int main(int argc, char *argv[]) {
             line[len - 1] = '\0';
         }
 
-	    memset(value, '\0', VALUE_SIZE);
-	    fprintf(stdout, "parsing line -> %s\n", line);
+        memset(value, '\0', VALUE_SIZE);
+        fprintf(stdout, "parsing line -> %s\n", line);
         bel_ast* tree = parse_term(line, value);
 
         if (!tree->root) {
