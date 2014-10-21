@@ -13,10 +13,17 @@ inotifywait -r -m -e modify . | while read line; do
 
     case "$FILE" in
         *.rl)
-            make clean all
+            RESULT=$(make clean all 2>&1 > /dev/null)
+            if [ $? -ne 0 ]; then
+                LAST=$(echo -e "$RESULT" | tail -n1)
+                notify-send -t 2000 -u critical "Failed compilation\n\n$LAST"
+                echo "$RESULT" 2>&1
+            else
+                notify-send -t 2000 -u normal "Successful compilation"
+            fi
             ;;
         *)
             ;;
     esac
 done
-
+# vim: ts=4 sts=4 sw=4 expandtab
