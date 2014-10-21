@@ -10,7 +10,7 @@ main:          bel-parser.o
 	       $(CC) $(CFLAGS) bel-parser.o term-parser.c -o term-parser
 
 test:          bel-parser.o tests.o
-	       gcc -o run-tests bel-parser.o tests.o $(TEST_LIBS)
+	       $(CC) $(CFLAGS) -o run-tests bel-parser.o tests.o $(TEST_LIBS)
 	       CK_VERBOSITY=verbose ./run-tests
 
 bel-parser.o:  ragel
