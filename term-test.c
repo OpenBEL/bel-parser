@@ -49,7 +49,6 @@
 #test supports_parameters_single_char
     char term1[BUFSIZE] = "r(MGI:a)";
     char value[VALUE_SIZE];
-
     memset(value, '\0', VALUE_SIZE);
     fail_unless(
             strcmp(
@@ -86,13 +85,21 @@
 
 
 #test supports_multiple_parameters
-    char line[BUFSIZE] = "p(AKT1, HGNC:AKT2, AKT3)";
+    char term1[BUFSIZE] = "p(AKT1, HGNC:AKT2, AKT3)";
     char value[VALUE_SIZE];
     memset(value, '\0', VALUE_SIZE);
 
     fail_unless(
             strcmp(
-                bel_ast_flat_string(parse_term(line, value)),
+                bel_ast_flat_string(parse_term(term1, value)),
                 "TERM fx(p) ARG NV pfx() val(AKT1) ARG NV pfx(HGNC) val(AKT2) ARG NV pfx() val(AKT3) ARG NIL NIL ") == 0,
             "[parse_term] failed to parse multiple parameters (e.g. AKT1, HGNC:AKT2, AKT3)");
+
+    char term2[BUFSIZE] = "bp(GOBP:\"apoptotic process\", AFFX:\"AFFX-18SRNAMur/X00686_5_at\")";
+    memset(value, '\0', VALUE_SIZE);
+    fail_unless(
+            strcmp(
+                bel_ast_flat_string(parse_term(term2, value)),
+                "TERM fx(bp) ARG NV pfx(GOBP) val(\"apoptotic process\") ARG NV pfx(AFFX) val(\"AFFX-18SRNAMur/X00686_5_at\") ARG NIL NIL ") == 0,
+            "[parse_term] failed to parse multiple parameters (e.g. \"apoptotic process\", \"AFFX-18SRNAMur/X00686_5_at\")");
 // vim: ft=c sw=4 ts=4 sts=4 expandtab
