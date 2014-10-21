@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "belparser.h"
+#include "bel-parser.h"
 
 #test supports_parameters_without_namespace
     char line[BUFSIZE] = "p(AKT1)";
@@ -34,4 +34,4 @@
                 bel_ast_flat_string(parse_term(line, value)),
                 "TERM fx(p) ARG NV pfx() val(AKT1) ARG NV pfx(HGNC) val(AKT2) ARG NV pfx() val(AKT3) ARG NIL NIL ") == 0,
             "[parse_term] failed to parse multiple parameters (e.g. AKT1, HGNC:AKT2, AKT3)");
-
+// vim: ft=c sw=4 ts=4 sts=4 expandtab

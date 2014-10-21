@@ -1,4 +1,4 @@
-#include <stdio.h>
+// #include <stdio.h>
 
 #ifndef _BEL_PARSER_H
 #define _BEL_PARSER_H
@@ -6,7 +6,7 @@
 #define VALUE_SIZE 128
 #define BUFSIZE    1024 * 32 // 32 kilobytes
 #define ARG_STACK_SIZE 100
-char* eof;
+const char* eof;
 
 typedef enum {
     TOKEN,

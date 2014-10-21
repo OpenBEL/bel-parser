@@ -6,22 +6,22 @@ TEST_LIBS=-lcheck
 
 all:           clean main test
 
-ragel:
-	       ragel $(RAGEL_OPTS) term.rl -o term.c
+main:          bel-parser.o
+	       $(CC) $(CFLAGS) bel-parser.o term-parser.c -o term-parser
 
-main:          ragel
-	       $(CC) $(CFLAGS) term.c -o term-parser
-
-test:          term.o tests.o
-	       gcc -o run-tests term.o tests.o $(TEST_LIBS)
+test:          bel-parser.o tests.o
+	       gcc -o run-tests bel-parser.o tests.o $(TEST_LIBS)
 	       CK_VERBOSITY=verbose ./run-tests
+
+bel-parser.o:  ragel
+	       $(CC) $(CFLAGS) -c bel-parser.c
+
+ragel:
+	       ragel $(RAGEL_OPTS) bel-parser.rl -o bel-parser.c
 
 tests.o:
 	       checkmk *-test.c > tests.c
 	       $(CC) $(CFLAGS) -c tests.c
 
-term.o:        ragel
-	       $(CC) $(CFLAGS) -c term.c
-
 clean:
-	       rm -f term.c tests.c term.o tests.o run-tests term-parser
+	       rm -f bel-parser.c tests.c bel-parser.o tests.o run-tests term-parser
