@@ -77,7 +77,7 @@ bel_ast_node* stack_peek(bel_arg_stack* stack);
 
 void stack_push(bel_arg_stack* stack, bel_ast_node element);
 
-bel_ast_node stack_pop(bel_arg_stack* stack);
+bel_ast_node* stack_pop(bel_arg_stack* stack);
 
 int stack_is_empty(bel_arg_stack* stack);
 
@@ -103,6 +103,6 @@ void bel_print_ast_flat(bel_ast* ast);
 
 char* bel_ast_flat_string(bel_ast* ast);
 
-bel_ast* parse_term(char* line, char value[]);
+bel_ast* parse_term(char* line);
 
 #endif /* not defined _BEL_PARSER_H */

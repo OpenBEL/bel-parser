@@ -25,3 +25,6 @@ tests.o:
 
 clean:
 	       rm -f bel-parser.c tests.c bel-parser.o tests.o run-tests term-parser
+
+check-ragel:
+	       ragel -v

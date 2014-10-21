@@ -10,7 +10,6 @@ int main(int argc, char *argv[]) {
     FILE *input;
     int len;
     char line[BUFSIZE];
-    char value[VALUE_SIZE];
 
     if (argc == 2) {
         input = fopen(argv[1], "rb");
@@ -24,9 +23,8 @@ int main(int argc, char *argv[]) {
             line[len - 1] = '\0';
         }
 
-        memset(value, '\0', VALUE_SIZE);
         fprintf(stdout, "parsing line -> %s\n", line);
-        bel_ast* tree = parse_term(line, value);
+        bel_ast* tree = parse_term(line);
 
         if (!tree->root) {
             fprintf(stderr, "parse failed\n");

@@ -12,7 +12,7 @@ inotifywait -m -e modify . | while read line; do
 
     case "$FILE" in
         *.rl|*.h|term-parser.c|term-test.c|Makefile)
-            RESULT=$(make clean all 2>&1 > /dev/null)
+            RESULT=$(make clean all 2>&1)
             if [ $? -ne 0 ]; then
                 LAST=$(echo -e "$RESULT" | tail -n1)
                 notify-send -t 2000 -u critical "Failed compilation\n\n$LAST"

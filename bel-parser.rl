@@ -50,13 +50,14 @@ void stack_push(bel_arg_stack* stack, bel_ast_node element) {
     stack->contents[++stack->top] = element;
 };
 
-bel_ast_node stack_pop(bel_arg_stack* stack) {
+bel_ast_node* stack_pop(bel_arg_stack* stack) {
     if (stack_is_empty(stack)) {
         fprintf(stderr, "Can't pop element from stack: stack is empty.\n");
         exit(1);
     }
 
-    return stack->contents[stack->top--];
+    bel_ast_node* popped = &(stack->contents[stack->top--]);
+    return popped;
 };
 
 int stack_is_empty(bel_arg_stack* stack) {
@@ -246,36 +247,63 @@ char* bel_ast_flat_string(bel_ast* ast) {
     write data;
 }%%
 
-bel_ast* parse_term(char* line, char value[]) {
+bel_ast* parse_term(char* line) {
     int            cs;
     char           *p;
     char           *pe;
+    int            top;
+    int            *stack;
     bel_ast_node*  current_term;
     bel_ast_node*  current_nv;
     bel_ast_node*  arg;
     bel_ast_node*  next_arg;
     bel_ast*       ast;
     bel_arg_stack* arg_stack;
+    char           *function;
+    char           *value;
+    int            fi;
     int            vi;
 
     p            = line;
     pe           = line + strlen(line);
+    top          = 0;
+    stack        = malloc(sizeof(int) * ARG_STACK_SIZE);
     current_term = NULL;
     current_nv   = NULL;
     arg          = NULL;
     next_arg     = NULL;
     ast          = bel_new_ast();
     arg_stack    = stack_init(ARG_STACK_SIZE);
+    function     = malloc(sizeof(char) * VALUE_SIZE);
+    value        = malloc(sizeof(char) * VALUE_SIZE);
+    fi           = 0;
     vi           = 0;
 
+    memset(function, '\0', VALUE_SIZE);
+    memset(value, '\0', VALUE_SIZE);
+
     %%{
-        action vi {
+        action fxc {
+            memset(function, '\0', VALUE_SIZE);
+            fi = 0;
+        }
+
+        action valc {
+            memset(value, '\0', VALUE_SIZE);
+            vi = 0;
+        }
+
+        action fxn {
+            function[fi++] = fc;
+        }
+
+        action valn {
             value[vi++] = fc;
         }
 
         action FX {
             current_term = bel_new_ast_node_token(TOKEN_TERM);
-            current_term->token->left = bel_new_ast_node_value(VALUE_FX,  value);
+            current_term->token->left = bel_new_ast_node_value(VALUE_FX, function);
 
             // Set term as AST root; on first term
             if (!ast->root) {
@@ -291,8 +319,8 @@ bel_ast* parse_term(char* line, char value[]) {
             // Set as term argument
             current_term->token->right = arg;
 
-            memset(value, '\0', VALUE_SIZE);
-            vi = 0;
+            memset(function, '\0', VALUE_SIZE);
+            fi = 0;
         }
 
         action PFX {
@@ -334,6 +362,15 @@ bel_ast* parse_term(char* line, char value[]) {
             vi = 0;
         }
 
+        action FCALL {
+            fcall arguments;
+        }
+
+        action FRET {
+            fhold;
+            fret;
+        }
+
         SP           = ' ';
         O_PAREN      = '(';
         C_PAREN      = ')';
@@ -342,17 +379,19 @@ bel_ast* parse_term(char* line, char value[]) {
         STRING       = ('"' ('\\\"' | [^"])* '"');
         FUNCTION     = ('proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|'microRNAAbundance'|'m'|'geneAbundance'|'g'|'biologicalProcess'|'bp'|'pathology'|'path'|'complexAbundance'|'complex'|'translocation'|'tloc'|'cellSecretion'|'sec'|'cellSurfaceExpression'|'surf'|'reaction'|'rxn'|'compositeAbundance'|'composite'|'fusion'|'fus'|'degradation'|'deg'|'molecularActivity'|'act'|'catalyticActivity'|'cat'|'kinaseActivity'|'kin'|'phosphataseActivity'|'phos'|'peptidaseActivity'|'pep'|'ribosylationActivity'|'ribo'|'transcriptionalActivity'|'tscript'|'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|'substitution'|'sub'|'truncation'|'trunc'|'reactants'|'products'|'list');
 
-        arguments =
+        arguments :=
             (
-                (IDENT $vi ':')? @PFX (STRING $vi | IDENT $vi) %VAL
+                (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL |
+                FUNCTION >fxc $fxn %FX O_PAREN @FCALL C_PAREN
             )
             (
                 SP* ',' SP*
-                (IDENT $vi ':')? @PFX (STRING $vi | IDENT $vi) %VAL
-            )*;
+                (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL
+            )*
+            C_PAREN? @FRET;
 
         term :=
-            FUNCTION $vi %FX O_PAREN arguments C_PAREN;
+            FUNCTION >fxc $fxn %FX O_PAREN @FCALL C_PAREN;
 
         # Initialize and execute.
         write init;
