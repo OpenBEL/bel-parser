@@ -33,7 +33,7 @@
     fail_unless(
             strcmp(
                 bel_ast_as_string(parse_term(line)),
-                "TERM fx(p) ARG NV pfx() val(AKT1) ARG NULL NULL ") == 0,
+                "TERM fx(p) ARG NV pfx((null)) val(AKT1) ARG NULL NULL ") == 0,
             "[parse_term] failed to parse parameter without namespace (e.g. AKT1)");
 
 #test supports_parameters_with_namespace
@@ -56,14 +56,14 @@
     fail_unless(
             strcmp(
                 bel_ast_as_string(parse_term(term2)),
-                "TERM fx(r) ARG NV pfx() val(a) ARG NULL NULL ") == 0,
+                "TERM fx(r) ARG NV pfx((null)) val(a) ARG NULL NULL ") == 0,
             "[parse_term] failed to parse single character parameter (e.g. a)");
 
     char term3[LINE_CHAR_LEN] = "pmod(P)";
     fail_unless(
             strcmp(
                 bel_ast_as_string(parse_term(term3)),
-                "TERM fx(pmod) ARG NV pfx() val(P) ARG NULL NULL ") == 0,
+                "TERM fx(pmod) ARG NV pfx((null)) val(P) ARG NULL NULL ") == 0,
             "[parse_term] failed to parse single character parameter (e.g. P)");
 
 #test supports_long_parameters
@@ -80,7 +80,7 @@
     fail_unless(
             strcmp(
                 bel_ast_as_string(parse_term(term1)),
-                "TERM fx(p) ARG NV pfx() val(AKT1) ARG NV pfx(HGNC) val(AKT2) ARG NV pfx() val(AKT3) ARG NULL NULL ") == 0,
+                "TERM fx(p) ARG NV pfx((null)) val(AKT1) ARG NV pfx(HGNC) val(AKT2) ARG NV pfx((null)) val(AKT3) ARG NULL NULL ") == 0,
             "[parse_term] failed to parse multiple parameters (e.g. AKT1, HGNC:AKT2, AKT3)");
 
     char term2[LINE_CHAR_LEN] = "bp(GOBP:\"apoptotic process\", AFFX:\"AFFX-18SRNAMur/X00686_5_at\")";
@@ -102,7 +102,7 @@
     fail_unless(
             strcmp(
                 bel_ast_as_string(parse_term(term2)),
-                "TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG TERM fx(pmod) ARG NV pfx() val(P) ARG NV pfx() val(S) ARG NV pfx() val(317) ARG NULL NULL ARG NULL NULL ") == 0,
+                "TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG TERM fx(pmod) ARG NV pfx((null)) val(P) ARG NV pfx((null)) val(S) ARG NV pfx((null)) val(317) ARG NULL NULL ARG NULL NULL ") == 0,
             "[parse_term] failed to parse nested terms (e.g. p(HGNC:AKT1, pmod(P,S,317)) )");
 
     char term3[LINE_CHAR_LEN] = "complex(p(HGNC:AKT1), p(HGNC:AKT2))";

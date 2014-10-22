@@ -4388,7 +4388,7 @@ tr232:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -4424,7 +4424,7 @@ tr234:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -4563,7 +4563,7 @@ tr255:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -4589,7 +4589,7 @@ tr704:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -4641,7 +4641,7 @@ tr257:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -4667,7 +4667,7 @@ tr706:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -4773,7 +4773,7 @@ tr256:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -4815,7 +4815,7 @@ tr705:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -4860,7 +4860,7 @@ tr276:
 
             current_nv               = bel_new_ast_node_token(TOKEN_NV);
             current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
-            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, "");
+            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, NULL);
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
 
@@ -12350,7 +12350,7 @@ tr233:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -12394,7 +12394,7 @@ tr480:
 
             current_nv               = bel_new_ast_node_token(TOKEN_NV);
             current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
-            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, "");
+            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, NULL);
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
 
@@ -19457,7 +19457,7 @@ tr684:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -19505,7 +19505,7 @@ tr686:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -19630,7 +19630,7 @@ tr685:
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -19686,7 +19686,7 @@ tr708:
 
             current_nv               = bel_new_ast_node_token(TOKEN_NV);
             current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
-            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, "");
+            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, NULL);
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
 
@@ -27172,7 +27172,7 @@ tr912:
 
             current_nv               = bel_new_ast_node_token(TOKEN_NV);
             current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
-            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, "");
+            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, NULL);
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
 
@@ -35198,9 +35198,13 @@ case 1086:
 /* #line 179 "parse-term.rl" */
 
 
+    // free allocations
     if (term_stack) {
         stack_destroy(term_stack);
     }
+    free(stack);
+    free(function);
+    free(value);
 
     return ast;
 };

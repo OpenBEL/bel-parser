@@ -108,7 +108,7 @@ bel_ast* parse_term(char* line) {
 
             current_nv               = bel_new_ast_node_token(TOKEN_NV);
             current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
-            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, "");
+            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, NULL);
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
 
@@ -127,7 +127,7 @@ bel_ast* parse_term(char* line) {
                 }
 
                 current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
+                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
                 arg->token->left         = current_nv;
                 arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
@@ -178,9 +178,13 @@ bel_ast* parse_term(char* line) {
         write exec;
     }%%
 
+    // free allocations
     if (term_stack) {
         stack_destroy(term_stack);
     }
+    free(stack);
+    free(function);
+    free(value);
 
     return ast;
 };

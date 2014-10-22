@@ -14,12 +14,12 @@ bel_ast_node* bel_new_ast_node_token(bel_ast_token_type type) {
     return node;
 };
 
-bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char value[]) {
+bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char* value) {
     bel_ast_node* node;
     char*         copy_value;
 
     if (value) {
-        copy_value = malloc(sizeof(char) * (strlen(value) + 1));
+        copy_value = malloc(strlen(value) + 1);
         strcpy(copy_value, value);
     } else {
         copy_value = NULL;
@@ -56,7 +56,12 @@ void bel_free_ast_node(bel_ast_node* node) {
         if (node->token->right != NULL) {
             bel_free_ast_node(node->token->right);
         }
+	free(node->token);
+    } else {
+	free(node->value->value);
+	free(node->value);
     }
+
     free(node);
 };
 
