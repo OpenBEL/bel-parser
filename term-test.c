@@ -2,6 +2,14 @@
 #include <string.h>
 #include "bel-parser.h"
 
+#test supports_empty_term
+    char line[BUFSIZE] = "";
+    fail_unless(
+            strcmp(
+                bel_ast_as_string(parse_term(line)),
+                "TERM NULL NULL ") == 0,
+            "[parse_term] failed to parse empty term");
+
 #test supports_parameter_identifiers
     char line[BUFSIZE] = "r(AFFX:100009_r_at)";
     fail_unless(
