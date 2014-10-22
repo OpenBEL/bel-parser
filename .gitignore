@@ -2,7 +2,7 @@
 *.png
 *.bel
 *.rb
-run-tests
-term-parser
+tests
+bel-parser
 bel-parser.c
 tests.c
