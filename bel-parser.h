@@ -3,9 +3,18 @@
 #ifndef _BEL_PARSER_H
 #define _BEL_PARSER_H
 
-#define VALUE_SIZE 1024
-#define BUFSIZE    1024 * 32 // 32 kilobytes
-#define ARG_STACK_SIZE 100
+/*
+ * Value size: The maximum number of characters to hold in an
+ * accumulated value.
+ */
+#define VALUE_CHAR_LEN 512
+
+/*
+ * Term stack size: A value of 20 allows for a nesting of
+ * a max of 20 terms.
+ */
+#define TERM_STACK_SIZE 20
+
 const char* eof;
 
 typedef enum {
@@ -64,22 +73,22 @@ typedef struct {
 typedef struct {
     int                        top;
     int                        max;
-    bel_ast_node*              contents;
-} bel_arg_stack;
+    bel_ast_node*              contents[];
+} bel_node_stack;
 
-bel_arg_stack* stack_init(int max);
+bel_node_stack* stack_init(int max);
 
-void stack_destroy(bel_arg_stack* stack);
+void stack_destroy(bel_node_stack* stack);
 
-bel_ast_node* stack_peek(bel_arg_stack* stack);
+bel_ast_node* stack_peek(bel_node_stack* stack);
 
-void stack_push(bel_arg_stack* stack, bel_ast_node element);
+void stack_push(bel_node_stack* stack, bel_ast_node* node);
 
-bel_ast_node* stack_pop(bel_arg_stack* stack);
+bel_ast_node* stack_pop(bel_node_stack* stack);
 
-int stack_is_empty(bel_arg_stack* stack);
+int stack_is_empty(bel_node_stack* stack);
 
-int stack_is_full(bel_arg_stack* stack);
+int stack_is_full(bel_node_stack* stack);
 
 bel_ast_node* bel_new_ast_node_token(bel_ast_token_type type);
 

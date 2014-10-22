@@ -5,68 +5,64 @@
 
 const char* eof = EOF;
 
-bel_arg_stack* stack_init(int max) {
-    bel_arg_stack* stack;
-    bel_ast_node*  contents;
-
-    stack = (bel_arg_stack *) malloc(sizeof(bel_arg_stack));
-    contents = (bel_ast_node *) malloc(sizeof(bel_ast_node) * max);
+bel_node_stack* stack_init(int max) {
+    bel_node_stack*  stack = (bel_node_stack *) malloc(sizeof(int) *2 + sizeof(bel_ast_node) * max );
+    bel_ast_node*    contents[max];
 
     if (contents == NULL) {
         fprintf(stderr, "Insufficient memory to initialize stack.\n");
-        exit(1);  /* Exit, returning error code. */
+        return NULL;
     }
 
     stack->top      = -1;
     stack->max      = max;
-    stack->contents = contents;
 
     return stack;
 };
 
-void stack_destroy(bel_arg_stack* stack) {
-    free(stack->contents);
-    stack->top = -1;
-    stack->max = 0;
-    stack->contents = NULL;
+void stack_destroy(bel_node_stack* stack) {
+    free(stack);
 };
 
-bel_ast_node* stack_peek(bel_arg_stack* stack) {
-    if (stack_is_full(stack)) {
-        fprintf(stderr, "Can't push element on stack: stack is full.\n");
-        exit(1);
+bel_ast_node* stack_peek(bel_node_stack* stack) {
+    if (stack_is_empty(stack)) {
+        return NULL;
     }
 
-    bel_ast_node* top = &(stack->contents[stack->top]);
+    bel_ast_node* (*nodes)[] = &stack->contents;
+    bel_ast_node*        top = (*nodes)[stack->top];
     return top;
 };
 
-void stack_push(bel_arg_stack* stack, bel_ast_node element) {
+void stack_push(bel_node_stack* stack, bel_ast_node* node) {
     if (stack_is_full(stack)) {
-        fprintf(stderr, "Can't push element on stack: stack is full.\n");
-        exit(1);
+        fprintf(stderr, "Stack is full, cannot push\n");
+        return;
     }
 
-    stack->contents[++stack->top] = element;
+    bel_ast_node* (*nodes)[] = &stack->contents;
+    (*nodes)[++stack->top] = node;
 };
 
-bel_ast_node* stack_pop(bel_arg_stack* stack) {
+bel_ast_node* stack_pop(bel_node_stack* stack) {
     if (stack_is_empty(stack)) {
-        fprintf(stderr, "Can't pop element from stack: stack is empty.\n");
-        exit(1);
+        fprintf(stderr, "Stack is empty, cannot pop\n");
+        return;
     }
 
-    bel_ast_node* popped = &(stack->contents[stack->top--]);
-    return popped;
+    bel_ast_node* (*nodes)[] = &stack->contents;
+    bel_ast_node* popped_top = (*nodes)[stack->top--];
+    return popped_top;
 };
 
-int stack_is_empty(bel_arg_stack* stack) {
-    return stack->top < 0;
+int stack_is_empty(bel_node_stack* stack) {
+    return stack->top == -1;
 };
 
-int stack_is_full(bel_arg_stack* stack) {
+int stack_is_full(bel_node_stack* stack) {
     return stack->top >= stack->max - 1;
 };
+
 
 bel_ast_node* bel_new_ast_node_token(bel_ast_token_type type) {
     bel_ast_node* node;
@@ -131,7 +127,7 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
         return;
     }
 
-    char val[VALUE_SIZE];
+    char val[VALUE_CHAR_LEN];
     switch(node->type_info->type) {
         case TOKEN:
             switch(node->type_info->ttype) {
@@ -172,8 +168,8 @@ void bel_print_ast(bel_ast* ast) {
         return;
     }
 
-    char tree_flat_string[1024];
-    memset(tree_flat_string, '\0', 1024);
+    char tree_flat_string[1024 * 32];
+    memset(tree_flat_string, '\0', 1024 * 32);
     bel_print_ast_node(ast->root, tree_flat_string);
     fprintf(stdout, "%s\n", tree_flat_string);
 };
@@ -183,10 +179,33 @@ char* bel_ast_as_string(bel_ast* ast) {
         return NULL;
     }
 
-    char tree_flat_string[1024];
-    memset(tree_flat_string, '\0', 1024);
+    char tree_flat_string[1024 * 32];
+    memset(tree_flat_string, '\0', 1024 * 32);
     bel_print_ast_node(ast->root, tree_flat_string);
     return tree_flat_string;
+};
+
+void stack_print(bel_node_stack* stack) {
+    int i;
+    fprintf(stdout, "stack count: %d\n", (stack->top + 1));
+    for(i = (stack->top); i > -1; i--) {
+        char tree_flat_string[1024 * 32];
+        memset(tree_flat_string, '\0', 1024 * 32);
+        bel_ast_node* el = stack->contents[i];
+        bel_print_ast_node(el, tree_flat_string);
+        fprintf(stdout, "stack[%d]: %s\n", i, tree_flat_string);
+    }
+};
+
+void stack_test() {
+    bel_node_stack* stack = stack_init(5);
+    bel_ast_node*    term = bel_new_ast_node_token(TOKEN_TERM);
+    bel_ast_node*     arg = bel_new_ast_node_token(TOKEN_ARG);
+    bel_ast_node*      nv = bel_new_ast_node_token(TOKEN_NV);
+    stack_push(stack, term);
+    stack_push(stack, arg);
+    stack_push(stack, nv);
+    stack_print(stack);
 };
 
 %%{
@@ -195,52 +214,45 @@ char* bel_ast_as_string(bel_ast* ast) {
 }%%
 
 bel_ast* parse_term(char* line) {
-    int            cs;
-    char           *p;
-    char           *pe;
-    int            top;
-    int            *stack;
-    bel_ast_node*  current_term;
-    bel_ast_node*  current_nv;
-    bel_ast_node*  arg;
-    bel_ast_node*  next_arg;
-    bel_ast*       ast;
-    bel_arg_stack* arg_stack;
-    bel_ast_node*  arg_top;
-    char           *function;
-    char           *value;
-    int            fi;
-    int            vi;
+    int             cs;
+    char            *p;
+    char            *pe;
+    int             top;
+    int             *stack;
+    bel_ast_node*   term;
+    bel_ast_node*   current_nv;
+    bel_ast*        ast;
+    bel_node_stack* term_stack;
+    char            *function;
+    char            *value;
+    int             fi;
+    int             vi;
 
     p            = line;
     pe           = line + strlen(line);
     top          = 0;
-    stack        = malloc(sizeof(int) * ARG_STACK_SIZE);
-    current_term = NULL;
+    stack        = malloc(sizeof(int) * TERM_STACK_SIZE);
     current_nv   = NULL;
-    arg          = NULL;
-    next_arg     = NULL;
-    arg_top      = NULL;
-    arg_stack    = stack_init(ARG_STACK_SIZE);
-    function     = malloc(sizeof(char) * VALUE_SIZE);
-    value        = malloc(sizeof(char) * VALUE_SIZE);
-    current_term = bel_new_ast_node_token(TOKEN_TERM);
-    ast          = bel_new_ast();
-    ast->root    = current_term;
+    function     = malloc(sizeof(char) * VALUE_CHAR_LEN);
+    value        = malloc(sizeof(char) * VALUE_CHAR_LEN);
     fi           = 0;
     vi           = 0;
 
-    memset(function, '\0', VALUE_SIZE);
-    memset(value, '\0', VALUE_SIZE);
+    term_stack   = stack_init(TERM_STACK_SIZE);
+    term         = bel_new_ast_node_token(TOKEN_TERM);
+    ast          = bel_new_ast();
+    ast->root    = term;
+
+    stack_push(term_stack, term);
+    memset(function, '\0', VALUE_CHAR_LEN);
+    memset(value, '\0', VALUE_CHAR_LEN);
 
     %%{
         action fxc {
-            memset(function, '\0', VALUE_SIZE);
             fi = 0;
         }
 
         action valc {
-            memset(value, '\0', VALUE_SIZE);
             vi = 0;
         }
 
@@ -253,67 +265,79 @@ bel_ast* parse_term(char* line) {
         }
 
         action FX {
-            current_term->token->left = bel_new_ast_node_value(VALUE_FX, function);
+            term               = stack_peek(term_stack);
+            term->token->left  = bel_new_ast_node_value(VALUE_FX, function);
+            term->token->right = bel_new_ast_node_token(TOKEN_ARG);
 
-            // Create Nil argument as a placeholder; add to stack
-            arg = bel_new_ast_node_token(TOKEN_ARG);
-            stack_push(arg_stack, *arg);
-
-            // Set as term argument
-            current_term->token->right = arg;
-
-            memset(function, '\0', VALUE_SIZE);
+            memset(function, '\0', VALUE_CHAR_LEN);
             fi = 0;
         }
 
         action NESTED_FX {
-            current_term = bel_new_ast_node_token(TOKEN_TERM);
-            current_term->token->left = bel_new_ast_node_value(VALUE_FX, function);
+            bel_ast_node* term_top = stack_peek(term_stack);
 
-            arg = bel_new_ast_node_token(TOKEN_ARG);
-            current_term->token->right = arg;
+            // find ARG leaf
+            bel_ast_node* arg = term_top->token->right;
+            while(arg->token->right != NULL) {
+                arg = arg->token->right;
+            }
 
-            bel_ast_node* arg_top = stack_peek(arg_stack);
-            arg_top->token->left = current_term;
+            // create new nested term
+            term               = bel_new_ast_node_token(TOKEN_TERM);
+            term->token->left  = bel_new_ast_node_value(VALUE_FX, function);
+            term->token->right = bel_new_ast_node_token(TOKEN_ARG);
+            // set head term, left: new nested term, right: next arg
+            arg->token->left   = term;
+            arg->token->right  = bel_new_ast_node_token(TOKEN_ARG);
 
-            stack_push(arg_stack, *arg);
+            // push new nested term onto stack
+            stack_push(term_stack, term);
 
-            memset(function, '\0', VALUE_SIZE);
+            memset(function, '\0', VALUE_CHAR_LEN);
+            memset(value, '\0', VALUE_CHAR_LEN);
             fi = 0;
         }
 
         action PFX {
-            bel_ast_node* arg_top = stack_peek(arg_stack);
-            current_nv = bel_new_ast_node_token(TOKEN_NV);
+            term = stack_peek(term_stack);
+
+            // find ARG leaf
+            bel_ast_node* arg = term->token->right;
+            while(arg->token->right != NULL) {
+                arg = arg->token->right;
+            }
+
+            current_nv               = bel_new_ast_node_token(TOKEN_NV);
             current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
             current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, "");
-            arg_top->token->left = current_nv;
+            arg->token->left         = current_nv;
+            arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
 
-            next_arg = bel_new_ast_node_token(TOKEN_ARG);
-            arg_top->token->right = next_arg;
-            stack_push(arg_stack, *next_arg);
-
-            memset(value, '\0', VALUE_SIZE);
+            memset(value, '\0', VALUE_CHAR_LEN);
             vi = 0;
         }
 
         action VAL {
-            bel_ast_node* arg_top = stack_peek(arg_stack);
             if (!current_nv) {
-                current_nv = bel_new_ast_node_token(TOKEN_NV);
+                term = stack_peek(term_stack);
+
+                // find ARG leaf
+                bel_ast_node* arg = term->token->right;
+                while(arg->token->right != NULL) {
+                    arg = arg->token->right;
+                }
+
+                current_nv               = bel_new_ast_node_token(TOKEN_NV);
                 current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
-                arg_top->token->left = current_nv;
-
-                next_arg = bel_new_ast_node_token(TOKEN_ARG);
-                arg_top->token->right = next_arg;
-                stack_push(arg_stack, *next_arg);
+                arg->token->left         = current_nv;
+                arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
             } else {
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
             }
 
             current_nv = 0;
-            memset(value, '\0', VALUE_SIZE);
+            memset(value, '\0', VALUE_CHAR_LEN);
             vi = 0;
         }
 
@@ -322,7 +346,7 @@ bel_ast* parse_term(char* line) {
         }
 
         action FRET {
-            fhold;
+            stack_pop(term_stack);
             fret;
         }
 
@@ -331,22 +355,21 @@ bel_ast* parse_term(char* line) {
         C_PAREN      = ')';
         COLON        = ':';
         IDENT        = [a-zA-Z0-9_]+;
-        STRING       = ('"' ('\\\"' | [^"])* '"');
-        FUNCTION     = ('proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|'microRNAAbundance'|'m'|'geneAbundance'|'g'|'biologicalProcess'|'bp'|'pathology'|'path'|'complexAbundance'|'complex'|'translocation'|'tloc'|'cellSecretion'|'sec'|'cellSurfaceExpression'|'surf'|'reaction'|'rxn'|'compositeAbundance'|'composite'|'fusion'|'fus'|'degradation'|'deg'|'molecularActivity'|'act'|'catalyticActivity'|'cat'|'kinaseActivity'|'kin'|'phosphataseActivity'|'phos'|'peptidaseActivity'|'pep'|'ribosylationActivity'|'ribo'|'transcriptionalActivity'|'tscript'|'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|'substitution'|'sub'|'truncation'|'trunc'|'reactants'|'products'|'list');
+        STRING       = '"' ('\\\"' | [^"])* '"';
+        FUNCTION     = 'proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|'microRNAAbundance'|'m'|'geneAbundance'|'g'|'biologicalProcess'|'bp'|'pathology'|'path'|'complexAbundance'|'complex'|'translocation'|'tloc'|'cellSecretion'|'sec'|'cellSurfaceExpression'|'surf'|'reaction'|'rxn'|'compositeAbundance'|'composite'|'fusion'|'fus'|'degradation'|'deg'|'molecularActivity'|'act'|'catalyticActivity'|'cat'|'kinaseActivity'|'kin'|'phosphataseActivity'|'phos'|'peptidaseActivity'|'pep'|'ribosylationActivity'|'ribo'|'transcriptionalActivity'|'tscript'|'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|'substitution'|'sub'|'truncation'|'trunc'|'reactants'|'products'|'list';
 
         arguments :=
             (
                 (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL |
-                FUNCTION >fxc $fxn %NESTED_FX O_PAREN @FCALL C_PAREN
+                FUNCTION >fxc $fxn %NESTED_FX O_PAREN @FCALL
             )
             (
                 SP* ',' SP*
                 (
                     (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL |
-                    FUNCTION >fxc $fxn %NESTED_FX O_PAREN @FCALL C_PAREN
+                    FUNCTION >fxc $fxn %NESTED_FX O_PAREN @FCALL
                 )
-            )*
-            C_PAREN? @FRET;
+            )* C_PAREN @FRET;
 
         term :=
             FUNCTION >fxc $fxn %FX O_PAREN @FCALL C_PAREN;
@@ -356,8 +379,8 @@ bel_ast* parse_term(char* line) {
         write exec;
     }%%
 
-    if (arg_stack) {
-        stack_destroy(arg_stack);
+    if (term_stack) {
+        stack_destroy(term_stack);
     }
 
     return ast;

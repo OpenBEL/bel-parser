@@ -6,10 +6,12 @@
 #include <stdio.h>
 #include "bel-parser.h"
 
+#define LINE_CHAR_LEN 1024 * 32 // 32 kilobytes
+
 int main(int argc, char *argv[]) {
     FILE *input;
     int len;
-    char line[BUFSIZE];
+    char line[LINE_CHAR_LEN];
 
     if (argc == 2) {
         input = fopen(argv[1], "rb");
@@ -17,13 +19,26 @@ int main(int argc, char *argv[]) {
         input = stdin;
     }
 
-    while (fgets(line, BUFSIZE, input) != NULL) {
+    int print = 0;
+    if (getenv("AST_PRINT") != NULL) {
+        print = 1;
+    }
+
+    int verbose = 0;
+    if (getenv("AST_VERBOSE") != NULL) {
+        verbose = 1;
+    }
+
+    while (fgets(line, LINE_CHAR_LEN, input) != NULL) {
         len = strlen(line);
         if (line[len - 1] == '\n') {
             line[len - 1] = '\0';
         }
 
-        fprintf(stdout, "parsing line -> %s\n", line);
+        if (verbose) {
+            fprintf(stdout, "parsing line -> %s\n", line);
+        }
+
         bel_ast* tree = parse_term(line);
 
         if (!tree->root) {
@@ -31,7 +46,9 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        bel_print_ast(tree);
+        if (print) {
+            bel_print_ast(tree);
+        }
         bel_free_ast(tree);
     }
     fclose(input);
