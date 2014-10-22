@@ -5,8 +5,6 @@
 #include "bel-node-stack.h"
 #include "bel-parser.h"
 
-const char* eof = EOF;
-
 %%{
     machine set;
     write data;

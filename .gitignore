@@ -4,5 +4,6 @@
 *.rb
 tests
 bel-parser
+parse-term.c
 bel-parser.c
 tests.c

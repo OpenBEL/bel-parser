@@ -15,9 +15,6 @@
  */
 #define TERM_STACK_SIZE 20
 
-const char* eof;
-
-
 bel_ast* parse_term(char* line);
 
 #endif /* not defined _BEL_PARSER_H */
