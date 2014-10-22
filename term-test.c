@@ -20,7 +20,6 @@
 
 #test supports_parameter_strings
     char line[BUFSIZE] = "bp(GOBP:\"apoptotic process\")";
-    fprintf(stdout, "actual: %s\n", bel_ast_as_string(parse_term(line)));
     fail_unless(
             strcmp(
                 bel_ast_as_string(parse_term(line)),
@@ -88,4 +87,28 @@
                 bel_ast_as_string(parse_term(term2)),
                 "TERM fx(bp) ARG NV pfx(GOBP) val(\"apoptotic process\") ARG NV pfx(AFFX) val(\"AFFX-18SRNAMur/X00686_5_at\") ARG NULL NULL ") == 0,
             "[parse_term] failed to parse multiple parameters (e.g. \"apoptotic process\", \"AFFX-18SRNAMur/X00686_5_at\")");
+
+#test supports_nested_terms
+    char term1[BUFSIZE] = "cat(p(HGNC:AKT1))";
+    fail_unless(
+            strcmp(
+                bel_ast_as_string(parse_term(term1)),
+                "TERM fx(cat) ARG TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG NULL NULL NULL ") == 0,
+            "[parse_term] failed to parse nested terms (e.g. cat(p(HGNC:AKT1)) )");
+
+    char term2[BUFSIZE] = "p(HGNC:AKT1, pmod(P,S,317))";
+    fail_unless(
+            strcmp(
+                bel_ast_as_string(parse_term(term2)),
+                "TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG TERM fx(pmod) ARG NV pfx() val(P) ARG NV pfx() val(S) ARG NV pfx() val(317) ARG NULL NULL NULL ") == 0,
+            "[parse_term] failed to parse nested terms (e.g. p(HGNC:AKT1, pmod(P,S,317)) )");
+
+    char term3[BUFSIZE] = "complex(p(HGNC:AKT1), p(HGNC:AKT2))";
+    fprintf(stdout, "%s\n", bel_ast_as_string(parse_term(term3)));
+    fail_unless(
+            strcmp(
+                bel_ast_as_string(parse_term(term3)),
+                "TERM fx(complex) ARG TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG TERM fx(p) ARG NV pfx(HGNC) val(AKT2) ARG NULL NULL NULL NULL ") == 0,
+            "[parse_term] failed to parse nested terms (e.g. p(HGNC:AKT1, pmod(P,S,317)) )");
+
 // vim: ft=c sw=4 ts=4 sts=4 expandtab

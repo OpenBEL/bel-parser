@@ -206,6 +206,7 @@ bel_ast* parse_term(char* line) {
     bel_ast_node*  next_arg;
     bel_ast*       ast;
     bel_arg_stack* arg_stack;
+    bel_ast_node*  arg_top;
     char           *function;
     char           *value;
     int            fi;
@@ -219,6 +220,7 @@ bel_ast* parse_term(char* line) {
     current_nv   = NULL;
     arg          = NULL;
     next_arg     = NULL;
+    arg_top      = NULL;
     arg_stack    = stack_init(ARG_STACK_SIZE);
     function     = malloc(sizeof(char) * VALUE_SIZE);
     value        = malloc(sizeof(char) * VALUE_SIZE);
@@ -264,15 +266,31 @@ bel_ast* parse_term(char* line) {
             fi = 0;
         }
 
+        action NESTED_FX {
+            current_term = bel_new_ast_node_token(TOKEN_TERM);
+            current_term->token->left = bel_new_ast_node_value(VALUE_FX, function);
+
+            arg = bel_new_ast_node_token(TOKEN_ARG);
+            current_term->token->right = arg;
+
+            bel_ast_node* arg_top = stack_peek(arg_stack);
+            arg_top->token->left = current_term;
+
+            stack_push(arg_stack, *arg);
+
+            memset(function, '\0', VALUE_SIZE);
+            fi = 0;
+        }
+
         action PFX {
-            bel_ast_node* top = stack_peek(arg_stack);
+            bel_ast_node* arg_top = stack_peek(arg_stack);
             current_nv = bel_new_ast_node_token(TOKEN_NV);
             current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
             current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, "");
-            top->token->left = current_nv;
+            arg_top->token->left = current_nv;
 
             next_arg = bel_new_ast_node_token(TOKEN_ARG);
-            top->token->right = next_arg;
+            arg_top->token->right = next_arg;
             stack_push(arg_stack, *next_arg);
 
             memset(value, '\0', VALUE_SIZE);
@@ -280,15 +298,15 @@ bel_ast* parse_term(char* line) {
         }
 
         action VAL {
-            bel_ast_node* top = stack_peek(arg_stack);
+            bel_ast_node* arg_top = stack_peek(arg_stack);
             if (!current_nv) {
                 current_nv = bel_new_ast_node_token(TOKEN_NV);
                 current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, "");
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
-                top->token->left = current_nv;
+                arg_top->token->left = current_nv;
 
                 next_arg = bel_new_ast_node_token(TOKEN_ARG);
-                top->token->right = next_arg;
+                arg_top->token->right = next_arg;
                 stack_push(arg_stack, *next_arg);
             } else {
                 current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
@@ -319,11 +337,14 @@ bel_ast* parse_term(char* line) {
         arguments :=
             (
                 (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL |
-                FUNCTION >fxc $fxn %FX O_PAREN @FCALL C_PAREN
+                FUNCTION >fxc $fxn %NESTED_FX O_PAREN @FCALL C_PAREN
             )
             (
                 SP* ',' SP*
-                (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL
+                (
+                    (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL |
+                    FUNCTION >fxc $fxn %NESTED_FX O_PAREN @FCALL C_PAREN
+                )
             )*
             C_PAREN? @FRET;
 
