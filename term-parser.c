@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        bel_print_ast_flat(tree);
+        bel_print_ast(tree);
         bel_free_ast(tree);
     }
     fclose(input);

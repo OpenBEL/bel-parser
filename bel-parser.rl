@@ -114,58 +114,20 @@ void bel_free_ast(bel_ast* ast) {
 };
 
 void bel_free_ast_node(bel_ast_node* node) {
-    if (node->type_info->type == TOKEN && node->token->ttype != TOKEN_NIL) {
-        bel_free_ast_node(node->token->left);
-        bel_free_ast_node(node->token->right);
+    if (node->type_info->type == TOKEN) {
+        if (node->token->left != NULL) {
+            bel_free_ast_node(node->token->left);
+        }
+        if (node->token->right != NULL) {
+            bel_free_ast_node(node->token->right);
+        }
     }
     free(node);
 };
 
-void bel_print_ast_node(bel_ast_node* node) {
-    if (!node) {
-        return;
-    }
-
-    switch(node->type_info->type) {
-    case TOKEN:
-        switch(node->type_info->ttype) {
-            case TOKEN_ARG:
-                fprintf(stdout, "ARG\n");
-                break;
-            case TOKEN_NIL:
-                fprintf(stdout, "NIL\n");
-                break;
-            case TOKEN_NV:
-                fprintf(stdout, "NV\n");
-                break;
-            case TOKEN_TERM:
-                fprintf(stdout, "TERM\n");
-                break;
-        }
-        bel_print_ast_node(node->token->left);
-        bel_print_ast_node(node->token->right);
-        break;
-    case VALUE:
-        switch(node->type_info->vtype) {
-            case VALUE_FX:
-                fprintf(stdout, "fx(%s)\n", node->value->value);
-                break;
-            case VALUE_NIL:
-                fprintf(stdout, "nil(%s)\n", node->value->value);
-                break;
-            case VALUE_PFX:
-                fprintf(stdout, "pfx(%s)\n", node->value->value);
-                break;
-            case VALUE_VAL:
-                fprintf(stdout, "val(%s)\n", node->value->value);
-                break;
-        }
-        break;
-    }
-};
-
-void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string) {
-    if (!node) {
+void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
+    if (node == NULL) {
+        strcat(tree_flat_string, "NULL ");
         return;
     }
 
@@ -176,9 +138,6 @@ void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string) {
                 case TOKEN_ARG:
                     strcat(tree_flat_string, "ARG ");
                     break;
-                case TOKEN_NIL:
-                    strcat(tree_flat_string, "NIL ");
-                    break;
                 case TOKEN_NV:
                     strcat(tree_flat_string, "NV ");
                     break;
@@ -186,17 +145,13 @@ void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string) {
                     strcat(tree_flat_string, "TERM ");
                     break;
             };
-            bel_print_ast_node_flat(node->token->left, tree_flat_string);
-            bel_print_ast_node_flat(node->token->right, tree_flat_string);
+            bel_print_ast_node(node->token->left, tree_flat_string);
+            bel_print_ast_node(node->token->right, tree_flat_string);
             break;
         case VALUE:
             switch(node->type_info->vtype) {
                 case VALUE_FX:
                     sprintf(val, "fx(%s) ", node->value->value);
-                    strcat(tree_flat_string, val);
-                    break;
-                case VALUE_NIL:
-                    sprintf(val, "nil(%s) ", node->value->value);
                     strcat(tree_flat_string, val);
                     break;
                 case VALUE_PFX:
@@ -216,29 +171,21 @@ void bel_print_ast(bel_ast* ast) {
     if (!ast) {
         return;
     }
-    bel_print_ast_node(ast->root);
-    fprintf(stdout, "\n");
-};
-
-void bel_print_ast_flat(bel_ast* ast) {
-    if (!ast) {
-        return;
-    }
 
     char tree_flat_string[1024];
     memset(tree_flat_string, '\0', 1024);
-    bel_print_ast_node_flat(ast->root, tree_flat_string);
+    bel_print_ast_node(ast->root, tree_flat_string);
     fprintf(stdout, "%s\n", tree_flat_string);
 };
 
-char* bel_ast_flat_string(bel_ast* ast) {
+char* bel_ast_as_string(bel_ast* ast) {
     if (!ast) {
         return NULL;
     }
 
     char tree_flat_string[1024];
     memset(tree_flat_string, '\0', 1024);
-    bel_print_ast_node_flat(ast->root, tree_flat_string);
+    bel_print_ast_node(ast->root, tree_flat_string);
     return tree_flat_string;
 };
 
@@ -272,10 +219,12 @@ bel_ast* parse_term(char* line) {
     current_nv   = NULL;
     arg          = NULL;
     next_arg     = NULL;
-    ast          = bel_new_ast();
     arg_stack    = stack_init(ARG_STACK_SIZE);
     function     = malloc(sizeof(char) * VALUE_SIZE);
     value        = malloc(sizeof(char) * VALUE_SIZE);
+    current_term = bel_new_ast_node_token(TOKEN_TERM);
+    ast          = bel_new_ast();
+    ast->root    = current_term;
     fi           = 0;
     vi           = 0;
 
@@ -302,18 +251,10 @@ bel_ast* parse_term(char* line) {
         }
 
         action FX {
-            current_term = bel_new_ast_node_token(TOKEN_TERM);
             current_term->token->left = bel_new_ast_node_value(VALUE_FX, function);
-
-            // Set term as AST root; on first term
-            if (!ast->root) {
-                ast->root = current_term;
-            }
 
             // Create Nil argument as a placeholder; add to stack
             arg = bel_new_ast_node_token(TOKEN_ARG);
-            arg->token->left  = bel_new_ast_node_token(TOKEN_NIL);
-            arg->token->right = bel_new_ast_node_token(TOKEN_NIL);
             stack_push(arg_stack, *arg);
 
             // Set as term argument
@@ -331,8 +272,6 @@ bel_ast* parse_term(char* line) {
             top->token->left = current_nv;
 
             next_arg = bel_new_ast_node_token(TOKEN_ARG);
-            next_arg->token->left  = bel_new_ast_node_token(TOKEN_NIL);
-            next_arg->token->right = bel_new_ast_node_token(TOKEN_NIL);
             top->token->right = next_arg;
             stack_push(arg_stack, *next_arg);
 
@@ -349,8 +288,6 @@ bel_ast* parse_term(char* line) {
                 top->token->left = current_nv;
 
                 next_arg = bel_new_ast_node_token(TOKEN_ARG);
-                next_arg->token->left  = bel_new_ast_node_token(TOKEN_NIL);
-                next_arg->token->right = bel_new_ast_node_token(TOKEN_NIL);
                 top->token->right = next_arg;
                 stack_push(arg_stack, *next_arg);
             } else {

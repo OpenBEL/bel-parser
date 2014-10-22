@@ -16,15 +16,13 @@ typedef enum {
 typedef enum {
     TOKEN_TERM,
     TOKEN_ARG,
-    TOKEN_NV,
-    TOKEN_NIL
+    TOKEN_NV
 } bel_ast_token_type;
 
 typedef enum {
     VALUE_FX,
     VALUE_PFX,
-    VALUE_VAL,
-    VALUE_NIL
+    VALUE_VAL
 } bel_ast_value_type;
 
 typedef struct {
@@ -93,15 +91,11 @@ void bel_free_ast_node(bel_ast_node* node);
 
 void bel_free_ast(bel_ast* ast);
 
-void bel_print_ast_node(bel_ast_node* node);
-
-void bel_print_ast_node_flat(bel_ast_node* node, char* tree_flat_string);
+void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string);
 
 void bel_print_ast(bel_ast* ast);
 
-void bel_print_ast_flat(bel_ast* ast);
-
-char* bel_ast_flat_string(bel_ast* ast);
+char* bel_ast_as_string(bel_ast* ast);
 
 bel_ast* parse_term(char* line);
 
