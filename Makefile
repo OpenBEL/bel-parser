@@ -7,14 +7,17 @@ TEST_LIBS=-lcheck
 all:           clean main test
 
 main:          bel-parser.o
-	       $(CC) $(CFLAGS) bel-parser.o term-parser.c -o term-parser
+	       $(CC) $(CFLAGS) bel-ast.o bel-parser.o term-parser.c -o term-parser
 
 test:          bel-parser.o tests.o
-	       $(CC) $(CFLAGS) -o run-tests bel-parser.o tests.o $(TEST_LIBS)
+	       $(CC) $(CFLAGS) -o run-tests bel-ast.o bel-parser.o tests.o $(TEST_LIBS)
 	       CK_VERBOSITY=verbose ./run-tests
 
-bel-parser.o:  ragel
-	       $(CC) $(CFLAGS) -c bel-parser.c
+bel-parser.o:  bel-ast.o ragel
+	       $(CC) $(CFLAGS) bel-ast.o -c bel-parser.c
+
+bel-ast.o:
+	       $(CC) $(CFLAGS) -c bel-ast.c
 
 ragel:
 	       ragel $(RAGEL_OPTS) bel-parser.rl -o bel-parser.c
