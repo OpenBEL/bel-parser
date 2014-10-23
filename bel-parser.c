@@ -12,10 +12,25 @@ int main(int argc, char *argv[]) {
     FILE *input;
     int len;
     char line[LINE_CHAR_LEN];
+    int type;
 
     if (argc == 2) {
-        input = fopen(argv[1], "rb");
+        type = 0;
+        if (strcmp(argv[1], "la") == 0) {
+            type = 1;
+            input = stdin;
+        } else {
+            input = fopen(argv[1], "rb");
+        }
+    } else if (argc == 3) {
+        if (strcmp(argv[1], "la") == 0) {
+            type = 1;
+        } else {
+            type = 0;
+        }
+        input = fopen(argv[2], "rb");
     } else {
+        type = 0;
         input = stdin;
     }
 
@@ -29,6 +44,9 @@ int main(int argc, char *argv[]) {
         verbose = 1;
     }
 
+    if (argc > 1) {
+    }
+
     while (fgets(line, LINE_CHAR_LEN, input) != NULL) {
         len = strlen(line);
         if (line[len - 1] == '\n') {
@@ -39,17 +57,26 @@ int main(int argc, char *argv[]) {
             fprintf(stdout, "parsing line -> %s\n", line);
         }
 
-        bel_ast* tree = parse_term(line);
+        if (type == 0) {
+            if (verbose) {
+                fprintf(stdout, "using default term parser\n");
+            }
+            bel_ast* tree = parse_term(line);
 
-        if (!tree->root) {
-            fprintf(stderr, "parse failed\n");
-            exit(1);
-        }
+            if (!tree->root) {
+                fprintf(stderr, "parse failed\n");
+            }
 
-        if (print) {
-            bel_print_ast(tree);
+            if (print) {
+                bel_print_ast(tree);
+            }
+            bel_free_ast(tree);
+        } else if (type == 1) {
+            if (verbose) {
+                fprintf(stdout, "using lookahead term parser\n");
+            }
+            parse_term_lookahead(line);
         }
-        bel_free_ast(tree);
     }
     fclose(input);
     return 0;

@@ -5,5 +5,6 @@
 tests
 bel-parser
 parse-term.c
+parse-term-lookahead.c
 bel-parser.c
 tests.c
