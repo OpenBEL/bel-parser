@@ -20,6 +20,22 @@ typedef struct {
     char           *value;
 } bel_token;
 
+bel_token* bel_new_token(bel_token_type type, char* input, int ts, int te) {
+    bel_token *new_token;
+    int       length;
+    char      *copy_input;
+
+    new_token = malloc(sizeof(bel_token));
+    new_token->type = type;
+
+    length = te - ts;
+    copy_input = malloc(length + 1);
+    strncpy(copy_input, input, length);
+
+    new_token->value = copy_input;
+    return new_token;
+};
+
 %%{
     machine set;
     write data;
@@ -37,14 +53,13 @@ bel_token* parse_term_lookahead(char* line) {
     char            *value;
     int             fi;
     int             vi;
-    bel_token       *tokens;
+    bel_token       *tokens[256];
 
     p            = line;
     pe           = line + strlen(line);
     eof          = pe;
     top          = 0;
     value        = malloc(sizeof(char) * VALUE_CHAR_LEN);
-    tokens       = malloc(sizeof(bel_token) * 256);
     fi           = 0;
     vi           = 0;
 
@@ -59,18 +74,22 @@ bel_token* parse_term_lookahead(char* line) {
         SPACES       = [ ]+;
         STRING       = '"' ('\\\"' | [^"])* '"';
 
-        action STATE {
-            fprintf(stdout, "state: %d\n", fcurs);
-        }
+        action IDENT   { bel_new_token(IDENT, p, ts, te);   }
+        action STRING  { bel_new_token(STRING, p, ts, te);  }
+        action O_PAREN { bel_new_token(O_PAREN, p, ts, te); }
+        action C_PAREN { bel_new_token(C_PAREN, p, ts, te); }
+        action COLON   { bel_new_token(COLON, p, ts, te);   }
+        action COMMA   { bel_new_token(COMMA, p, ts, te);   }
+        action SPACES  { bel_new_token(SPACES, p, ts, te);  }
 
         term := |*
-            IDENT    => { fprintf(stdout, "IDENT\n");   };
-            STRING   => { fprintf(stdout, "STRING\n");  };
-            O_PAREN  => { fprintf(stdout, "O_PAREN\n"); };
-            C_PAREN  => { fprintf(stdout, "C_PAREN\n"); };
-            COLON    => { fprintf(stdout, "COLON\n");   };
-            COMMA    => { fprintf(stdout, "COMMA\n");   };
-            SPACES   => { fprintf(stdout, "SPACES\n");  };
+            IDENT    => IDENT;
+            STRING   => STRING;
+            O_PAREN  => O_PAREN;
+            C_PAREN  => C_PAREN;
+            COLON    => COLON;
+            COMMA    => COMMA;
+            SPACES   => SPACES;
         *|;
 
         # Initialize and execute.
