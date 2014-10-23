@@ -4,7 +4,7 @@
 #include "bel-node-stack.h"
 
 bel_node_stack* stack_init(int max) {
-    bel_node_stack*  stack = (bel_node_stack *) malloc(sizeof(int) *2 + sizeof(bel_ast_node) * max );
+    bel_node_stack*  stack = malloc(sizeof(int) *2 + sizeof(bel_ast_node) * max );
     bel_ast_node*    contents[max];
 
     if (contents == NULL) {
