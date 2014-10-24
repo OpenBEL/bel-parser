@@ -45,7 +45,7 @@ void stack_push(bel_node_stack* stack, bel_ast_node* node) {
 bel_ast_node* stack_pop(bel_node_stack* stack) {
     if (stack_is_empty(stack)) {
         fprintf(stderr, "Stack is empty, cannot pop\n");
-        return;
+        return NULL;
     }
 
     bel_ast_node* (*nodes)[] = &stack->contents;

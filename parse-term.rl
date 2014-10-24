@@ -3,7 +3,18 @@
 #include <stdio.h>
 #include "bel-ast.h"
 #include "bel-node-stack.h"
-#include "bel-parser.h"
+
+/*
+ * Value size: The maximum number of characters to hold in an
+ * accumulated value.
+ */
+#define VALUE_CHAR_LEN 512
+
+/*
+ * Term stack size: A value of 20 allows for a nesting of
+ * a max of 20 terms.
+ */
+#define TERM_STACK_SIZE 20
 
 %%{
     machine set;
@@ -187,3 +198,4 @@ bel_ast* parse_term(char* line) {
     return ast;
 };
 // vim: ft=c sw=4 ts=4 sts=4 expandtab
+

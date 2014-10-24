@@ -135,8 +135,8 @@ char* bel_ast_as_string(bel_ast* ast) {
         return NULL;
     }
 
-    char tree_flat_string[1024 * 32];
-    memset(tree_flat_string, '\0', 1024 * 32);
+    char *tree_flat_string;
+    tree_flat_string = calloc(1024 * 32, 1);
     bel_print_ast_node(ast->root, tree_flat_string);
     return tree_flat_string;
 };

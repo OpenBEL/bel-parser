@@ -16,14 +16,14 @@ int main(int argc, char *argv[]) {
 
     if (argc == 2) {
         type = 0;
-        if (strcmp(argv[1], "la") == 0) {
+        if (strcmp(argv[1], "tk") == 0) {
             type = 1;
             input = stdin;
         } else {
             input = fopen(argv[1], "rb");
         }
     } else if (argc == 3) {
-        if (strcmp(argv[1], "la") == 0) {
+        if (strcmp(argv[1], "tk") == 0) {
             type = 1;
         } else {
             type = 0;
@@ -75,7 +75,9 @@ int main(int argc, char *argv[]) {
             if (verbose) {
                 fprintf(stdout, "using lookahead term parser\n");
             }
-            parse_term_lookahead(line);
+            bel_token_list* token_list = tokenize_term(line);
+            bel_print_token_list(token_list);
+            free_bel_token_list(token_list);
         }
     }
     fclose(input);

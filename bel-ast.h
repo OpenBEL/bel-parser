@@ -31,9 +31,9 @@ typedef struct bel_ast_node_value bel_ast_node_value;
 
 typedef struct {
     union {
-    bel_ast_node_type_info* type_info;
-    bel_ast_node_token*    token;
-    bel_ast_node_value*    value;
+        bel_ast_node_type_info* type_info;
+        bel_ast_node_token*    token;
+        bel_ast_node_value*    value;
     };
 } bel_ast_node;
 
