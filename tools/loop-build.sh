@@ -11,7 +11,7 @@ inotifywait -m -e modify . | while read line; do
     FILE="${RET[@]:2}"
 
     case "$FILE" in
-        *.rl|*.h|bel-ast.c|bel-node-stack.c|bel-parser.c|term-test.c|Makefile)
+        *.rl|*.h|bel-ast.c|bel-node-stack.c|bel-parser.c|bel-token.c|term-test.c|Makefile)
             RESULT=$(make clean all 2>&1)
             if [ $? -ne 0 ]; then
                 LAST=$(echo -e "$RESULT" | tail -n1)
