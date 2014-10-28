@@ -8,3 +8,4 @@ parse-term.c
 tokenize-term.c
 bel-parser.c
 tests.c
+libBEL.so
