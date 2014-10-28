@@ -6,15 +6,17 @@
 bel_token* bel_new_token(bel_token_type type, char* input, char* ts, char* te) {
     bel_token *new_token;
     int       length;
-    char      *copy_input;
+    char      *match_copy;
 
     new_token = malloc(sizeof(bel_token));
     new_token->type = type;
+    new_token->pos_start = ts - input;
+    new_token->pos_end   = te - input;
 
     length = te - ts;
-    copy_input = malloc(length + 1);
-    strncpy(copy_input, ts, length);
-    new_token->value = copy_input;
+    match_copy = malloc(length + 1);
+    strncpy(match_copy, ts, length);
+    new_token->value = match_copy;
     return new_token;
 };
 
@@ -33,25 +35,25 @@ void bel_print_token_list(bel_token_list* token_list) {
 	next = &tokens[token_i];
 	switch(next->type) {
 	    case IDENT:
-		fprintf(stdout, "IDENT(%s) ", next->value);
+		fprintf(stdout, "IDENT(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
 		break;
 	    case STRING:
-		fprintf(stdout, "STRING(%s) ", next->value);
+		fprintf(stdout, "STRING(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
 		break;
 	    case O_PAREN:
-		fprintf(stdout, "O_PAREN(%s) ", next->value);
+		fprintf(stdout, "O_PAREN(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
 		break;
 	    case C_PAREN:
-		fprintf(stdout, "C_PAREN(%s) ", next->value);
+		fprintf(stdout, "C_PAREN(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
 		break;
 	    case COLON:
-		fprintf(stdout, "COLON(%s) ", next->value);
+		fprintf(stdout, "COLON(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
 		break;
 	    case COMMA:
-		fprintf(stdout, "COMMA(%s) ", next->value);
+		fprintf(stdout, "COMMA(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
 		break;
 	    case SPACES:
-		fprintf(stdout, "SPACES(%s) ", next->value);
+		fprintf(stdout, "SPACES(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
 		break;
 	};
     }

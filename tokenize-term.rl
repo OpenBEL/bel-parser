@@ -39,31 +39,31 @@ bel_token_list* tokenize_term(char* line) {
         STRING       = '"' ('\\\"' | [^"])* '"';
 
         action IDENT   {
-            new_token = bel_new_token(IDENT, p, ts, te);
+            new_token = bel_new_token(IDENT, line, ts, te);
             tokens[token_i++] = *new_token;
         }
         action STRING  {
-            new_token = bel_new_token(STRING, p, ts, te);
+            new_token = bel_new_token(STRING, line, ts, te);
             tokens[token_i++] = *new_token;
         }
         action O_PAREN {
-            new_token = bel_new_token(O_PAREN, p, ts, te);
+            new_token = bel_new_token(O_PAREN, line, ts, te);
             tokens[token_i++] = *new_token;
         }
         action C_PAREN {
-            new_token = bel_new_token(C_PAREN, p, ts, te);
+            new_token = bel_new_token(C_PAREN, line, ts, te);
             tokens[token_i++] = *new_token;
         }
         action COLON   {
-            new_token = bel_new_token(COLON, p, ts, te);
+            new_token = bel_new_token(COLON, line, ts, te);
             tokens[token_i++] = *new_token;
         }
         action COMMA   {
-            new_token = bel_new_token(COMMA, p, ts, te);
+            new_token = bel_new_token(COMMA, line, ts, te);
             tokens[token_i++] = *new_token;
         }
         action SPACES  {
-            new_token = bel_new_token(SPACES, p, ts, te);
+            new_token = bel_new_token(SPACES, line, ts, te);
             tokens[token_i++] = *new_token;
         }
 

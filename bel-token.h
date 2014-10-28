@@ -16,6 +16,8 @@ typedef enum {
 
 typedef struct {
     bel_token_type type;
+    int            pos_start;
+    int            pos_end;
     char           *value;
 } bel_token;
 
