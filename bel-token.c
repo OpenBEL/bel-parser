@@ -16,6 +16,7 @@ bel_token* bel_new_token(bel_token_type type, char* input, char* ts, char* te) {
     length = te - ts;
     match_copy = malloc(length + 1);
     strncpy(match_copy, ts, length);
+    match_copy[length] = '\0';
     new_token->value = match_copy;
     return new_token;
 };
