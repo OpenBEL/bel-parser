@@ -28,6 +28,8 @@ typedef struct {
 
 bel_token* bel_new_token(bel_token_type type, char* input, char* ts, char* te);
 
+bel_token_list* bel_new_token_list(int length);
+
 void bel_print_token_list(bel_token_list* token_list);
 
 void free_bel_token(bel_token* token);

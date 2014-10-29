@@ -21,6 +21,14 @@ bel_token* bel_new_token(bel_token_type type, char* input, char* ts, char* te) {
     return new_token;
 };
 
+bel_token_list* bel_new_token_list(int length) {
+    bel_token_list       *list;
+    list               = malloc(sizeof(bel_token_list));
+    list->length       = length;
+    list->tokens       = calloc(length, sizeof(bel_token));
+    return list;
+};
+
 void bel_print_token_list(bel_token_list* token_list) {
     bel_token *tokens;
     bel_token *next;

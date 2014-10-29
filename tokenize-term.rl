@@ -25,9 +25,8 @@ bel_token_list* tokenize_term(char* line) {
     pe                 = line + strlen(line);
     eof                = pe;
     token_i            = 0;
-    token_list         = malloc(sizeof(bel_token_list));
-    tokens             = calloc(256, sizeof(bel_token));
-    token_list->tokens = tokens;
+    token_list         = bel_new_token_list(256);
+    tokens             = token_list->tokens;
 
     %%{
         C_PAREN      = ')';
