@@ -1,7 +1,6 @@
 *.o
 *.png
 *.bel
-*.rb
 tests
 bel-parser
 parse-term.c
