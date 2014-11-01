@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
             if (verbose) {
                 fprintf(stdout, "using default term parser\n");
             }
-            bel_ast* tree = parse_term(line);
+            bel_ast* tree = bel_parse_term(line);
 
             if (!tree->root) {
                 fprintf(stderr, "parse failed\n");
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
             if (verbose) {
                 fprintf(stdout, "using lookahead term parser\n");
             }
-            bel_token_list* token_list = tokenize_term(line);
+            bel_token_list* token_list = bel_tokenize_term(line);
             bel_print_token_list(token_list);
             free_bel_token_list(token_list);
         }

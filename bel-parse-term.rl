@@ -21,7 +21,7 @@
     write data;
 }%%
 
-bel_ast* parse_term(char* line) {
+bel_ast* bel_parse_term(char* line) {
     int             cs;
     char            *p;
     char            *pe;

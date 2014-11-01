@@ -8,7 +8,7 @@
     write data;
 }%%
 
-bel_token_list* tokenize_term(char* line) {
+bel_token_list* bel_tokenize_term(char* line) {
     int                  cs;
     char                 *p;
     char                 *pe;
