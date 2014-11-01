@@ -3,8 +3,8 @@
 *.bel
 tests
 bel-parser
-parse-term.c
-tokenize-term.c
 bel-parser.c
+bel-parse-term.c
+bel-tokenize-term.c
 tests.c
 libBEL.so
