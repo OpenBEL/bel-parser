@@ -29,6 +29,78 @@ bel_token_list* bel_new_token_list(int length) {
     return list;
 };
 
+bel_token_iterator* bel_new_token_iterator(bel_token_list *list) {
+    bel_token_iterator *iterator;
+    bel_token *tokens;
+
+    if (!list) {
+        return NULL;
+    }
+
+    tokens  = list->tokens;
+
+    iterator = malloc(sizeof(bel_token_iterator));
+    iterator->index         = 0;
+    iterator->list          = list;
+    iterator->current_token = &tokens[0];
+    return iterator;
+};
+
+bel_token* bel_token_iterator_get(bel_token_iterator *iterator) {
+    if (!iterator) {
+	return NULL;
+    }
+    return iterator->current_token;
+};
+
+void bel_token_iterator_next(bel_token_iterator *iterator) {
+    if (!iterator || !iterator->list) {
+	return;
+    }
+
+    bel_token *tokens;
+
+    tokens = iterator->list->tokens;
+    iterator->current_token = &tokens[++iterator->index];
+};
+
+int bel_token_iterator_end(bel_token_iterator *iterator) {
+    if (!iterator || !(iterator->list)) {
+	return 1;
+    }
+    return (iterator->index < iterator->list->length) ? 0 : 1;
+};
+
+void bel_print_token(bel_token* token) {
+    if (!token) {
+	return;
+    }
+
+    switch(token->type) {
+	case IDENT:
+	    fprintf(stdout, "IDENT(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+	    break;
+	case STRING:
+	    fprintf(stdout, "STRING(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+	    break;
+	case O_PAREN:
+	    fprintf(stdout, "O_PAREN(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+	    break;
+	case C_PAREN:
+	    fprintf(stdout, "C_PAREN(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+	    break;
+	case COLON:
+	    fprintf(stdout, "COLON(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+	    break;
+	case COMMA:
+	    fprintf(stdout, "COMMA(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+	    break;
+	case SPACES:
+	    fprintf(stdout, "SPACES(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+	    break;
+    };
+};
+
 void bel_print_token_list(bel_token_list* token_list) {
     bel_token *tokens;
     bel_token *next;
@@ -42,29 +114,7 @@ void bel_print_token_list(bel_token_list* token_list) {
     int list_length = token_list->length;
     for (token_i = 0; token_i < list_length; token_i++) {
 	next = &tokens[token_i];
-	switch(next->type) {
-	    case IDENT:
-		fprintf(stdout, "IDENT(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
-		break;
-	    case STRING:
-		fprintf(stdout, "STRING(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
-		break;
-	    case O_PAREN:
-		fprintf(stdout, "O_PAREN(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
-		break;
-	    case C_PAREN:
-		fprintf(stdout, "C_PAREN(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
-		break;
-	    case COLON:
-		fprintf(stdout, "COLON(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
-		break;
-	    case COMMA:
-		fprintf(stdout, "COMMA(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
-		break;
-	    case SPACES:
-		fprintf(stdout, "SPACES(\"%s\", %d, %d) ", next->value, next->pos_start, next->pos_end);
-		break;
-	};
+	bel_print_token(next);
     }
     fprintf(stdout, "\n");
 };
@@ -99,5 +149,12 @@ void free_bel_token_list(bel_token_list* token_list) {
 
     free(token_list->tokens);
     free(token_list);
+};
+
+void free_bel_token_iterator(bel_token_iterator *iterator) {
+    if (!iterator) {
+	return;
+    }
+    free(iterator);
 };
 
