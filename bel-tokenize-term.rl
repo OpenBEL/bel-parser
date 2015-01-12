@@ -14,7 +14,6 @@ bel_token_list* bel_tokenize_term(char* line) {
     char                 *pe;
     char                 *ts;
     char                 *te;
-    int                  act;
     char                 *eof;
     int                  token_i;
     bel_token_list       *token_list;
@@ -35,7 +34,7 @@ bel_token_list* bel_tokenize_term(char* line) {
         IDENT        = [a-zA-Z0-9_]+;
         O_PAREN      = '(';
         SPACES       = [ ]+;
-        STRING       = '"' ('\\\"' | [^"])* '"';
+        STRING       = '"' ('\\\"' | [^"])* '"'?;
 
         action IDENT   {
             new_token = bel_new_token(IDENT, line, ts, te);
