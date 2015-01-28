@@ -1,6 +1,7 @@
 *.o
 *.png
 *.bel
+*.ri
 tests
 bel-parser
 bel-parser.c
