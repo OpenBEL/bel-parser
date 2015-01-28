@@ -1,10 +1,14 @@
-term-parser
------------
+bel-parser
+----------
 
-Research work to create a unifed BEL parser in C.
+BEL parser using the [ragel state machine compiler](http://www.colm.net/open-source/ragel/). Written in C for speed.
 
-The goals are:
-- ~~iterative parsing~~
-- ~~yields AST (Abstract Syntax Tree) nodes~~
-- include line/character count for AST nodes
-- look-ahead matching
+*Capabilities*
+- Iterative parsing (e.g. no need to buffer large files)
+- AST output
+- Captures line and character offsets for AST nodes
+
+*Uses*
+- Parse BEL to AST
+- Syntax validation and error reporting
+- Semantic validation and error reporting
