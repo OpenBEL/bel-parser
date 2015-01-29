@@ -7,6 +7,10 @@ typedef enum {
 } bel_ast_node_type;
 
 typedef enum {
+    TOKEN_STATEMENT,
+    TOKEN_SUBJECT,
+    TOKEN_OBJECT,
+    TOKEN_REL,
     TOKEN_TERM,
     TOKEN_ARG,
     TOKEN_NV
@@ -14,6 +18,7 @@ typedef enum {
 
 typedef enum {
     VALUE_FX,
+    VALUE_REL,
     VALUE_PFX,
     VALUE_VAL
 } bel_ast_value_type;

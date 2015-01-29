@@ -6,18 +6,21 @@ TEST_LIBS=-lcheck
 
 all:                    clean lib main test
 
-lib:                    bel-parse-term.o bel-tokenize-term.o
-	                $(CC) -shared bel-ast.o bel-node-stack.o bel-token.o bel-parse-term.o bel-tokenize-term.o -o libBEL.so
+lib:                    bel-parse-term.o bel-parse-statement.o bel-tokenize-term.o
+	                $(CC) -shared bel-ast.o bel-node-stack.o bel-token.o bel-parse-term.o bel-parse-statement.o bel-tokenize-term.o -o libBEL.so
 
-main:                   bel-parse-term.o bel-tokenize-term.o
-	                $(CC) $(CFLAGS) bel-ast.o bel-node-stack.o bel-token.o bel-parse-term.o bel-tokenize-term.o bel-parser.c -o bel-parser
+main:                   bel-parse-term.o bel-parse-statement.o bel-tokenize-term.o
+	                $(CC) $(CFLAGS) bel-ast.o bel-node-stack.o bel-token.o bel-parse-term.o bel-parse-statement.o bel-tokenize-term.o bel-parser.c -o bel-parser
 
-test:                   bel-parse-term.o bel-tokenize-term.o tests.o
-	                $(CC) $(CFLAGS) -o tests bel-ast.o bel-node-stack.o bel-token.o bel-parse-term.o bel-tokenize-term.o tests.o $(TEST_LIBS)
+test:                   bel-parse-term.o bel-parse-statement.o bel-tokenize-term.o tests.o
+	                $(CC) $(CFLAGS) -o tests bel-ast.o bel-node-stack.o bel-token.o bel-parse-term.o bel-parse-statement.o bel-tokenize-term.o tests.o $(TEST_LIBS)
 	                CK_VERBOSITY=verbose ./tests
 
 bel-parse-term.o:       bel-ast.o bel-node-stack.o ragel
 	                $(CC) $(CFLAGS) -c bel-parse-term.c
+
+bel-parse-statement.o:  bel-ast.o bel-node-stack.o ragel
+	                $(CC) $(CFLAGS) -c bel-parse-statement.c
 
 bel-tokenize-term.o:    bel-token.o ragel
 	                $(CC) $(CFLAGS) -c bel-tokenize-term.c
@@ -33,6 +36,7 @@ bel-token.o:
 
 ragel:
 	                ragel $(RAGEL_OPTS) bel-parse-term.rl -o bel-parse-term.c
+	                ragel $(RAGEL_OPTS) bel-parse-statement.rl -o bel-parse-statement.c
 	                ragel $(RAGEL_OPTS) bel-tokenize-term.rl -o bel-tokenize-term.c
 
 tests.o:
@@ -40,7 +44,7 @@ tests.o:
 	                $(CC) $(CFLAGS) -c tests.c
 
 clean:
-	                rm -f bel-parse-term.c tests.c bel-ast.o bel-node-stack.o bel-token.o bel-parse-term.o bel-tokenize-term.o tests.o libBEL.so tests bel-parser
+	                rm -f bel-parse-term.c bel-parse-statement.c tests.c bel-ast.o bel-node-stack.o bel-token.o bel-parse-term.o bel-parse-statement.o bel-tokenize-term.o tests.o libBEL.so tests bel-parser
 
 check-ragel:
 	                ragel -v

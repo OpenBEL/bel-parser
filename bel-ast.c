@@ -141,6 +141,18 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
                 case TOKEN_TERM:
                     strcat(tree_flat_string, "TERM ");
                     break;
+				case TOKEN_SUBJECT:
+                    strcat(tree_flat_string, "SUBJECT ");
+                    break;
+				case TOKEN_REL:
+                    strcat(tree_flat_string, "REL ");
+                    break;
+				case TOKEN_OBJECT:
+                    strcat(tree_flat_string, "OBJECT ");
+                    break;
+                case TOKEN_STATEMENT:
+                    strcat(tree_flat_string, "STATEMENT ");
+                    break;
             };
             bel_print_ast_node(node->token->left, tree_flat_string);
             bel_print_ast_node(node->token->right, tree_flat_string);
@@ -148,28 +160,36 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
         case VALUE:
             switch(node->type_info->vtype) {
                 case VALUE_FX:
-		    if (node->value->value == NULL) {
-		        strcat(tree_flat_string, "fx((null)) ");
-		    } else {
-			sprintf(val, "fx(%s) ", node->value->value);
-			strcat(tree_flat_string, val);
-		    }
+					if (node->value->value == NULL) {
+						strcat(tree_flat_string, "fx((null)) ");
+					} else {
+						sprintf(val, "fx(%s) ", node->value->value);
+						strcat(tree_flat_string, val);
+					}
+                    break;
+                case VALUE_REL:
+					if (node->value->value == NULL) {
+						strcat(tree_flat_string, "rel((null)) ");
+					} else {
+						sprintf(val, "rel(%s) ", node->value->value);
+						strcat(tree_flat_string, val);
+					}
                     break;
                 case VALUE_PFX:
-		    if (node->value->value == NULL) {
-		        strcat(tree_flat_string, "pfx((null)) ");
-		    } else {
-			sprintf(val, "pfx(%s) ", node->value->value);
-			strcat(tree_flat_string, val);
-		    }
+					if (node->value->value == NULL) {
+						strcat(tree_flat_string, "pfx((null)) ");
+					} else {
+						sprintf(val, "pfx(%s) ", node->value->value);
+						strcat(tree_flat_string, val);
+					}
                     break;
                 case VALUE_VAL:
-		    if (node->value->value == NULL) {
-		        strcat(tree_flat_string, "val((null)) ");
-		    } else {
-			sprintf(val, "val(%s) ", node->value->value);
-			strcat(tree_flat_string, val);
-		    }
+					if (node->value->value == NULL) {
+						strcat(tree_flat_string, "val((null)) ");
+					} else {
+						sprintf(val, "val(%s) ", node->value->value);
+						strcat(tree_flat_string, val);
+					}
                     break;
             };
             break;

@@ -48,9 +48,10 @@ int main(int argc, char *argv[]) {
     }
 
     while (fgets(line, LINE_CHAR_LEN, input) != NULL) {
+        // force newline if statement ends with closed paren; aids parser
         len = strlen(line);
-        if (line[len - 1] == '\n') {
-            line[len - 1] = '\0';
+        if (line[len - 1] == ')') {
+            line[len - 1] = '\n';
         }
 
         if (verbose) {
@@ -59,9 +60,9 @@ int main(int argc, char *argv[]) {
 
         if (type == 0) {
             if (verbose) {
-                fprintf(stdout, "using default term parser\n");
+                fprintf(stdout, "using default statement parser\n");
             }
-            bel_ast* tree = bel_parse_term(line);
+            bel_ast* tree = bel_parse_statement(line);
 
             if (!tree->root) {
                 fprintf(stderr, "parse failed\n");

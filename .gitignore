@@ -6,6 +6,7 @@ tests
 bel-parser
 bel-parser.c
 bel-parse-term.c
+bel-parse-statement.c
 bel-tokenize-term.c
 tests.c
 libBEL.so
