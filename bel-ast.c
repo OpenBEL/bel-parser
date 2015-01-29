@@ -33,6 +33,63 @@ bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char* value) {
     return node;
 };
 
+bel_ast_node* bel_copy_ast_node(bel_ast_node* node) {
+	bel_ast_node* copy_node;
+    char* copy_value;
+
+    if (!node) {
+        return NULL;
+	}
+
+	copy_node = malloc(sizeof(bel_ast_node));
+
+    if (node->type_info->type == VALUE) {
+		if (node->value->value) {
+			copy_value = malloc(strlen(node->value->value) + 1);
+			strcpy(copy_value, node->value->value);
+		} else {
+			copy_value = NULL;
+		}
+
+		copy_node->value = malloc(sizeof(bel_ast_node_value));
+		copy_node->value->type  = node->value->type;
+		copy_node->value->vtype = node->value->vtype;
+		copy_node->value->value = copy_value;
+    } else {
+		copy_node->token = malloc(sizeof(bel_ast_node_token));
+		copy_node->token->type  = node->token->type;
+		copy_node->token->ttype = node->token->ttype;
+		copy_node->token->left  = bel_copy_ast_node(node->token->left);
+		copy_node->token->right = bel_copy_ast_node(node->token->right);
+	}
+
+	return copy_node;
+}
+
+bel_ast_node* bel_set_value(bel_ast_node* node, char* value) {
+    char* copy_value;
+
+    if (!node) {
+        // TODO Debug node error to stderr; node is NULL
+        return NULL;
+    }
+
+    if (node->type_info->type != VALUE) {
+        // TODO Debug node error to stderr; node cannot hold value
+        return NULL;
+    }
+
+    if (value) {
+        copy_value = malloc(strlen(value) + 1);
+        strcpy(copy_value, value);
+    } else {
+        copy_value = NULL;
+    }
+
+	node->value->value = copy_value;
+	return node;
+}
+
 bel_ast* bel_new_ast() {
     bel_ast* ast;
     ast = malloc(sizeof(bel_ast));
