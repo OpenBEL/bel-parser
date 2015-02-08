@@ -1,5 +1,6 @@
 /aux-dist
 /.deps
+/Makefile
 /Makefile.in
 /aclocal.m4
 /autom4te.cache/
@@ -9,7 +10,15 @@
 /configure.ac
 /libtool
 /m4
+/src/.deps
+/src/.libs 
+/src/Makefile
+/src/Makefile.in
+/src/belparser
 *.o
+*.lo
+*.la
+*.so
 *.png
 *.bel
 *.ri
@@ -20,4 +29,3 @@ bel-parse-term.c
 bel-parse-statement.c
 bel-tokenize-term.c
 tests.c
-libBEL.so
