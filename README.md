@@ -1,5 +1,5 @@
 libbel
-------
+======
 
 C library for BEL.
 
@@ -12,3 +12,14 @@ C library for BEL.
 - Parse BEL to AST
 - Syntax validation and error reporting
 - Semantic validation and error reporting
+
+*Building / Installing*
+
+```bash
+
+./autogen.sh
+./configure
+make
+make install
+
+```
