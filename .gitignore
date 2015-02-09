@@ -9,11 +9,12 @@
 /configure
 /libtool
 /m4
-/src/.deps
-/src/.libs 
 /src/Makefile
 /src/Makefile.in
 /src/belparser
+.deps
+.libs
+libbel.pc
 *.o
 *.lo
 *.la
