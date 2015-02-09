@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: BEL Library
+Description: API and tools for working with the BEL
+Version: @VERSION@
+Libs: -L${libdir} -lbel
+Cflags: -I${includedir}
