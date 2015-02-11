@@ -2,25 +2,25 @@
 #define _BEL_AST_H
 
 typedef enum {
-    TOKEN,
-    VALUE
+    BEL_TOKEN,
+    BEL_VALUE
 } bel_ast_node_type;
 
 typedef enum {
-    TOKEN_STATEMENT,
-    TOKEN_SUBJECT,
-    TOKEN_OBJECT,
-    TOKEN_REL,
-    TOKEN_TERM,
-    TOKEN_ARG,
-    TOKEN_NV
+    BEL_TOKEN_STATEMENT,
+    BEL_TOKEN_SUBJECT,
+    BEL_TOKEN_OBJECT,
+    BEL_TOKEN_REL,
+    BEL_TOKEN_TERM,
+    BEL_TOKEN_ARG,
+    BEL_TOKEN_NV
 } bel_ast_token_type;
 
 typedef enum {
-    VALUE_FX,
-    VALUE_REL,
-    VALUE_PFX,
-    VALUE_VAL
+    BEL_VALUE_FX,
+    BEL_VALUE_REL,
+    BEL_VALUE_PFX,
+    BEL_VALUE_VAL
 } bel_ast_value_type;
 
 typedef struct {

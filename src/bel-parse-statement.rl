@@ -8,7 +8,7 @@
  * Value size: The maximum number of characters to hold in an
  * accumulated value.
  */
-#define VALUE_CHAR_LEN 512
+#define BEL_VALUE_CHAR_LEN 512
 
 /*
  * Term stack size: A value of 20 allows for a nesting of
@@ -47,24 +47,24 @@ bel_ast* bel_parse_statement(char* line) {
     top          = 0;
     stack        = malloc(sizeof(int) * TERM_STACK_SIZE);
     current_nv   = NULL;
-    function     = malloc(sizeof(char) * VALUE_CHAR_LEN);
-    relationship = malloc(sizeof(char) * VALUE_CHAR_LEN);
-    value        = malloc(sizeof(char) * VALUE_CHAR_LEN);
+    function     = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
+    relationship = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
+    value        = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
     fi           = 0;
     ri           = 0;
     vi           = 0;
 
     term_stack   = stack_init(TERM_STACK_SIZE);
-    statement    = bel_new_ast_node_token(TOKEN_STATEMENT);
-    subject      = bel_new_ast_node_token(TOKEN_SUBJECT);
-    rel          = bel_new_ast_node_token(TOKEN_REL);
-    object       = bel_new_ast_node_token(TOKEN_OBJECT);
+    statement    = bel_new_ast_node_token(BEL_TOKEN_STATEMENT);
+    subject      = bel_new_ast_node_token(BEL_TOKEN_SUBJECT);
+    rel          = bel_new_ast_node_token(BEL_TOKEN_REL);
+    object       = bel_new_ast_node_token(BEL_TOKEN_OBJECT);
     ast          = bel_new_ast();
     ast->root    = statement;
 
-    memset(function, '\0', VALUE_CHAR_LEN);
-    memset(relationship, '\0', VALUE_CHAR_LEN);
-    memset(value, '\0', VALUE_CHAR_LEN);
+    memset(function, '\0', BEL_VALUE_CHAR_LEN);
+    memset(relationship, '\0', BEL_VALUE_CHAR_LEN);
+    memset(value, '\0', BEL_VALUE_CHAR_LEN);
 
     %%{
         action fxc {
@@ -93,18 +93,18 @@ bel_ast* bel_parse_statement(char* line) {
 
         action FX {
             term               = stack_peek(term_stack);
-            term->token->left  = bel_new_ast_node_value(VALUE_FX, function);
-            term->token->right = bel_new_ast_node_token(TOKEN_ARG);
+            term->token->left  = bel_new_ast_node_value(BEL_VALUE_FX, function);
+            term->token->right = bel_new_ast_node_token(BEL_TOKEN_ARG);
 
-            memset(function, '\0', VALUE_CHAR_LEN);
+            memset(function, '\0', BEL_VALUE_CHAR_LEN);
             fi = 0;
         }
 
         action REL {
-            rel->token->left = bel_new_ast_node_value(VALUE_REL, relationship);
+            rel->token->left = bel_new_ast_node_value(BEL_VALUE_REL, relationship);
             object->token->left = rel;
 
-            memset(relationship, '\0', VALUE_CHAR_LEN);
+            memset(relationship, '\0', BEL_VALUE_CHAR_LEN);
             ri = 0;
         }
 
@@ -118,18 +118,18 @@ bel_ast* bel_parse_statement(char* line) {
             }
 
             // create new nested term
-            term               = bel_new_ast_node_token(TOKEN_TERM);
-            term->token->left  = bel_new_ast_node_value(VALUE_FX, function);
-            term->token->right = bel_new_ast_node_token(TOKEN_ARG);
+            term               = bel_new_ast_node_token(BEL_TOKEN_TERM);
+            term->token->left  = bel_new_ast_node_value(BEL_VALUE_FX, function);
+            term->token->right = bel_new_ast_node_token(BEL_TOKEN_ARG);
             // set head term, left: new nested term, right: next arg
             arg->token->left   = term;
-            arg->token->right  = bel_new_ast_node_token(TOKEN_ARG);
+            arg->token->right  = bel_new_ast_node_token(BEL_TOKEN_ARG);
 
             // push new nested term onto stack
             stack_push(term_stack, term);
 
-            memset(function, '\0', VALUE_CHAR_LEN);
-            memset(value, '\0', VALUE_CHAR_LEN);
+            memset(function, '\0', BEL_VALUE_CHAR_LEN);
+            memset(value, '\0', BEL_VALUE_CHAR_LEN);
             fi = 0;
         }
 
@@ -142,13 +142,13 @@ bel_ast* bel_parse_statement(char* line) {
                 arg = arg->token->right;
             }
 
-            current_nv               = bel_new_ast_node_token(TOKEN_NV);
-            current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, value);
-            current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, NULL);
+            current_nv               = bel_new_ast_node_token(BEL_TOKEN_NV);
+            current_nv->token->left  = bel_new_ast_node_value(BEL_VALUE_PFX, value);
+            current_nv->token->right = bel_new_ast_node_value(BEL_VALUE_VAL, NULL);
             arg->token->left         = current_nv;
-            arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
+            arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
 
-            memset(value, '\0', VALUE_CHAR_LEN);
+            memset(value, '\0', BEL_VALUE_CHAR_LEN);
             vi = 0;
         }
 
@@ -162,17 +162,17 @@ bel_ast* bel_parse_statement(char* line) {
                     arg = arg->token->right;
                 }
 
-                current_nv               = bel_new_ast_node_token(TOKEN_NV);
-                current_nv->token->left  = bel_new_ast_node_value(VALUE_PFX, NULL);
-                current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
+                current_nv               = bel_new_ast_node_token(BEL_TOKEN_NV);
+                current_nv->token->left  = bel_new_ast_node_value(BEL_VALUE_PFX, NULL);
+                current_nv->token->right = bel_new_ast_node_value(BEL_VALUE_VAL, value);
                 arg->token->left         = current_nv;
-                arg->token->right        = bel_new_ast_node_token(TOKEN_ARG);
+                arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
             } else {
-                current_nv->token->right = bel_new_ast_node_value(VALUE_VAL, value);
+                current_nv->token->right = bel_new_ast_node_value(BEL_VALUE_VAL, value);
             }
 
             current_nv = 0;
-            memset(value, '\0', VALUE_CHAR_LEN);
+            memset(value, '\0', BEL_VALUE_CHAR_LEN);
             vi = 0;
         }
 
@@ -187,7 +187,7 @@ bel_ast* bel_parse_statement(char* line) {
 
         action CALL_TERM {
             fhold;
-            term = bel_new_ast_node_token(TOKEN_TERM);
+            term = bel_new_ast_node_token(BEL_TOKEN_TERM);
             term_stack->top = -1;
             stack_push(term_stack, term);
             fcall term;
