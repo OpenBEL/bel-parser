@@ -29,6 +29,7 @@ bel_ast* bel_parse_term(char* line) {
     int             *stack;
     bel_ast_node*   term;
     bel_ast_node*   current_nv;
+    bel_ast_node*   arg;
     bel_ast*        ast;
     bel_node_stack* term_stack;
     char            *function;
@@ -85,7 +86,7 @@ bel_ast* bel_parse_term(char* line) {
             bel_ast_node* term_top = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term_top->token->right;
+            arg = term_top->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }
@@ -110,7 +111,7 @@ bel_ast* bel_parse_term(char* line) {
             term = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term->token->right;
+            arg = term->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }
@@ -130,7 +131,7 @@ bel_ast* bel_parse_term(char* line) {
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
