@@ -217,7 +217,7 @@ bel_ast* bel_parse_statement(char* line) {
         STRING       = '"' ('\\\"' | [^"])* '"';
         IDENT        = [a-zA-Z0-9_];
         FUNCTION     = 'proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|'microRNAAbundance'|'m'|'geneAbundance'|'g'|'biologicalProcess'|'bp'|'pathology'|'path'|'complexAbundance'|'complex'|'translocation'|'tloc'|'cellSecretion'|'sec'|'cellSurfaceExpression'|'surf'|'reaction'|'rxn'|'compositeAbundance'|'composite'|'fusion'|'fus'|'degradation'|'deg'|'molecularActivity'|'act'|'catalyticActivity'|'cat'|'kinaseActivity'|'kin'|'phosphataseActivity'|'phos'|'peptidaseActivity'|'pep'|'ribosylationActivity'|'ribo'|'transcriptionalActivity'|'tscript'|'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|'substitution'|'sub'|'truncation'|'trunc'|'reactants'|'products'|'list';
-        RELATIONSHIP = 'increases'|'decreases'|'-|'|'directlyIncreases'|'=>'|'directlyDecreases'|'=|'|'causesNoChange'|'positiveCorrelation'|'negativeCorrelation'|'translatedTo'|'>>'|'transcribedTo'|':>'|'isA'|'subProcessOf'|'rateLimitingStepOf'|'biomarkerFor'|'prognosticBiomarkerFor'|'orthologous'|'analogous'|'association'|'--'|'hasMembers'|'hasComponents'|'hasMember'|'hasComponent';
+        RELATIONSHIP = 'increases'|'->'|'decreases'|'-|'|'directlyIncreases'|'=>'|'directlyDecreases'|'=|'|'causesNoChange'|'positiveCorrelation'|'negativeCorrelation'|'translatedTo'|'>>'|'transcribedTo'|':>'|'isA'|'subProcessOf'|'rateLimitingStepOf'|'biomarkerFor'|'prognosticBiomarkerFor'|'orthologous'|'analogous'|'association'|'--'|'hasMembers'|'hasComponents'|'hasMember'|'hasComponent';
 
         arguments :=
             (
