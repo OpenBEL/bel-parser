@@ -137,4 +137,13 @@
                 "TERM fx(rxn) ARG TERM fx(reactants) ARG TERM fx(a) ARG NV pfx(CHEBI) val(testosterone) ARG (null) (null) ARG TERM fx(p) ARG NV pfx(EGID) val(1666) ARG (null) (null) ARG TERM fx(p) ARG NV pfx(EGID) val(1666) ARG (null) (null) ARG TERM fx(p) ARG NV pfx(EGID) val(1666) ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(Oxygen) ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(Oxygen) ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(Oxygen) ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(\"H+\") ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(\"H+\") ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(\"H+\") ARG (null) (null) ARG (null) (null) ARG TERM fx(products) ARG TERM fx(a) ARG NV pfx(SCHEM) val(\"Estradiol-17beta\") ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(\"NADP+\") ARG (null) (null) ARG TERM fx(a) ARG NV pfx(CHEBI) val(formate) ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(H2O) ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(H2O) ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(H2O) ARG (null) (null) ARG TERM fx(a) ARG NV pfx(SCHEM) val(H2O) ARG (null) (null) ARG (null) (null) ARG (null) (null) ") == 0,
             "[bel_parse_term] failed to parse long term (e.g. rxn(reactants(a(CHEBI:testosterone),p(EGID:1666),p(EGID:1666),p(EGID:1666),a(SCHEM:Oxygen),a(SCHEM:Oxygen),a(SCHEM:Oxygen),a(SCHEM:\"H+\"),a(SCHEM:\"H+\"),a(SCHEM:\"H+\")),products(a(SCHEM:\"Estradiol-17beta\"),a(SCHEM:\"NADP+\"),a(CHEBI:formate),a(SCHEM:H2O),a(SCHEM:H2O),a(SCHEM:H2O),a(SCHEM:H2O))) )");
 
+#test supports_empty_statement
+    char line[LINE_CHAR_LEN] = "";
+
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(line)),
+            "STATEMENT (null) (null) ") == 0,
+        "[bel_parse_statement] failed to parse empty statement");
+
 // vim: ft=c sw=4 ts=4 sts=4 expandtab

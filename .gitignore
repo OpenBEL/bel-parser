@@ -21,4 +21,5 @@ libbel.pc
 *.bel
 *.ri
 tests/*.c
-tests/check_term
+tests/*.o
+tests/check_libbel
