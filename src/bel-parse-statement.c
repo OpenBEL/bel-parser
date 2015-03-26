@@ -1,19 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "libbel.h"
 #include "bel-ast.h"
 #include "bel-node-stack.h"
-
-/*
- * Value size: The maximum number of characters to hold in an
- * accumulated value.
- */
-#define BEL_VALUE_CHAR_LEN 512
-
-/*
- * Term stack size: Allows for a nesting of at most 32 terms.
- */
-#define TERM_STACK_SIZE 32
 
 static const int  set_start  = 1;
 static const int  set_first_final  = 37;
