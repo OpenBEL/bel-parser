@@ -11,10 +11,9 @@
 #define BEL_VALUE_CHAR_LEN 512
 
 /*
- * Term stack size: A value of 20 allows for a nesting of
- * a max of 20 terms.
+ * Term stack size: Allows for a nesting of at most 32 terms.
  */
-#define TERM_STACK_SIZE 20
+#define TERM_STACK_SIZE 32
 
 %%{
     machine set;
