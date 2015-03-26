@@ -71,14 +71,17 @@ bel_ast* bel_parse_statement(char* line) {
     %%{
         action fxc {
             fi = 0;
+            memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 
         action relc {
             ri = 0;
+            memset(relationship, '\0', BEL_VALUE_CHAR_LEN);
         }
 
         action valc {
             vi = 0;
+            memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
 
         action fxn {
@@ -97,17 +100,11 @@ bel_ast* bel_parse_statement(char* line) {
             term               = stack_peek(term_stack);
             term->token->left  = bel_new_ast_node_value(BEL_VALUE_FX, function);
             term->token->right = bel_new_ast_node_token(BEL_TOKEN_ARG);
-
-            memset(function, '\0', BEL_VALUE_CHAR_LEN);
-            fi = 0;
         }
 
         action REL {
             rel->token->left = bel_new_ast_node_value(BEL_VALUE_REL, relationship);
             object->token->left = rel;
-
-            memset(relationship, '\0', BEL_VALUE_CHAR_LEN);
-            ri = 0;
         }
 
         action NESTED_FX {
@@ -129,10 +126,6 @@ bel_ast* bel_parse_statement(char* line) {
 
             // push new nested term onto stack
             stack_push(term_stack, term);
-
-            memset(function, '\0', BEL_VALUE_CHAR_LEN);
-            memset(value, '\0', BEL_VALUE_CHAR_LEN);
-            fi = 0;
         }
 
         action PFX {
@@ -149,9 +142,6 @@ bel_ast* bel_parse_statement(char* line) {
             current_nv->token->right = bel_new_ast_node_value(BEL_VALUE_VAL, NULL);
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
-
-            memset(value, '\0', BEL_VALUE_CHAR_LEN);
-            vi = 0;
         }
 
         action VAL {
@@ -174,8 +164,6 @@ bel_ast* bel_parse_statement(char* line) {
             }
 
             current_nv = 0;
-            memset(value, '\0', BEL_VALUE_CHAR_LEN);
-            vi = 0;
         }
 
         action CALL_ARGUMENTS {
@@ -209,34 +197,37 @@ bel_ast* bel_parse_statement(char* line) {
             fret;
         }
 
-        SP           = ' ';
-        NL           = '\n' | '\r' '\n'?;
-        O_PAREN      = '(';
-        C_PAREN      = ')';
-        COLON        = ':';
-        STRING       = '"' ('\\\"' | [^"])* '"';
-        IDENT        = [a-zA-Z0-9_];
-        FUNCTION     = 'proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|'microRNAAbundance'|'m'|'geneAbundance'|'g'|'biologicalProcess'|'bp'|'pathology'|'path'|'complexAbundance'|'complex'|'translocation'|'tloc'|'cellSecretion'|'sec'|'cellSurfaceExpression'|'surf'|'reaction'|'rxn'|'compositeAbundance'|'composite'|'fusion'|'fus'|'degradation'|'deg'|'molecularActivity'|'act'|'catalyticActivity'|'cat'|'kinaseActivity'|'kin'|'phosphataseActivity'|'phos'|'peptidaseActivity'|'pep'|'ribosylationActivity'|'ribo'|'transcriptionalActivity'|'tscript'|'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|'substitution'|'sub'|'truncation'|'trunc'|'reactants'|'products'|'list';
-        RELATIONSHIP = 'increases'|'->'|'decreases'|'-|'|'directlyIncreases'|'=>'|'directlyDecreases'|'=|'|'causesNoChange'|'positiveCorrelation'|'negativeCorrelation'|'translatedTo'|'>>'|'transcribedTo'|':>'|'isA'|'subProcessOf'|'rateLimitingStepOf'|'biomarkerFor'|'prognosticBiomarkerFor'|'orthologous'|'analogous'|'association'|'--'|'hasMembers'|'hasComponents'|'hasMember'|'hasComponent';
+        SP               = ' ' | '\t';
+        NL               = '\n' | '\r' '\n'?;
+        O_PAREN          = '(';
+        C_PAREN          = ')';
+        COLON            = ':';
+
+        IDENT            = [a-zA-Z0-9_];
+        NON_SPACE        = [^ \t\n];
+
+        IDENT_TOKEN      = IDENT+;
+        NON_SPACED_TOKEN = NON_SPACE+;
+        STRING_TOKEN     = '"' ('\\\"' | [^"])* '"';
 
         arguments :=
             (
-                (IDENT+ >valc $valn ':')? @PFX (STRING|IDENT+) >valc $valn %VAL |
-                FUNCTION >fxc $fxn %NESTED_FX O_PAREN @CALL_ARGUMENTS
+                (IDENT_TOKEN >valc $valn ':')? @PFX (STRING_TOKEN|IDENT_TOKEN) >valc $valn %VAL |
+                IDENT_TOKEN  >fxc $fxn %NESTED_FX O_PAREN @CALL_ARGUMENTS
             )
             (
                 SP* ',' SP*
                 (
-                    (IDENT+ >valc $valn ':')? @PFX (STRING|IDENT+) >valc $valn %VAL |
-                    FUNCTION >fxc $fxn %NESTED_FX O_PAREN @CALL_ARGUMENTS
+                    (IDENT_TOKEN >valc $valn ':')? @PFX (STRING_TOKEN|IDENT_TOKEN) >valc $valn %VAL |
+                    IDENT_TOKEN  >fxc $fxn %NESTED_FX O_PAREN @CALL_ARGUMENTS
                 )
             )* C_PAREN @RET_ARGUMENTS;
 
         term :=
-            FUNCTION >fxc $fxn %FX O_PAREN >CALL_ARGUMENTS (SP+|NL) @RET_TERM;
+            IDENT_TOKEN >fxc $fxn %FX O_PAREN >CALL_ARGUMENTS (SP+|NL) @RET_TERM;
 
         statement :=
-            IDENT @CALL_TERM RELATIONSHIP >relc $reln @REL SP+ IDENT @CALL_TERM;
+            IDENT @CALL_TERM NON_SPACED_TOKEN >relc $reln @REL SP+ IDENT @CALL_TERM;
 
         # Initialize and execute.
         write init;

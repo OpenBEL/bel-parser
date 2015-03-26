@@ -59,10 +59,12 @@ bel_ast* bel_parse_term(char* line) {
     %%{
         action fxc {
             fi = 0;
+            memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 
         action valc {
             vi = 0;
+            memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
 
         action fxn {
@@ -77,9 +79,6 @@ bel_ast* bel_parse_term(char* line) {
             term               = stack_peek(term_stack);
             term->token->left  = bel_new_ast_node_value(BEL_VALUE_FX, function);
             term->token->right = bel_new_ast_node_token(BEL_TOKEN_ARG);
-
-            memset(function, '\0', BEL_VALUE_CHAR_LEN);
-            fi = 0;
         }
 
         action NESTED_FX {
@@ -101,10 +100,6 @@ bel_ast* bel_parse_term(char* line) {
 
             // push new nested term onto stack
             stack_push(term_stack, term);
-
-            memset(function, '\0', BEL_VALUE_CHAR_LEN);
-            memset(value, '\0', BEL_VALUE_CHAR_LEN);
-            fi = 0;
         }
 
         action PFX {
@@ -121,9 +116,6 @@ bel_ast* bel_parse_term(char* line) {
             current_nv->token->right = bel_new_ast_node_value(BEL_VALUE_VAL, NULL);
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
-
-            memset(value, '\0', BEL_VALUE_CHAR_LEN);
-            vi = 0;
         }
 
         action VAL {
@@ -146,8 +138,6 @@ bel_ast* bel_parse_term(char* line) {
             }
 
             current_nv = 0;
-            memset(value, '\0', BEL_VALUE_CHAR_LEN);
-            vi = 0;
         }
 
         action FCALL {
@@ -159,29 +149,29 @@ bel_ast* bel_parse_term(char* line) {
             fret;
         }
 
-        SP           = ' ';
+        SP           = ' ' | '\t';
         O_PAREN      = '(';
         C_PAREN      = ')';
         COLON        = ':';
-        IDENT        = [a-zA-Z0-9_]+;
-        STRING       = '"' ('\\\"' | [^"])* '"';
-        FUNCTION     = 'proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|'microRNAAbundance'|'m'|'geneAbundance'|'g'|'biologicalProcess'|'bp'|'pathology'|'path'|'complexAbundance'|'complex'|'translocation'|'tloc'|'cellSecretion'|'sec'|'cellSurfaceExpression'|'surf'|'reaction'|'rxn'|'compositeAbundance'|'composite'|'fusion'|'fus'|'degradation'|'deg'|'molecularActivity'|'act'|'catalyticActivity'|'cat'|'kinaseActivity'|'kin'|'phosphataseActivity'|'phos'|'peptidaseActivity'|'pep'|'ribosylationActivity'|'ribo'|'transcriptionalActivity'|'tscript'|'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|'substitution'|'sub'|'truncation'|'trunc'|'reactants'|'products'|'list';
+        IDENT        = [a-zA-Z0-9_];
+        IDENT_TOKEN  = IDENT+;
+        STRING_TOKEN = '"' ('\\\"' | [^"])* '"';
 
         arguments :=
             (
-                (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL |
-                FUNCTION >fxc $fxn %NESTED_FX O_PAREN @FCALL
+                (IDENT_TOKEN >valc $valn ':')? @PFX (STRING_TOKEN|IDENT_TOKEN) >valc $valn %VAL |
+                IDENT_TOKEN  >fxc $fxn %NESTED_FX O_PAREN @FCALL
             )
             (
                 SP* ',' SP*
                 (
-                    (IDENT >valc $valn ':')? @PFX (STRING|IDENT) >valc $valn %VAL |
-                    FUNCTION >fxc $fxn %NESTED_FX O_PAREN @FCALL
+                    (IDENT_TOKEN >valc $valn ':')? @PFX (STRING_TOKEN|IDENT_TOKEN) >valc $valn %VAL |
+                    IDENT_TOKEN  >fxc $fxn %NESTED_FX O_PAREN @FCALL
                 )
             )* C_PAREN @FRET;
 
         term :=
-            FUNCTION >fxc $fxn %FX O_PAREN @FCALL C_PAREN;
+            IDENT_TOKEN >fxc $fxn %FX O_PAREN @FCALL C_PAREN;
 
         # Initialize and execute.
         write init;
