@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <string.h>
-#include "bel-parser.h"
+#include "../src/bel-parser.h"
 
 #define LINE_CHAR_LEN 1024 * 32 // 32 kilobytes
 
 #test supports_empty_term
     char line[LINE_CHAR_LEN] = "";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(line)),
@@ -14,6 +15,7 @@
 
 #test supports_parameter_identifiers
     char line[LINE_CHAR_LEN] = "r(AFFX:100009_r_at)";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(line)),
@@ -22,6 +24,7 @@
 
 #test supports_parameter_strings
     char line[LINE_CHAR_LEN] = "bp(GOBP:\"apoptotic process\")";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(line)),
@@ -30,6 +33,7 @@
 
 #test supports_parameters_without_namespace
     char line[LINE_CHAR_LEN] = "p(AKT1)";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(line)),
@@ -38,6 +42,7 @@
 
 #test supports_parameters_with_namespace
     char line[LINE_CHAR_LEN] = "p(HGNC:AKT1)";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(line)),
@@ -46,20 +51,21 @@
 
 #test supports_parameters_single_char
     char term1[LINE_CHAR_LEN] = "r(MGI:a)";
+    char term2[LINE_CHAR_LEN] = "r(a)";
+    char term3[LINE_CHAR_LEN] = "pmod(P)";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term1)),
                 "TERM fx(r) ARG NV pfx(MGI) val(a) ARG (null) (null) ") == 0,
             "[bel_parse_term] failed to parse single character parameter (e.g. MGI:a)");
 
-    char term2[LINE_CHAR_LEN] = "r(a)";
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term2)),
                 "TERM fx(r) ARG NV pfx((null)) val(a) ARG (null) (null) ") == 0,
             "[bel_parse_term] failed to parse single character parameter (e.g. a)");
 
-    char term3[LINE_CHAR_LEN] = "pmod(P)";
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term3)),
@@ -68,6 +74,7 @@
 
 #test supports_long_parameters
     char term[LINE_CHAR_LEN] = "a(SCHEM:\"3,5,9-Trioxo-4-phosphaheptacosan-1-aminium, 7-(acetyloxy)-4-hydroxy-N,N,N-trimethyl-, hydroxide, inner salt, 4-oxide, (R)-\")";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term)),
@@ -77,13 +84,14 @@
 
 #test supports_multiple_parameters
     char term1[LINE_CHAR_LEN] = "p(AKT1, HGNC:AKT2, AKT3)";
+    char term2[LINE_CHAR_LEN] = "bp(GOBP:\"apoptotic process\", AFFX:\"AFFX-18SRNAMur/X00686_5_at\")";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term1)),
                 "TERM fx(p) ARG NV pfx((null)) val(AKT1) ARG NV pfx(HGNC) val(AKT2) ARG NV pfx((null)) val(AKT3) ARG (null) (null) ") == 0,
             "[bel_parse_term] failed to parse multiple parameters (e.g. AKT1, HGNC:AKT2, AKT3)");
 
-    char term2[LINE_CHAR_LEN] = "bp(GOBP:\"apoptotic process\", AFFX:\"AFFX-18SRNAMur/X00686_5_at\")";
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term2)),
@@ -92,27 +100,28 @@
 
 #test supports_nested_terms
     char term1[LINE_CHAR_LEN] = "cat(p(HGNC:AKT1))";
+    char term2[LINE_CHAR_LEN] = "p(HGNC:AKT1, pmod(P,S,317))";
+    char term3[LINE_CHAR_LEN] = "complex(p(HGNC:AKT1), p(HGNC:AKT2))";
+    char term4[LINE_CHAR_LEN] = "tloc(p(MGI:Slc2a4), GOCCID:0005737, GOCCID:0005886)";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term1)),
                 "TERM fx(cat) ARG TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) ARG (null) (null) ") == 0,
             "[bel_parse_term] failed to parse nested terms (e.g. cat(p(HGNC:AKT1)) )");
 
-    char term2[LINE_CHAR_LEN] = "p(HGNC:AKT1, pmod(P,S,317))";
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term2)),
                 "TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG TERM fx(pmod) ARG NV pfx((null)) val(P) ARG NV pfx((null)) val(S) ARG NV pfx((null)) val(317) ARG (null) (null) ARG (null) (null) ") == 0,
             "[bel_parse_term] failed to parse nested terms (e.g. p(HGNC:AKT1, pmod(P,S,317)) )");
 
-    char term3[LINE_CHAR_LEN] = "complex(p(HGNC:AKT1), p(HGNC:AKT2))";
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term3)),
                 "TERM fx(complex) ARG TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) ARG TERM fx(p) ARG NV pfx(HGNC) val(AKT2) ARG (null) (null) ARG (null) (null) ") == 0,
             "[bel_parse_term] failed to parse nested terms (e.g. p(HGNC:AKT1, pmod(P,S,317)) )");
 
-    char term4[LINE_CHAR_LEN] = "tloc(p(MGI:Slc2a4), GOCCID:0005737, GOCCID:0005886)";
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term4)),
@@ -121,6 +130,7 @@
 
 #test supports_long_terms
     char term1[LINE_CHAR_LEN] = "rxn(reactants(a(CHEBI:testosterone),p(EGID:1666),p(EGID:1666),p(EGID:1666),a(SCHEM:Oxygen),a(SCHEM:Oxygen),a(SCHEM:Oxygen),a(SCHEM:\"H+\"),a(SCHEM:\"H+\"),a(SCHEM:\"H+\")),products(a(SCHEM:\"Estradiol-17beta\"),a(SCHEM:\"NADP+\"),a(CHEBI:formate),a(SCHEM:H2O),a(SCHEM:H2O),a(SCHEM:H2O),a(SCHEM:H2O)))";
+
     fail_unless(
             strcmp(
                 bel_ast_as_string(bel_parse_term(term1)),

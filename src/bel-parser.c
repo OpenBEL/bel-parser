@@ -48,9 +48,6 @@ int main(int argc, char *argv[]) {
         verbose = 1;
     }
 
-    if (argc > 1) {
-    }
-
     while (fgets(line, LINE_CHAR_LEN, input) != NULL) {
         // force newline if statement ends with closed paren; aids parser
         len = strlen(line);
