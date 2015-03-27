@@ -148,6 +148,7 @@
     char nested_terms[LINE_CHAR_LEN]        = "catalyticActivity(proteinAbundance(PFH:\"ACSL Family\")) directlyIncreases reaction(reactants(abundance(SCHEM:\"Long-chain fatty acid\")),products(abundance(SCHEM:\"Long-chain fatty acyl CoA\")))";
     char nested_statement[LINE_CHAR_LEN]    = "gtp(p(PFH:\"RHO Family\")) increases (gtp(p(PFH:\"RAS Family\")) => kin(p(HGNC:RAF1)))";
     char nested_spacing[LINE_CHAR_LEN]      = "gtp(p(PFH:\"RHO Family\")) increases ( gtp(p(PFH:\"RAS Family\")) => kin(p(HGNC:RAF1)) )";
+    char multi_nested[LINE_CHAR_LEN]        = "p(HGNC:AKT1) => ( r(HGNC:AKT1) -> ( act(p(HGNC:AKARP7)) -| complex(SCOMP:\"AP-1 Complex\") ) )";
 
     fail_unless(
         strcmp(
@@ -204,5 +205,10 @@
             bel_ast_as_string(bel_parse_statement(nested_spacing)),
             "STATEMENT SUBJECT TERM fx(gtp) ARG TERM fx(p) ARG NV pfx(PFH) val(\"RHO Family\") ARG (null) (null) ARG (null) (null) (null) OBJECT REL rel(increases) (null) STATEMENT SUBJECT TERM fx(gtp) ARG TERM fx(p) ARG NV pfx(PFH) val(\"RAS Family\") ARG (null) (null) ARG (null) (null) (null) OBJECT REL rel(=>) (null) TERM fx(kin) ARG TERM fx(p) ARG NV pfx(HGNC) val(RAF1) ARG (null) (null) ARG (null) (null) ") == 0,
         "[statement_ast] failed to parse nested statement with spacing");
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(multi_nested)),
+            "STATEMENT SUBJECT TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(=>) (null) STATEMENT SUBJECT TERM fx(r) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(->) (null) STATEMENT SUBJECT TERM fx(act) ARG TERM fx(p) ARG NV pfx(HGNC) val(AKARP7) ARG (null) (null) ARG (null) (null) (null) OBJECT REL rel(-|) (null) TERM fx(complex) ARG NV pfx(SCOMP) val(\"AP-1 Complex\") ARG (null) (null) ") == 0,
+        "[statement_ast] failed to parse multi-nested statement with spacing");
 
 // vim: ft=c sw=4 ts=4 sts=4 expandtab
