@@ -12,4 +12,9 @@
  */
 #define TERM_STACK_SIZE 32
 
+/*
+ * Statement stack size: Allows for a nesting of at most 32 statements.
+ */
+#define STATEMENT_STACK_SIZE 32
+
 #endif /* not defined _LIBBEL_H */

@@ -17,6 +17,7 @@ bel_ast* bel_parse_statement(char* line) {
     int             top;
     int             *stack;
     bel_ast_node*   statement;
+    bel_ast_node*   parent_statement;
     bel_ast_node*   subject;
     bel_ast_node*   rel;
     bel_ast_node*   object;
@@ -25,6 +26,7 @@ bel_ast* bel_parse_statement(char* line) {
     bel_ast_node*   arg;
     bel_ast*        ast;
     bel_node_stack* term_stack;
+    bel_node_stack* statement_stack;
     char            *function;
     char            *relationship;
     char            *value;
@@ -42,26 +44,29 @@ bel_ast* bel_parse_statement(char* line) {
     input[i + 1] = '\n';
     input[i + 2] = '\0';
 
-    p            = input;
-    pe           = input + strlen(input);
-    top          = 0;
-    stack        = malloc(sizeof(int) * TERM_STACK_SIZE);
-    current_nv   = NULL;
-    function     = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
-    relationship = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
-    value        = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
-    fi           = 0;
-    ri           = 0;
-    vi           = 0;
+    p                 = input;
+    pe                = input + strlen(input);
+    top               = 0;
+    stack             = malloc(sizeof(int) * TERM_STACK_SIZE);
+    current_nv        = NULL;
+    function          = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
+    relationship      = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
+    value             = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
+    fi                = 0;
+    ri                = 0;
+    vi                = 0;
 
-    term_stack   = stack_init(TERM_STACK_SIZE);
-    statement    = bel_new_ast_node_token(BEL_TOKEN_STATEMENT);
-    subject      = bel_new_ast_node_token(BEL_TOKEN_SUBJECT);
-    rel          = bel_new_ast_node_token(BEL_TOKEN_REL);
-    object       = bel_new_ast_node_token(BEL_TOKEN_OBJECT);
-    term         = NULL;
-    ast          = bel_new_ast();
-    ast->root    = statement;
+    term_stack        = stack_init(TERM_STACK_SIZE);
+    statement_stack   = stack_init(STATEMENT_STACK_SIZE);
+    statement         = bel_new_ast_node_token(BEL_TOKEN_STATEMENT);
+    parent_statement  = NULL;
+    /* subject           = bel_new_ast_node_token(BEL_TOKEN_SUBJECT); */
+    /* object            = bel_new_ast_node_token(BEL_TOKEN_OBJECT); */
+    term              = NULL;
+    ast               = bel_new_ast();
+    ast->root         = statement;
+
+    stack_push(statement_stack, statement);
 
     memset(function, '\0', BEL_VALUE_CHAR_LEN);
     memset(relationship, '\0', BEL_VALUE_CHAR_LEN);
@@ -102,8 +107,15 @@ bel_ast* bel_parse_statement(char* line) {
         }
 
         action REL {
-            rel->token->left = bel_new_ast_node_value(BEL_VALUE_REL, relationship);
+            rel = bel_new_ast_node_token(BEL_TOKEN_REL);
+            rel->token->left  = bel_new_ast_node_value(BEL_VALUE_REL, relationship);
+            rel->token->right = NULL;
+
+            object = bel_new_ast_node_token(BEL_TOKEN_OBJECT);
             object->token->left = rel;
+
+            statement = stack_peek(statement_stack);
+            statement->token->right = object;
         }
 
         action NESTED_FX {
@@ -183,15 +195,36 @@ bel_ast* bel_parse_statement(char* line) {
         }
 
         action RET_TERM {
+            statement = stack_peek(statement_stack);
             if (statement->token->left == NULL) {
-                // statement left token (e.g. subject) is available
-                subject->token->left = bel_copy_ast_node(term);
+                // assign term as subject
+                subject = bel_new_ast_node_token(BEL_TOKEN_SUBJECT);
+                subject->token->left  = bel_copy_ast_node(term);
+                subject->token->right = NULL;
                 statement->token->left = subject;
             } else {
-                // assume right token (e.g. object) is available
+                // assign term as object; object is already available
+                // after REL action
+                object = statement->token->right;
                 object->token->right = bel_copy_ast_node(term);
                 statement->token->right = object;
             }
+
+            fret;
+        }
+
+        action CALL_STATEMENT {
+            statement = bel_new_ast_node_token(BEL_TOKEN_STATEMENT);
+            stack_push(statement_stack, statement);
+            fcall statement;
+        }
+
+        action RET_STATEMENT {
+            statement        = stack_pop(statement_stack);
+            parent_statement = stack_peek(statement_stack);
+
+            object = parent_statement->token->right;
+            object->token->right = bel_copy_ast_node(statement);
 
             fret;
         }
@@ -220,13 +253,22 @@ bel_ast* bel_parse_statement(char* line) {
                     (IDENT_TOKEN >valc $valn ':')? @PFX (STRING_TOKEN|IDENT_TOKEN) >valc $valn %VAL |
                     IDENT_TOKEN  >fxc $fxn %NESTED_FX O_PAREN @CALL_ARGUMENTS
                 )
-            )* C_PAREN @RET_ARGUMENTS;
+            )* C_PAREN @RET_ARGUMENTS
+        ;
 
         term :=
-            IDENT_TOKEN >fxc $fxn %FX O_PAREN >CALL_ARGUMENTS (SP+|NL) @RET_TERM;
+            IDENT_TOKEN >fxc $fxn %FX O_PAREN >CALL_ARGUMENTS any @{ fhold; } @RET_TERM
+        ;
 
         statement :=
-            IDENT @CALL_TERM NON_SPACED_TOKEN >relc $reln @REL SP+ IDENT @CALL_TERM;
+            SP* IDENT @CALL_TERM SP+ NON_SPACED_TOKEN >relc $reln @REL
+            SP+
+            (
+                ( IDENT @CALL_TERM SP* C_PAREN? @RET_STATEMENT NL    )
+                  |
+                ( O_PAREN @CALL_STATEMENT SP* C_PAREN @RET_STATEMENT )
+            )
+        ;
 
         # Initialize and execute.
         write init;
@@ -237,6 +279,9 @@ bel_ast* bel_parse_statement(char* line) {
     bel_free_ast_node(term);
     if (term_stack) {
         stack_destroy(term_stack);
+    }
+    if (statement_stack) {
+        stack_destroy(statement_stack);
     }
     free(stack);
     free(function);
