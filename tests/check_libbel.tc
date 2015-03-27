@@ -143,6 +143,11 @@
     char new_line_exists[LINE_CHAR_LEN]     = "p(HGNC:AKT1) => bp(GOBP:\"apoptotic process\")\n";
     char new_line_crlf[LINE_CHAR_LEN]       = "p(HGNC:AKT1) => bp(GOBP:\"apoptotic process\")\r\n";
     char new_line_extras[LINE_CHAR_LEN]     = "p(HGNC:AKT1) => bp(GOBP:\"apoptotic process\")\r\n\r\n\n";
+    char short_form_rel[LINE_CHAR_LEN]      = "p(HGNC:AKT1) -- r(HGNC:BRK1)";
+    char long_form_rel[LINE_CHAR_LEN]       = "p(HGNC:AKT1) association r(HGNC:BRK1)";
+    char nested_terms[LINE_CHAR_LEN]        = "catalyticActivity(proteinAbundance(PFH:\"ACSL Family\")) directlyIncreases reaction(reactants(abundance(SCHEM:\"Long-chain fatty acid\")),products(abundance(SCHEM:\"Long-chain fatty acyl CoA\")))";
+    /* char nested_one[LINE_CHAR_LEN]          = "gtp(p(PFH:\"RHO Family\")) increases (gtp(p(PFH:\"RAS Family\")) => kin(p(HGNC:RAF1)))"; */
+    /* char nested_statement[LINE_CHAR_LEN]    = "p(HGNC:VHL) -> (bp(GO:\"integrin-mediated signaling pathway\") -> bp(GO:\"extracellular matrix assembly\"))"; */
 
     fail_unless(
         strcmp(
@@ -174,5 +179,32 @@
             bel_ast_as_string(bel_parse_statement(new_line_extras)),
             "STATEMENT SUBJECT TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(=>) (null) TERM fx(bp) ARG NV pfx(GOBP) val(\"apoptotic process\") ARG (null) (null) ") == 0,
         "[statement_ast] failed to parse statement without newline");
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(short_form_rel)),
+            "STATEMENT SUBJECT TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(--) (null) TERM fx(r) ARG NV pfx(HGNC) val(BRK1) ARG (null) (null) ") == 0,
+        "[statement_ast] failed to parse statement using short form relationship");
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(long_form_rel)),
+            "STATEMENT SUBJECT TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(association) (null) TERM fx(r) ARG NV pfx(HGNC) val(BRK1) ARG (null) (null) ") == 0,
+        "[statement_ast] failed to parse statement using long form relationship");
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(nested_terms)),
+            "STATEMENT SUBJECT TERM fx(catalyticActivity) ARG TERM fx(proteinAbundance) ARG NV pfx(PFH) val(\"ACSL Family\") ARG (null) (null) ARG (null) (null) (null) OBJECT REL rel(directlyIncreases) (null) TERM fx(reaction) ARG TERM fx(reactants) ARG TERM fx(abundance) ARG NV pfx(SCHEM) val(\"Long-chain fatty acid\") ARG (null) (null) ARG (null) (null) ARG TERM fx(products) ARG TERM fx(abundance) ARG NV pfx(SCHEM) val(\"Long-chain fatty acyl CoA\") ARG (null) (null) ARG (null) (null) ARG (null) (null) ") == 0,
+        "[statement_ast] failed to parse statement using nested terms");
+    /* fprintf(stdout, bel_ast_as_string(bel_parse_statement(nested_one))); */
+    /* fprintf(stdout, bel_ast_as_string(bel_parse_statement(nested_statement))); */
+    /* fail_unless( */
+    /*     strcmp( */
+    /*         bel_ast_as_string(bel_parse_statement(nested_one)), */
+    /*         "STATEMENT SUBJECT TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(association) (null) TERM fx(r) ARG NV pfx(HGNC) val(BRK1) ARG (null) (null) ") == 0, */
+    /*     "[statement_ast] failed to parse statement using nested terms"); */
+    /* fail_unless( */
+    /*     strcmp( */
+    /*         bel_ast_as_string(bel_parse_statement(nested_statement)), */
+    /*         "STATEMENT SUBJECT TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(association) (null) TERM fx(r) ARG NV pfx(HGNC) val(BRK1) ARG (null) (null) ") == 0, */
+    /*     "[statement_ast] failed to parse statement using nested terms"); */
 
 // vim: ft=c sw=4 ts=4 sts=4 expandtab
