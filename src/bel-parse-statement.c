@@ -33,8 +33,18 @@ bel_ast* bel_parse_statement(char* line) {
     int             ri;
     int             vi;
 
-    p            = line;
-    pe           = line + strlen(line);
+    // Copy line to stack; Append new line if needed.
+    int             line_length = strlen(line);
+    int             i;
+    char            input[line_length + 2];
+    strcpy(input, line);
+    for (i = line_length - 1; (input[i] == '\n' || input[i] == '\r'); i--)
+        input[i] = '\0';
+    input[i + 1] = '\n';
+    input[i + 2] = '\0';
+
+    p            = input;
+    pe           = input + strlen(input);
     top          = 0;
     stack        = malloc(sizeof(int) * TERM_STACK_SIZE);
     current_nv   = NULL;
