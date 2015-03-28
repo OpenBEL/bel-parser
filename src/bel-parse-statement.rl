@@ -10,6 +10,24 @@
     write data;
 }%%
 
+/* private */
+bel_ast* _create_statement_ast();
+
+/* private - optimistic subject creation */
+bel_ast_node* _create_statement_ast_node();
+
+/* private */
+bel_ast_node* _create_term_ast_node();
+
+/* private */
+bel_ast_node* _create_arg_nv_ast_node();
+
+/* private */
+bel_ast_node* _create_arg_term_ast_node();
+
+/* private */
+bel_ast_node* _create_nv_ast_node();
+
 bel_ast* bel_parse_statement(char* line) {
     int             cs;
     char            *p;
@@ -300,5 +318,101 @@ bel_ast* bel_parse_statement(char* line) {
 
     return ast;
 };
+
+/* private */
+bel_ast* _create_statement_ast() {
+    bel_ast*      ast;
+    bel_ast_node* statement;
+
+    ast       = bel_new_ast();
+    statement = _create_statement_ast_node();
+    ast->root = statement;
+
+    return ast;
+};
+
+/* private - optimistic subject creation */
+bel_ast_node* _create_statement_ast_node() {
+    bel_ast_node* statement;
+    bel_ast_node* subject;
+    bel_ast_node* object;
+    bel_ast_node* term;
+
+    statement = bel_new_ast_node_token(BEL_TOKEN_STATEMENT);
+    subject   = bel_new_ast_node_token(BEL_TOKEN_SUBJECT);
+    object    = bel_new_ast_node_token(BEL_TOKEN_OBJECT);
+    term      = _create_term_ast_node();
+
+    statement->token->left  = subject;
+    statement->token->right = object;
+    subject->token->left    = term;
+
+    return statement;
+};
+
+/* private */
+bel_ast_node* _create_term_ast_node() {
+    bel_ast_node* term;
+    bel_ast_node* fx;
+    bel_ast_node* arg;
+
+    term = bel_new_ast_node_token(BEL_TOKEN_TERM);
+    fx   = bel_new_ast_node_value(BEL_VALUE_FX, NULL);
+    arg  = bel_new_ast_node_token(BEL_TOKEN_ARG);
+
+    term->token->left  = fx;
+    term->token->right = arg;
+
+    return term;
+};
+
+/* private */
+bel_ast_node* _create_arg_nv_ast_node() {
+    bel_ast_node* arg;
+    bel_ast_node* nv;
+    bel_ast_node* arg_placeholder;
+
+    arg              = bel_new_ast_node_token(BEL_TOKEN_ARG);
+    nv               = _create_nv_ast_node();
+    arg_placeholder  = bel_new_ast_node_token(BEL_TOKEN_ARG);
+
+    arg->token->left  = nv;
+    arg->token->right = arg_placeholder;
+
+    return arg;
+};
+
+/* private */
+bel_ast_node* _create_arg_term_ast_node() {
+    bel_ast_node* arg;
+    bel_ast_node* term;
+    bel_ast_node* arg_placeholder;
+
+    arg              = bel_new_ast_node_token(BEL_TOKEN_ARG);
+    term             = _create_nv_ast_node();
+    arg_placeholder  = bel_new_ast_node_token(BEL_TOKEN_ARG);
+
+    arg->token->left  = term;
+    arg->token->right = arg_placeholder;
+
+    return arg;
+};
+
+/* private */
+bel_ast_node* _create_nv_ast_node() {
+    bel_ast_node* nv;
+    bel_ast_node* pfx;
+    bel_ast_node* val;
+
+    nv   = bel_new_ast_node_token(BEL_TOKEN_NV);
+    pfx  = bel_new_ast_node_value(BEL_VALUE_PFX, NULL);
+    val  = bel_new_ast_node_value(BEL_VALUE_VAL, NULL);
+
+    nv->token->left  = pfx;
+    nv->token->right = val;
+
+    return nv;
+};
+
 // vim: ft=ragel sw=4 ts=4 sts=4 expandtab
 

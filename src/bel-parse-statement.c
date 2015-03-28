@@ -21,6 +21,24 @@ static const int set_en_statement = 1;
 /* #line 11 "bel-parse-statement.rl" */
 
 
+/* private */
+bel_ast* _create_statement_ast();
+
+/* private - optimistic subject creation */
+bel_ast_node* _create_statement_ast_node();
+
+/* private */
+bel_ast_node* _create_term_ast_node();
+
+/* private */
+bel_ast_node* _create_arg_nv_ast_node();
+
+/* private */
+bel_ast_node* _create_arg_term_ast_node();
+
+/* private */
+bel_ast_node* _create_nv_ast_node();
+
 bel_ast* bel_parse_statement(char* line) {
     int             cs;
     char            *p;
@@ -82,13 +100,13 @@ bel_ast* bel_parse_statement(char* line) {
     memset(value, '\0', BEL_VALUE_CHAR_LEN);
 
     
-/* #line 86 "bel-parse-statement.c" */
+/* #line 104 "bel-parse-statement.c" */
 	{
 	cs = set_start;
 	top = 0;
 	}
 
-/* #line 92 "bel-parse-statement.c" */
+/* #line 110 "bel-parse-statement.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -331,7 +349,7 @@ case 1:
 	}
 	goto tr0;
 tr0:
-/* #line 187 "bel-parse-statement.rl" */
+/* #line 205 "bel-parse-statement.rl" */
 	{
             p--;
             term = bel_new_ast_node_token(BEL_TOKEN_TERM);
@@ -344,7 +362,7 @@ st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 348 "bel-parse-statement.c" */
+/* #line 366 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st3;
 		case 32: goto st3;
@@ -364,16 +382,16 @@ case 3:
 	}
 	goto tr4;
 tr4:
-/* #line 79 "bel-parse-statement.rl" */
+/* #line 97 "bel-parse-statement.rl" */
 	{
             ri = 0;
             memset(relationship, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 93 "bel-parse-statement.rl" */
+/* #line 111 "bel-parse-statement.rl" */
 	{
             relationship[ri++] = (*p);
         }
-/* #line 107 "bel-parse-statement.rl" */
+/* #line 125 "bel-parse-statement.rl" */
 	{
             rel = bel_new_ast_node_token(BEL_TOKEN_REL);
             rel->token->left  = bel_new_ast_node_value(BEL_VALUE_REL, relationship);
@@ -387,11 +405,11 @@ tr4:
         }
 	goto st4;
 tr5:
-/* #line 93 "bel-parse-statement.rl" */
+/* #line 111 "bel-parse-statement.rl" */
 	{
             relationship[ri++] = (*p);
         }
-/* #line 107 "bel-parse-statement.rl" */
+/* #line 125 "bel-parse-statement.rl" */
 	{
             rel = bel_new_ast_node_token(BEL_TOKEN_REL);
             rel->token->left  = bel_new_ast_node_value(BEL_VALUE_REL, relationship);
@@ -408,7 +426,7 @@ st4:
 	if ( ++p == pe )
 		goto _test_eof4;
 case 4:
-/* #line 412 "bel-parse-statement.c" */
+/* #line 430 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st5;
 		case 10: goto st0;
@@ -426,7 +444,7 @@ case 5:
 	}
 	goto tr7;
 tr7:
-/* #line 187 "bel-parse-statement.rl" */
+/* #line 205 "bel-parse-statement.rl" */
 	{
             p--;
             term = bel_new_ast_node_token(BEL_TOKEN_TERM);
@@ -439,7 +457,7 @@ st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 443 "bel-parse-statement.c" */
+/* #line 461 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st6;
 		case 10: goto st187;
@@ -449,7 +467,7 @@ case 6:
 	}
 	goto st0;
 tr14:
-/* #line 220 "bel-parse-statement.rl" */
+/* #line 238 "bel-parse-statement.rl" */
 	{
             statement        = stack_pop(statement_stack);
             parent_statement = stack_peek(statement_stack);
@@ -464,7 +482,7 @@ st187:
 	if ( ++p == pe )
 		goto _test_eof187;
 case 187:
-/* #line 468 "bel-parse-statement.c" */
+/* #line 486 "bel-parse-statement.c" */
 	goto st0;
 st188:
 	if ( ++p == pe )
@@ -474,7 +492,7 @@ case 188:
 		goto st187;
 	goto st0;
 tr12:
-/* #line 220 "bel-parse-statement.rl" */
+/* #line 238 "bel-parse-statement.rl" */
 	{
             statement        = stack_pop(statement_stack);
             parent_statement = stack_peek(statement_stack);
@@ -489,14 +507,14 @@ st7:
 	if ( ++p == pe )
 		goto _test_eof7;
 case 7:
-/* #line 493 "bel-parse-statement.c" */
+/* #line 511 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 10: goto st187;
 		case 13: goto st188;
 	}
 	goto st0;
 tr8:
-/* #line 214 "bel-parse-statement.rl" */
+/* #line 232 "bel-parse-statement.rl" */
 	{
             statement = bel_new_ast_node_token(BEL_TOKEN_STATEMENT);
             stack_push(statement_stack, statement);
@@ -507,7 +525,7 @@ st8:
 	if ( ++p == pe )
 		goto _test_eof8;
 case 8:
-/* #line 511 "bel-parse-statement.c" */
+/* #line 529 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st8;
 		case 32: goto st8;
@@ -529,31 +547,31 @@ case 9:
 	}
 	goto tr15;
 tr15:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st10;
 tr21:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -562,7 +580,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-/* #line 566 "bel-parse-statement.c" */
+/* #line 584 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -574,7 +592,7 @@ case 10:
 	}
 	goto tr21;
 tr22:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -598,7 +616,7 @@ tr22:
         }
 	goto st11;
 tr73:
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -619,7 +637,7 @@ tr73:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 11; goto st9;}
         }
@@ -628,7 +646,7 @@ st11:
 	if ( ++p == pe )
 		goto _test_eof11;
 case 11:
-/* #line 632 "bel-parse-statement.c" */
+/* #line 650 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st11;
 		case 32: goto st11;
@@ -637,14 +655,14 @@ case 11:
 	}
 	goto st0;
 tr29:
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st189;
 tr49:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -666,7 +684,7 @@ tr49:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -676,10 +694,10 @@ st189:
 	if ( ++p == pe )
 		goto _test_eof189;
 case 189:
-/* #line 680 "bel-parse-statement.c" */
+/* #line 698 "bel-parse-statement.c" */
 	goto st0;
 tr50:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -706,7 +724,7 @@ st12:
 	if ( ++p == pe )
 		goto _test_eof12;
 case 12:
-/* #line 710 "bel-parse-statement.c" */
+/* #line 728 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st12;
 		case 32: goto st12;
@@ -718,31 +736,31 @@ case 12:
 	}
 	goto tr31;
 tr31:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st13;
 tr35:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -751,7 +769,7 @@ st13:
 	if ( ++p == pe )
 		goto _test_eof13;
 case 13:
-/* #line 755 "bel-parse-statement.c" */
+/* #line 773 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -763,31 +781,31 @@ case 13:
 	}
 	goto tr35;
 tr34:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st14;
 tr36:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -796,7 +814,7 @@ st14:
 	if ( ++p == pe )
 		goto _test_eof14;
 case 14:
-/* #line 800 "bel-parse-statement.c" */
+/* #line 818 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -806,11 +824,11 @@ case 14:
 	}
 	goto tr36;
 tr37:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -831,22 +849,22 @@ tr37:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 15; goto st9;}
         }
 	goto st15;
 tr78:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -867,13 +885,13 @@ tr78:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 15; goto st9;}
         }
 	goto st15;
 tr229:
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -894,22 +912,22 @@ tr229:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 15; goto st9;}
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st15;
 tr234:
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -930,11 +948,11 @@ tr234:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 15; goto st9;}
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -943,7 +961,7 @@ st15:
 	if ( ++p == pe )
 		goto _test_eof15;
 case 15:
-/* #line 947 "bel-parse-statement.c" */
+/* #line 965 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st11;
 		case 32: goto st11;
@@ -953,18 +971,18 @@ case 15:
 	}
 	goto tr42;
 tr33:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st16;
 tr42:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -973,7 +991,7 @@ st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 977 "bel-parse-statement.c" */
+/* #line 995 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -982,7 +1000,7 @@ case 16:
 	}
 	goto tr42;
 tr44:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -1003,7 +1021,7 @@ st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-/* #line 1007 "bel-parse-statement.c" */
+/* #line 1025 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st17;
 		case 32: goto st17;
@@ -1015,18 +1033,18 @@ case 17:
 		goto st0;
 	goto tr45;
 tr45:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st18;
 tr48:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -1035,7 +1053,7 @@ st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-/* #line 1039 "bel-parse-statement.c" */
+/* #line 1057 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -1047,18 +1065,18 @@ case 18:
 	}
 	goto tr48;
 tr47:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st19;
 tr51:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -1067,14 +1085,14 @@ st19:
 	if ( ++p == pe )
 		goto _test_eof19;
 case 19:
-/* #line 1071 "bel-parse-statement.c" */
+/* #line 1089 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 34: goto tr52;
 		case 92: goto tr53;
 	}
 	goto tr51;
 tr52:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -1083,7 +1101,7 @@ st20:
 	if ( ++p == pe )
 		goto _test_eof20;
 case 20:
-/* #line 1087 "bel-parse-statement.c" */
+/* #line 1105 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -1092,7 +1110,7 @@ case 20:
 	}
 	goto st0;
 tr53:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -1101,25 +1119,25 @@ st21:
 	if ( ++p == pe )
 		goto _test_eof21;
 case 21:
-/* #line 1105 "bel-parse-statement.c" */
+/* #line 1123 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 34: goto tr54;
 		case 92: goto tr53;
 	}
 	goto tr51;
 tr90:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st22;
 tr54:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -1128,7 +1146,7 @@ st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-/* #line 1132 "bel-parse-statement.c" */
+/* #line 1150 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -1139,11 +1157,11 @@ case 22:
 	}
 	goto tr51;
 tr97:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -1164,23 +1182,23 @@ tr97:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 23; goto st9;}
         }
 	goto st23;
 tr58:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st23;
 tr55:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1204,7 +1222,7 @@ tr55:
         }
 	goto st23;
 tr149:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1226,13 +1244,13 @@ tr149:
 
             current_nv = 0;
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st23;
 tr244:
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -1253,11 +1271,11 @@ tr244:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 23; goto st9;}
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -1266,7 +1284,7 @@ st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 1270 "bel-parse-statement.c" */
+/* #line 1288 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr58;
 		case 32: goto tr58;
@@ -1277,22 +1295,22 @@ case 23:
 	}
 	goto tr51;
 tr59:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st190;
 tr56:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1314,14 +1332,14 @@ tr56:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st190;
 tr150:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1343,11 +1361,11 @@ tr150:
 
             current_nv = 0;
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -1357,24 +1375,24 @@ st190:
 	if ( ++p == pe )
 		goto _test_eof190;
 case 190:
-/* #line 1361 "bel-parse-statement.c" */
+/* #line 1379 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 34: goto tr52;
 		case 92: goto tr53;
 	}
 	goto tr51;
 tr60:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st24;
 tr57:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1398,7 +1416,7 @@ tr57:
         }
 	goto st24;
 tr151:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1420,7 +1438,7 @@ tr151:
 
             current_nv = 0;
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -1429,7 +1447,7 @@ st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 1433 "bel-parse-statement.c" */
+/* #line 1451 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr60;
 		case 32: goto tr60;
@@ -1442,31 +1460,31 @@ case 24:
 	}
 	goto tr61;
 tr61:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st25;
 tr66:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -1475,7 +1493,7 @@ st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 1479 "bel-parse-statement.c" */
+/* #line 1497 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -1488,11 +1506,11 @@ case 25:
 	}
 	goto tr66;
 tr67:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -1501,7 +1519,7 @@ st26:
 	if ( ++p == pe )
 		goto _test_eof26;
 case 26:
-/* #line 1505 "bel-parse-statement.c" */
+/* #line 1523 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -1512,11 +1530,11 @@ case 26:
 	}
 	goto tr36;
 tr38:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1538,18 +1556,18 @@ tr38:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st191;
 tr136:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1571,15 +1589,15 @@ tr136:
 
             current_nv = 0;
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -1589,7 +1607,7 @@ st191:
 	if ( ++p == pe )
 		goto _test_eof191;
 case 191:
-/* #line 1593 "bel-parse-statement.c" */
+/* #line 1611 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -1599,28 +1617,28 @@ case 191:
 	}
 	goto tr36;
 tr20:
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st27;
 tr41:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st27;
 tr231:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -1630,7 +1648,7 @@ st27:
 	if ( ++p == pe )
 		goto _test_eof27;
 case 27:
-/* #line 1634 "bel-parse-statement.c" */
+/* #line 1652 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -1638,7 +1656,7 @@ case 27:
 	}
 	goto tr41;
 tr40:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -1654,7 +1672,7 @@ tr40:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -1663,7 +1681,7 @@ st28:
 	if ( ++p == pe )
 		goto _test_eof28;
 case 28:
-/* #line 1667 "bel-parse-statement.c" */
+/* #line 1685 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st17;
 		case 32: goto st17;
@@ -1675,26 +1693,26 @@ case 28:
 	}
 	goto tr74;
 tr76:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st29;
 tr74:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -1703,7 +1721,7 @@ st29:
 	if ( ++p == pe )
 		goto _test_eof29;
 case 29:
-/* #line 1707 "bel-parse-statement.c" */
+/* #line 1725 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -1715,7 +1733,7 @@ case 29:
 	}
 	goto tr76;
 tr77:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1737,22 +1755,22 @@ tr77:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st192;
 tr241:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1774,7 +1792,7 @@ tr241:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -1784,7 +1802,7 @@ st192:
 	if ( ++p == pe )
 		goto _test_eof192;
 case 192:
-/* #line 1788 "bel-parse-statement.c" */
+/* #line 1806 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -1792,7 +1810,7 @@ case 192:
 	}
 	goto tr41;
 tr39:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -1814,7 +1832,7 @@ tr39:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -1823,7 +1841,7 @@ st30:
 	if ( ++p == pe )
 		goto _test_eof30;
 case 30:
-/* #line 1827 "bel-parse-statement.c" */
+/* #line 1845 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st12;
 		case 32: goto st12;
@@ -1835,31 +1853,31 @@ case 30:
 	}
 	goto tr31;
 tr32:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st31;
 tr79:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -1868,7 +1886,7 @@ st31:
 	if ( ++p == pe )
 		goto _test_eof31;
 case 31:
-/* #line 1872 "bel-parse-statement.c" */
+/* #line 1890 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -1880,11 +1898,11 @@ case 31:
 	}
 	goto tr79;
 tr68:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -1905,22 +1923,22 @@ tr68:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 32; goto st9;}
         }
 	goto st32;
 tr101:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -1941,13 +1959,13 @@ tr101:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 32; goto st9;}
         }
 	goto st32;
 tr251:
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -1968,22 +1986,22 @@ tr251:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 32; goto st9;}
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st32;
 tr256:
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -2004,11 +2022,11 @@ tr256:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 32; goto st9;}
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -2017,7 +2035,7 @@ st32:
 	if ( ++p == pe )
 		goto _test_eof32;
 case 32:
-/* #line 2021 "bel-parse-statement.c" */
+/* #line 2039 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr58;
 		case 32: goto tr58;
@@ -2029,18 +2047,18 @@ case 32:
 	}
 	goto tr82;
 tr63:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st33;
 tr82:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -2049,7 +2067,7 @@ st33:
 	if ( ++p == pe )
 		goto _test_eof33;
 case 33:
-/* #line 2053 "bel-parse-statement.c" */
+/* #line 2071 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -2060,7 +2078,7 @@ case 33:
 	}
 	goto tr82;
 tr83:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -2069,7 +2087,7 @@ st34:
 	if ( ++p == pe )
 		goto _test_eof34;
 case 34:
-/* #line 2073 "bel-parse-statement.c" */
+/* #line 2091 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -2079,22 +2097,22 @@ case 34:
 	}
 	goto tr42;
 tr43:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st193;
 tr87:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2116,14 +2134,14 @@ tr87:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st193;
 tr142:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2145,11 +2163,11 @@ tr142:
 
             current_nv = 0;
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -2159,7 +2177,7 @@ st193:
 	if ( ++p == pe )
 		goto _test_eof193;
 case 193:
-/* #line 2163 "bel-parse-statement.c" */
+/* #line 2181 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -2168,13 +2186,13 @@ case 193:
 	}
 	goto tr42;
 tr89:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st35;
 tr85:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -2190,7 +2208,7 @@ tr85:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -2199,7 +2217,7 @@ st35:
 	if ( ++p == pe )
 		goto _test_eof35;
 case 35:
-/* #line 2203 "bel-parse-statement.c" */
+/* #line 2221 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr89;
 		case 32: goto tr89;
@@ -2212,18 +2230,18 @@ case 35:
 		goto tr51;
 	goto tr88;
 tr88:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st36;
 tr92:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -2232,7 +2250,7 @@ st36:
 	if ( ++p == pe )
 		goto _test_eof36;
 case 36:
-/* #line 2236 "bel-parse-statement.c" */
+/* #line 2254 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -2245,18 +2263,18 @@ case 36:
 	}
 	goto tr92;
 tr91:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st37;
 tr93:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -2265,7 +2283,7 @@ st37:
 	if ( ++p == pe )
 		goto _test_eof37;
 case 37:
-/* #line 2269 "bel-parse-statement.c" */
+/* #line 2287 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -2278,7 +2296,7 @@ case 37:
 	}
 	goto tr92;
 tr86:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -2287,7 +2305,7 @@ st38:
 	if ( ++p == pe )
 		goto _test_eof38;
 case 38:
-/* #line 2291 "bel-parse-statement.c" */
+/* #line 2309 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -2298,7 +2316,7 @@ case 38:
 	}
 	goto tr82;
 tr94:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -2307,7 +2325,7 @@ st39:
 	if ( ++p == pe )
 		goto _test_eof39;
 case 39:
-/* #line 2311 "bel-parse-statement.c" */
+/* #line 2329 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -2319,22 +2337,22 @@ case 39:
 	}
 	goto tr82;
 tr84:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st194;
 tr95:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2356,7 +2374,7 @@ tr95:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -2366,7 +2384,7 @@ st194:
 	if ( ++p == pe )
 		goto _test_eof194;
 case 194:
-/* #line 2370 "bel-parse-statement.c" */
+/* #line 2388 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -2377,41 +2395,41 @@ case 194:
 	}
 	goto tr82;
 tr80:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st40;
 tr64:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st40;
 tr75:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2420,7 +2438,7 @@ st40:
 	if ( ++p == pe )
 		goto _test_eof40;
 case 40:
-/* #line 2424 "bel-parse-statement.c" */
+/* #line 2442 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -2430,11 +2448,11 @@ case 40:
 	}
 	goto tr80;
 tr96:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2443,7 +2461,7 @@ st41:
 	if ( ++p == pe )
 		goto _test_eof41;
 case 41:
-/* #line 2447 "bel-parse-statement.c" */
+/* #line 2465 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -2453,11 +2471,11 @@ case 41:
 	}
 	goto tr41;
 tr98:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2466,7 +2484,7 @@ st42:
 	if ( ++p == pe )
 		goto _test_eof42;
 case 42:
-/* #line 2470 "bel-parse-statement.c" */
+/* #line 2488 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -2476,26 +2494,26 @@ case 42:
 	}
 	goto tr80;
 tr99:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st43;
 tr103:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2504,7 +2522,7 @@ st43:
 	if ( ++p == pe )
 		goto _test_eof43;
 case 43:
-/* #line 2508 "bel-parse-statement.c" */
+/* #line 2526 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -2516,11 +2534,11 @@ case 43:
 	}
 	goto tr80;
 tr100:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2542,18 +2560,18 @@ tr100:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st195;
 tr170:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2575,15 +2593,15 @@ tr170:
 
             current_nv = 0;
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -2593,7 +2611,7 @@ st195:
 	if ( ++p == pe )
 		goto _test_eof195;
 case 195:
-/* #line 2597 "bel-parse-statement.c" */
+/* #line 2615 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -2603,11 +2621,11 @@ case 195:
 	}
 	goto tr80;
 tr70:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2629,13 +2647,13 @@ tr70:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st44;
 tr163:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2657,11 +2675,11 @@ tr163:
 
             current_nv = 0;
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2670,7 +2688,7 @@ st44:
 	if ( ++p == pe )
 		goto _test_eof44;
 case 44:
-/* #line 2674 "bel-parse-statement.c" */
+/* #line 2692 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr60;
 		case 32: goto tr60;
@@ -2683,31 +2701,31 @@ case 44:
 	}
 	goto tr61;
 tr62:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st45;
 tr107:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2716,7 +2734,7 @@ st45:
 	if ( ++p == pe )
 		goto _test_eof45;
 case 45:
-/* #line 2720 "bel-parse-statement.c" */
+/* #line 2738 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -2729,11 +2747,11 @@ case 45:
 	}
 	goto tr79;
 tr69:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2755,18 +2773,18 @@ tr69:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st196;
 tr162:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -2788,15 +2806,15 @@ tr162:
 
             current_nv = 0;
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -2806,7 +2824,7 @@ st196:
 	if ( ++p == pe )
 		goto _test_eof196;
 case 196:
-/* #line 2810 "bel-parse-statement.c" */
+/* #line 2828 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -2818,7 +2836,7 @@ case 196:
 	}
 	goto tr79;
 tr71:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -2834,11 +2852,11 @@ tr71:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2847,7 +2865,7 @@ st46:
 	if ( ++p == pe )
 		goto _test_eof46;
 case 46:
-/* #line 2851 "bel-parse-statement.c" */
+/* #line 2869 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr89;
 		case 32: goto tr89;
@@ -2860,26 +2878,26 @@ case 46:
 	}
 	goto tr102;
 tr105:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st47;
 tr102:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2888,7 +2906,7 @@ st47:
 	if ( ++p == pe )
 		goto _test_eof47;
 case 47:
-/* #line 2892 "bel-parse-statement.c" */
+/* #line 2910 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -2901,26 +2919,26 @@ case 47:
 	}
 	goto tr105;
 tr106:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st48;
 tr104:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2929,7 +2947,7 @@ st48:
 	if ( ++p == pe )
 		goto _test_eof48;
 case 48:
-/* #line 2933 "bel-parse-statement.c" */
+/* #line 2951 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -2942,11 +2960,11 @@ case 48:
 	}
 	goto tr105;
 tr81:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -2955,7 +2973,7 @@ st49:
 	if ( ++p == pe )
 		goto _test_eof49;
 case 49:
-/* #line 2959 "bel-parse-statement.c" */
+/* #line 2977 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -2967,31 +2985,31 @@ case 49:
 	}
 	goto tr79;
 tr65:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st50;
 tr72:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -3000,7 +3018,7 @@ st50:
 	if ( ++p == pe )
 		goto _test_eof50;
 case 50:
-/* #line 3004 "bel-parse-statement.c" */
+/* #line 3022 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -3013,65 +3031,65 @@ case 50:
 	}
 	goto tr66;
 tr19:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st51;
 tr23:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st51;
 tr303:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st51;
 tr304:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -3081,7 +3099,7 @@ st51:
 	if ( ++p == pe )
 		goto _test_eof51;
 case 51:
-/* #line 3085 "bel-parse-statement.c" */
+/* #line 3103 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -3090,11 +3108,11 @@ case 51:
 	}
 	goto tr23;
 tr24:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -3115,22 +3133,22 @@ tr24:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 52; goto st9;}
         }
 	goto st52;
 tr183:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -3151,17 +3169,17 @@ tr183:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 52; goto st9;}
         }
 	goto st52;
 tr302:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -3182,11 +3200,11 @@ tr302:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 52; goto st9;}
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -3196,7 +3214,7 @@ st52:
 	if ( ++p == pe )
 		goto _test_eof52;
 case 52:
-/* #line 3200 "bel-parse-statement.c" */
+/* #line 3218 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st11;
 		case 32: goto st11;
@@ -3206,28 +3224,28 @@ case 52:
 	}
 	goto tr108;
 tr18:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st53;
 tr108:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st53;
 tr173:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -3237,7 +3255,7 @@ st53:
 	if ( ++p == pe )
 		goto _test_eof53;
 case 53:
-/* #line 3241 "bel-parse-statement.c" */
+/* #line 3259 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -3245,7 +3263,7 @@ case 53:
 	}
 	goto tr108;
 tr111:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -3266,7 +3284,7 @@ st54:
 	if ( ++p == pe )
 		goto _test_eof54;
 case 54:
-/* #line 3270 "bel-parse-statement.c" */
+/* #line 3288 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st54;
 		case 32: goto st54;
@@ -3278,18 +3296,18 @@ case 54:
 		goto st0;
 	goto tr45;
 tr113:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st55;
 tr114:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -3298,14 +3316,14 @@ st55:
 	if ( ++p == pe )
 		goto _test_eof55;
 case 55:
-/* #line 3302 "bel-parse-statement.c" */
+/* #line 3320 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 34: goto tr52;
 		case 92: goto tr115;
 	}
 	goto tr114;
 tr115:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -3314,25 +3332,25 @@ st56:
 	if ( ++p == pe )
 		goto _test_eof56;
 case 56:
-/* #line 3318 "bel-parse-statement.c" */
+/* #line 3336 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 34: goto tr116;
 		case 92: goto tr115;
 	}
 	goto tr114;
 tr199:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st57;
 tr116:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -3341,7 +3359,7 @@ st57:
 	if ( ++p == pe )
 		goto _test_eof57;
 case 57:
-/* #line 3345 "bel-parse-statement.c" */
+/* #line 3363 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -3352,11 +3370,11 @@ case 57:
 	}
 	goto tr114;
 tr157:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -3377,23 +3395,23 @@ tr157:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 58; goto st9;}
         }
 	goto st58;
 tr120:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st58;
 tr117:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -3420,7 +3438,7 @@ st58:
 	if ( ++p == pe )
 		goto _test_eof58;
 case 58:
-/* #line 3424 "bel-parse-statement.c" */
+/* #line 3442 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr120;
 		case 32: goto tr120;
@@ -3431,22 +3449,22 @@ case 58:
 	}
 	goto tr114;
 tr121:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st197;
 tr118:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -3468,7 +3486,7 @@ tr118:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -3478,24 +3496,24 @@ st197:
 	if ( ++p == pe )
 		goto _test_eof197;
 case 197:
-/* #line 3482 "bel-parse-statement.c" */
+/* #line 3500 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 34: goto tr52;
 		case 92: goto tr115;
 	}
 	goto tr114;
 tr122:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st59;
 tr119:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -3522,7 +3540,7 @@ st59:
 	if ( ++p == pe )
 		goto _test_eof59;
 case 59:
-/* #line 3526 "bel-parse-statement.c" */
+/* #line 3544 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr122;
 		case 32: goto tr122;
@@ -3535,31 +3553,31 @@ case 59:
 	}
 	goto tr123;
 tr129:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st60;
 tr123:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -3568,7 +3586,7 @@ st60:
 	if ( ++p == pe )
 		goto _test_eof60;
 case 60:
-/* #line 3572 "bel-parse-statement.c" */
+/* #line 3590 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -3581,11 +3599,11 @@ case 60:
 	}
 	goto tr129;
 tr130:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -3594,7 +3612,7 @@ st61:
 	if ( ++p == pe )
 		goto _test_eof61;
 case 61:
-/* #line 3598 "bel-parse-statement.c" */
+/* #line 3616 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -3605,11 +3623,11 @@ case 61:
 	}
 	goto tr36;
 tr131:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -3630,22 +3648,22 @@ tr131:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 62; goto st9;}
         }
 	goto st62;
 tr161:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -3666,17 +3684,17 @@ tr161:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 62; goto st9;}
         }
 	goto st62;
 tr276:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -3697,11 +3715,11 @@ tr276:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 62; goto st9;}
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -3711,7 +3729,7 @@ st62:
 	if ( ++p == pe )
 		goto _test_eof62;
 case 62:
-/* #line 3715 "bel-parse-statement.c" */
+/* #line 3733 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr120;
 		case 32: goto tr120;
@@ -3723,17 +3741,17 @@ case 62:
 	}
 	goto tr137;
 tr137:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st63;
 tr125:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -3743,7 +3761,7 @@ st63:
 	if ( ++p == pe )
 		goto _test_eof63;
 case 63:
-/* #line 3747 "bel-parse-statement.c" */
+/* #line 3765 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -3754,7 +3772,7 @@ case 63:
 	}
 	goto tr137;
 tr138:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -3763,7 +3781,7 @@ st64:
 	if ( ++p == pe )
 		goto _test_eof64;
 case 64:
-/* #line 3767 "bel-parse-statement.c" */
+/* #line 3785 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -3773,17 +3791,17 @@ case 64:
 	}
 	goto tr42;
 tr144:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st65;
 tr140:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -3804,7 +3822,7 @@ st65:
 	if ( ++p == pe )
 		goto _test_eof65;
 case 65:
-/* #line 3808 "bel-parse-statement.c" */
+/* #line 3826 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr144;
 		case 32: goto tr144;
@@ -3817,28 +3835,28 @@ case 65:
 		goto tr114;
 	goto tr143;
 tr339:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st66;
 tr147:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st66;
 tr143:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -3848,7 +3866,7 @@ st66:
 	if ( ++p == pe )
 		goto _test_eof66;
 case 66:
-/* #line 3852 "bel-parse-statement.c" */
+/* #line 3870 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -3861,28 +3879,28 @@ case 66:
 	}
 	goto tr147;
 tr341:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st67;
 tr148:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st67;
 tr146:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -3892,7 +3910,7 @@ st67:
 	if ( ++p == pe )
 		goto _test_eof67;
 case 67:
-/* #line 3896 "bel-parse-statement.c" */
+/* #line 3914 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -3905,11 +3923,11 @@ case 67:
 	}
 	goto tr147;
 tr145:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -3919,7 +3937,7 @@ st68:
 	if ( ++p == pe )
 		goto _test_eof68;
 case 68:
-/* #line 3923 "bel-parse-statement.c" */
+/* #line 3941 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -3930,7 +3948,7 @@ case 68:
 	}
 	goto tr51;
 tr141:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -3939,7 +3957,7 @@ st69:
 	if ( ++p == pe )
 		goto _test_eof69;
 case 69:
-/* #line 3943 "bel-parse-statement.c" */
+/* #line 3961 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -3950,7 +3968,7 @@ case 69:
 	}
 	goto tr137;
 tr152:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -3959,7 +3977,7 @@ st70:
 	if ( ++p == pe )
 		goto _test_eof70;
 case 70:
-/* #line 3963 "bel-parse-statement.c" */
+/* #line 3981 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -3971,22 +3989,22 @@ case 70:
 	}
 	goto tr137;
 tr139:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st198;
 tr153:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -4008,7 +4026,7 @@ tr153:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -4018,7 +4036,7 @@ st198:
 	if ( ++p == pe )
 		goto _test_eof198;
 case 198:
-/* #line 4022 "bel-parse-statement.c" */
+/* #line 4040 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -4029,11 +4047,11 @@ case 198:
 	}
 	goto tr137;
 tr132:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -4055,11 +4073,11 @@ tr132:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -4069,7 +4087,7 @@ st199:
 	if ( ++p == pe )
 		goto _test_eof199;
 case 199:
-/* #line 4073 "bel-parse-statement.c" */
+/* #line 4091 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -4081,31 +4099,31 @@ case 199:
 	}
 	goto tr154;
 tr154:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st71;
 tr126:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4114,7 +4132,7 @@ st71:
 	if ( ++p == pe )
 		goto _test_eof71;
 case 71:
-/* #line 4118 "bel-parse-statement.c" */
+/* #line 4136 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -4126,41 +4144,41 @@ case 71:
 	}
 	goto tr154;
 tr155:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st72;
 tr127:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st72;
 tr182:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4169,7 +4187,7 @@ st72:
 	if ( ++p == pe )
 		goto _test_eof72;
 case 72:
-/* #line 4173 "bel-parse-statement.c" */
+/* #line 4191 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -4179,11 +4197,11 @@ case 72:
 	}
 	goto tr155;
 tr158:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4192,7 +4210,7 @@ st73:
 	if ( ++p == pe )
 		goto _test_eof73;
 case 73:
-/* #line 4196 "bel-parse-statement.c" */
+/* #line 4214 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -4202,26 +4220,26 @@ case 73:
 	}
 	goto tr155;
 tr159:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st74;
 tr217:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4230,7 +4248,7 @@ st74:
 	if ( ++p == pe )
 		goto _test_eof74;
 case 74:
-/* #line 4234 "bel-parse-statement.c" */
+/* #line 4252 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -4242,11 +4260,11 @@ case 74:
 	}
 	goto tr155;
 tr160:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -4268,11 +4286,11 @@ tr160:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -4282,7 +4300,7 @@ st200:
 	if ( ++p == pe )
 		goto _test_eof200;
 case 200:
-/* #line 4286 "bel-parse-statement.c" */
+/* #line 4304 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -4292,11 +4310,11 @@ case 200:
 	}
 	goto tr155;
 tr133:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -4318,7 +4336,7 @@ tr133:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4327,7 +4345,7 @@ st75:
 	if ( ++p == pe )
 		goto _test_eof75;
 case 75:
-/* #line 4331 "bel-parse-statement.c" */
+/* #line 4349 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr122;
 		case 32: goto tr122;
@@ -4340,21 +4358,21 @@ case 75:
 	}
 	goto tr123;
 tr124:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4363,7 +4381,7 @@ st76:
 	if ( ++p == pe )
 		goto _test_eof76;
 case 76:
-/* #line 4367 "bel-parse-statement.c" */
+/* #line 4385 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -4376,31 +4394,31 @@ case 76:
 	}
 	goto tr79;
 tr135:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st77;
 tr128:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4409,7 +4427,7 @@ st77:
 	if ( ++p == pe )
 		goto _test_eof77;
 case 77:
-/* #line 4413 "bel-parse-statement.c" */
+/* #line 4431 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -4422,11 +4440,11 @@ case 77:
 	}
 	goto tr129;
 tr164:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4435,7 +4453,7 @@ st78:
 	if ( ++p == pe )
 		goto _test_eof78;
 case 78:
-/* #line 4439 "bel-parse-statement.c" */
+/* #line 4457 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -4448,11 +4466,11 @@ case 78:
 	}
 	goto tr154;
 tr134:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -4468,7 +4486,7 @@ tr134:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4477,7 +4495,7 @@ st79:
 	if ( ++p == pe )
 		goto _test_eof79;
 case 79:
-/* #line 4481 "bel-parse-statement.c" */
+/* #line 4499 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr144;
 		case 32: goto tr144;
@@ -4490,41 +4508,41 @@ case 79:
 	}
 	goto tr165;
 tr168:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st80;
 tr359:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st80;
 tr165:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4533,7 +4551,7 @@ st80:
 	if ( ++p == pe )
 		goto _test_eof80;
 case 80:
-/* #line 4537 "bel-parse-statement.c" */
+/* #line 4555 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -4546,41 +4564,41 @@ case 80:
 	}
 	goto tr168;
 tr169:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st81;
 tr360:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st81;
 tr167:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4589,7 +4607,7 @@ st81:
 	if ( ++p == pe )
 		goto _test_eof81;
 case 81:
-/* #line 4593 "bel-parse-statement.c" */
+/* #line 4611 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -4602,16 +4620,16 @@ case 81:
 	}
 	goto tr168;
 tr166:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4620,7 +4638,7 @@ st82:
 	if ( ++p == pe )
 		goto _test_eof82;
 case 82:
-/* #line 4624 "bel-parse-statement.c" */
+/* #line 4642 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -4632,11 +4650,11 @@ case 82:
 	}
 	goto tr80;
 tr156:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4645,7 +4663,7 @@ st83:
 	if ( ++p == pe )
 		goto _test_eof83;
 case 83:
-/* #line 4649 "bel-parse-statement.c" */
+/* #line 4667 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -4657,22 +4675,22 @@ case 83:
 	}
 	goto tr154;
 tr109:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st201;
 tr195:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -4694,7 +4712,7 @@ tr195:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -4704,7 +4722,7 @@ st201:
 	if ( ++p == pe )
 		goto _test_eof201;
 case 201:
-/* #line 4708 "bel-parse-statement.c" */
+/* #line 4726 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -4712,17 +4730,17 @@ case 201:
 	}
 	goto tr108;
 tr110:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st84;
 tr196:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -4749,7 +4767,7 @@ st84:
 	if ( ++p == pe )
 		goto _test_eof84;
 case 84:
-/* #line 4753 "bel-parse-statement.c" */
+/* #line 4771 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st12;
 		case 32: goto st12;
@@ -4761,31 +4779,31 @@ case 84:
 	}
 	goto tr171;
 tr177:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st85;
 tr171:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4794,7 +4812,7 @@ st85:
 	if ( ++p == pe )
 		goto _test_eof85;
 case 85:
-/* #line 4798 "bel-parse-statement.c" */
+/* #line 4816 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -4806,46 +4824,46 @@ case 85:
 	}
 	goto tr177;
 tr178:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st86;
 tr175:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st86;
 tr174:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4854,7 +4872,7 @@ st86:
 	if ( ++p == pe )
 		goto _test_eof86;
 case 86:
-/* #line 4858 "bel-parse-statement.c" */
+/* #line 4876 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -4863,7 +4881,7 @@ case 86:
 	}
 	goto tr178;
 tr181:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -4879,13 +4897,13 @@ tr181:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st87;
 tr176:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -4901,12 +4919,12 @@ tr176:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -4915,7 +4933,7 @@ st87:
 	if ( ++p == pe )
 		goto _test_eof87;
 case 87:
-/* #line 4919 "bel-parse-statement.c" */
+/* #line 4937 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st54;
 		case 32: goto st54;
@@ -4927,11 +4945,11 @@ case 87:
 	}
 	goto tr74;
 tr179:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -4953,11 +4971,11 @@ tr179:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -4967,7 +4985,7 @@ st202:
 	if ( ++p == pe )
 		goto _test_eof202;
 case 202:
-/* #line 4971 "bel-parse-statement.c" */
+/* #line 4989 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -4976,11 +4994,11 @@ case 202:
 	}
 	goto tr178;
 tr180:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -5002,7 +5020,7 @@ tr180:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5011,7 +5029,7 @@ st88:
 	if ( ++p == pe )
 		goto _test_eof88;
 case 88:
-/* #line 5015 "bel-parse-statement.c" */
+/* #line 5033 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st12;
 		case 32: goto st12;
@@ -5023,46 +5041,46 @@ case 88:
 	}
 	goto tr171;
 tr184:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st89;
 tr209:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st89;
 tr172:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5071,7 +5089,7 @@ st89:
 	if ( ++p == pe )
 		goto _test_eof89;
 case 89:
-/* #line 5075 "bel-parse-statement.c" */
+/* #line 5093 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -5082,11 +5100,11 @@ case 89:
 	}
 	goto tr184;
 tr185:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5095,7 +5113,7 @@ st90:
 	if ( ++p == pe )
 		goto _test_eof90;
 case 90:
-/* #line 5099 "bel-parse-statement.c" */
+/* #line 5117 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -5106,11 +5124,11 @@ case 90:
 	}
 	goto tr178;
 tr186:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -5131,22 +5149,22 @@ tr186:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 91; goto st9;}
         }
 	goto st91;
 tr222:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -5167,17 +5185,17 @@ tr222:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 91; goto st9;}
         }
 	goto st91;
 tr323:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -5198,11 +5216,11 @@ tr323:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 91; goto st9;}
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -5212,7 +5230,7 @@ st91:
 	if ( ++p == pe )
 		goto _test_eof91;
 case 91:
-/* #line 5216 "bel-parse-statement.c" */
+/* #line 5234 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr58;
 		case 32: goto tr58;
@@ -5224,17 +5242,17 @@ case 91:
 	}
 	goto tr189;
 tr189:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st92;
 tr208:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -5244,7 +5262,7 @@ st92:
 	if ( ++p == pe )
 		goto _test_eof92;
 case 92:
-/* #line 5248 "bel-parse-statement.c" */
+/* #line 5266 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -5254,7 +5272,7 @@ case 92:
 	}
 	goto tr189;
 tr190:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -5263,7 +5281,7 @@ st93:
 	if ( ++p == pe )
 		goto _test_eof93;
 case 93:
-/* #line 5267 "bel-parse-statement.c" */
+/* #line 5285 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -5273,13 +5291,13 @@ case 93:
 	}
 	goto tr108;
 tr198:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st94;
 tr193:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -5295,7 +5313,7 @@ tr193:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -5304,7 +5322,7 @@ st94:
 	if ( ++p == pe )
 		goto _test_eof94;
 case 94:
-/* #line 5308 "bel-parse-statement.c" */
+/* #line 5326 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr198;
 		case 32: goto tr198;
@@ -5317,18 +5335,18 @@ case 94:
 		goto tr51;
 	goto tr197;
 tr197:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st95;
 tr201:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -5337,7 +5355,7 @@ st95:
 	if ( ++p == pe )
 		goto _test_eof95;
 case 95:
-/* #line 5341 "bel-parse-statement.c" */
+/* #line 5359 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -5350,18 +5368,18 @@ case 95:
 	}
 	goto tr201;
 tr200:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st96;
 tr202:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -5370,7 +5388,7 @@ st96:
 	if ( ++p == pe )
 		goto _test_eof96;
 case 96:
-/* #line 5374 "bel-parse-statement.c" */
+/* #line 5392 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -5383,7 +5401,7 @@ case 96:
 	}
 	goto tr201;
 tr194:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -5392,7 +5410,7 @@ st97:
 	if ( ++p == pe )
 		goto _test_eof97;
 case 97:
-/* #line 5396 "bel-parse-statement.c" */
+/* #line 5414 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -5402,7 +5420,7 @@ case 97:
 	}
 	goto tr189;
 tr203:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -5411,7 +5429,7 @@ st98:
 	if ( ++p == pe )
 		goto _test_eof98;
 case 98:
-/* #line 5415 "bel-parse-statement.c" */
+/* #line 5433 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -5423,22 +5441,22 @@ case 98:
 	}
 	goto tr189;
 tr191:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st203;
 tr204:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -5460,7 +5478,7 @@ tr204:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -5470,7 +5488,7 @@ st203:
 	if ( ++p == pe )
 		goto _test_eof203;
 case 203:
-/* #line 5474 "bel-parse-statement.c" */
+/* #line 5492 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -5480,17 +5498,17 @@ case 203:
 	}
 	goto tr189;
 tr192:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st99;
 tr205:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -5517,7 +5535,7 @@ st99:
 	if ( ++p == pe )
 		goto _test_eof99;
 case 99:
-/* #line 5521 "bel-parse-statement.c" */
+/* #line 5539 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr60;
 		case 32: goto tr60;
@@ -5530,31 +5548,31 @@ case 99:
 	}
 	goto tr206;
 tr212:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st100;
 tr206:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5563,7 +5581,7 @@ st100:
 	if ( ++p == pe )
 		goto _test_eof100;
 case 100:
-/* #line 5567 "bel-parse-statement.c" */
+/* #line 5585 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -5576,11 +5594,11 @@ case 100:
 	}
 	goto tr212;
 tr213:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -5602,11 +5620,11 @@ tr213:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -5616,7 +5634,7 @@ st204:
 	if ( ++p == pe )
 		goto _test_eof204;
 case 204:
-/* #line 5620 "bel-parse-statement.c" */
+/* #line 5638 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -5627,7 +5645,7 @@ case 204:
 	}
 	goto tr184;
 tr187:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -5643,17 +5661,17 @@ tr187:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st101;
 tr210:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -5669,16 +5687,16 @@ tr210:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5687,7 +5705,7 @@ st101:
 	if ( ++p == pe )
 		goto _test_eof101;
 case 101:
-/* #line 5691 "bel-parse-statement.c" */
+/* #line 5709 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr198;
 		case 32: goto tr198;
@@ -5700,26 +5718,26 @@ case 101:
 	}
 	goto tr216;
 tr219:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st102;
 tr216:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5728,7 +5746,7 @@ st102:
 	if ( ++p == pe )
 		goto _test_eof102;
 case 102:
-/* #line 5732 "bel-parse-statement.c" */
+/* #line 5750 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -5741,26 +5759,26 @@ case 102:
 	}
 	goto tr219;
 tr220:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st103;
 tr218:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5769,7 +5787,7 @@ st103:
 	if ( ++p == pe )
 		goto _test_eof103;
 case 103:
-/* #line 5773 "bel-parse-statement.c" */
+/* #line 5791 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -5782,11 +5800,11 @@ case 103:
 	}
 	goto tr219;
 tr188:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5795,7 +5813,7 @@ st104:
 	if ( ++p == pe )
 		goto _test_eof104;
 case 104:
-/* #line 5799 "bel-parse-statement.c" */
+/* #line 5817 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -5806,31 +5824,31 @@ case 104:
 	}
 	goto tr184;
 tr221:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st105;
 tr207:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5839,7 +5857,7 @@ st105:
 	if ( ++p == pe )
 		goto _test_eof105;
 case 105:
-/* #line 5843 "bel-parse-statement.c" */
+/* #line 5861 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -5852,11 +5870,11 @@ case 105:
 	}
 	goto tr184;
 tr214:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -5878,7 +5896,7 @@ tr214:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5887,7 +5905,7 @@ st106:
 	if ( ++p == pe )
 		goto _test_eof106;
 case 106:
-/* #line 5891 "bel-parse-statement.c" */
+/* #line 5909 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr60;
 		case 32: goto tr60;
@@ -5900,31 +5918,31 @@ case 106:
 	}
 	goto tr206;
 tr215:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st107;
 tr211:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -5933,7 +5951,7 @@ st107:
 	if ( ++p == pe )
 		goto _test_eof107;
 case 107:
-/* #line 5937 "bel-parse-statement.c" */
+/* #line 5955 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -5946,7 +5964,7 @@ case 107:
 	}
 	goto tr212;
 tr27:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -5962,13 +5980,13 @@ tr27:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st108;
 tr305:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -5984,11 +6002,11 @@ tr305:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -5998,7 +6016,7 @@ st108:
 	if ( ++p == pe )
 		goto _test_eof108;
 case 108:
-/* #line 6002 "bel-parse-statement.c" */
+/* #line 6020 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st54;
 		case 32: goto st54;
@@ -6010,26 +6028,26 @@ case 108:
 	}
 	goto tr223;
 tr225:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st109;
 tr223:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -6038,7 +6056,7 @@ st109:
 	if ( ++p == pe )
 		goto _test_eof109;
 case 109:
-/* #line 6042 "bel-parse-statement.c" */
+/* #line 6060 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -6050,7 +6068,7 @@ case 109:
 	}
 	goto tr225;
 tr226:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6072,17 +6090,17 @@ tr226:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st110;
 tr236:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6109,7 +6127,7 @@ st110:
 	if ( ++p == pe )
 		goto _test_eof110;
 case 110:
-/* #line 6113 "bel-parse-statement.c" */
+/* #line 6131 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st12;
 		case 32: goto st12;
@@ -6121,31 +6139,31 @@ case 110:
 	}
 	goto tr227;
 tr227:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st111;
 tr232:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6154,7 +6172,7 @@ st111:
 	if ( ++p == pe )
 		goto _test_eof111;
 case 111:
-/* #line 6158 "bel-parse-statement.c" */
+/* #line 6176 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -6166,31 +6184,31 @@ case 111:
 	}
 	goto tr232;
 tr230:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st112;
 tr233:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6199,7 +6217,7 @@ st112:
 	if ( ++p == pe )
 		goto _test_eof112;
 case 112:
-/* #line 6203 "bel-parse-statement.c" */
+/* #line 6221 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -6209,11 +6227,11 @@ case 112:
 	}
 	goto tr233;
 tr237:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -6234,7 +6252,7 @@ st113:
 	if ( ++p == pe )
 		goto _test_eof113;
 case 113:
-/* #line 6238 "bel-parse-statement.c" */
+/* #line 6256 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st17;
 		case 32: goto st17;
@@ -6246,26 +6264,26 @@ case 113:
 	}
 	goto tr238;
 tr240:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st114;
 tr238:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6274,7 +6292,7 @@ st114:
 	if ( ++p == pe )
 		goto _test_eof114;
 case 114:
-/* #line 6278 "bel-parse-statement.c" */
+/* #line 6296 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -6286,40 +6304,40 @@ case 114:
 	}
 	goto tr240;
 tr242:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st115;
 tr239:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st115;
 tr252:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -6329,7 +6347,7 @@ st115:
 	if ( ++p == pe )
 		goto _test_eof115;
 case 115:
-/* #line 6333 "bel-parse-statement.c" */
+/* #line 6351 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -6339,11 +6357,11 @@ case 115:
 	}
 	goto tr242;
 tr243:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6352,7 +6370,7 @@ st116:
 	if ( ++p == pe )
 		goto _test_eof116;
 case 116:
-/* #line 6356 "bel-parse-statement.c" */
+/* #line 6374 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -6362,11 +6380,11 @@ case 116:
 	}
 	goto tr41;
 tr245:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6375,7 +6393,7 @@ st117:
 	if ( ++p == pe )
 		goto _test_eof117;
 case 117:
-/* #line 6379 "bel-parse-statement.c" */
+/* #line 6397 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -6385,26 +6403,26 @@ case 117:
 	}
 	goto tr242;
 tr246:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st118;
 tr263:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6413,7 +6431,7 @@ st118:
 	if ( ++p == pe )
 		goto _test_eof118;
 case 118:
-/* #line 6417 "bel-parse-statement.c" */
+/* #line 6435 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -6425,15 +6443,15 @@ case 118:
 	}
 	goto tr242;
 tr247:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6455,14 +6473,14 @@ tr247:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st205;
 tr295:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6484,15 +6502,15 @@ tr295:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -6502,7 +6520,7 @@ st205:
 	if ( ++p == pe )
 		goto _test_eof205;
 case 205:
-/* #line 6506 "bel-parse-statement.c" */
+/* #line 6524 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -6512,15 +6530,15 @@ case 205:
 	}
 	goto tr242;
 tr248:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6544,7 +6562,7 @@ tr248:
         }
 	goto st119;
 tr296:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6566,11 +6584,11 @@ tr296:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6579,7 +6597,7 @@ st119:
 	if ( ++p == pe )
 		goto _test_eof119;
 case 119:
-/* #line 6583 "bel-parse-statement.c" */
+/* #line 6601 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr60;
 		case 32: goto tr60;
@@ -6592,31 +6610,31 @@ case 119:
 	}
 	goto tr249;
 tr249:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st120;
 tr254:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6625,7 +6643,7 @@ st120:
 	if ( ++p == pe )
 		goto _test_eof120;
 case 120:
-/* #line 6629 "bel-parse-statement.c" */
+/* #line 6647 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -6638,11 +6656,11 @@ case 120:
 	}
 	goto tr254;
 tr255:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6651,7 +6669,7 @@ st121:
 	if ( ++p == pe )
 		goto _test_eof121;
 case 121:
-/* #line 6655 "bel-parse-statement.c" */
+/* #line 6673 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -6662,15 +6680,15 @@ case 121:
 	}
 	goto tr233;
 tr235:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6692,14 +6710,14 @@ tr235:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st206;
 tr286:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6721,15 +6739,15 @@ tr286:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -6739,7 +6757,7 @@ st206:
 	if ( ++p == pe )
 		goto _test_eof206;
 case 206:
-/* #line 6743 "bel-parse-statement.c" */
+/* #line 6761 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -6749,15 +6767,15 @@ case 206:
 	}
 	goto tr233;
 tr257:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6779,14 +6797,14 @@ tr257:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st207;
 tr299:
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -6808,15 +6826,15 @@ tr299:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -6826,7 +6844,7 @@ st207:
 	if ( ++p == pe )
 		goto _test_eof207;
 case 207:
-/* #line 6830 "bel-parse-statement.c" */
+/* #line 6848 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -6838,31 +6856,31 @@ case 207:
 	}
 	goto tr260;
 tr228:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st122;
 tr260:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6871,7 +6889,7 @@ st122:
 	if ( ++p == pe )
 		goto _test_eof122;
 case 122:
-/* #line 6875 "bel-parse-statement.c" */
+/* #line 6893 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -6883,11 +6901,11 @@ case 122:
 	}
 	goto tr260;
 tr258:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -6903,7 +6921,7 @@ tr258:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6912,7 +6930,7 @@ st123:
 	if ( ++p == pe )
 		goto _test_eof123;
 case 123:
-/* #line 6916 "bel-parse-statement.c" */
+/* #line 6934 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr89;
 		case 32: goto tr89;
@@ -6925,26 +6943,26 @@ case 123:
 	}
 	goto tr262;
 tr265:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st124;
 tr262:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6953,7 +6971,7 @@ st124:
 	if ( ++p == pe )
 		goto _test_eof124;
 case 124:
-/* #line 6957 "bel-parse-statement.c" */
+/* #line 6975 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -6966,26 +6984,26 @@ case 124:
 	}
 	goto tr265;
 tr266:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st125;
 tr264:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -6994,7 +7012,7 @@ st125:
 	if ( ++p == pe )
 		goto _test_eof125;
 case 125:
-/* #line 6998 "bel-parse-statement.c" */
+/* #line 7016 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -7007,11 +7025,11 @@ case 125:
 	}
 	goto tr265;
 tr261:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -7020,7 +7038,7 @@ st126:
 	if ( ++p == pe )
 		goto _test_eof126;
 case 126:
-/* #line 7024 "bel-parse-statement.c" */
+/* #line 7042 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -7032,31 +7050,31 @@ case 126:
 	}
 	goto tr260;
 tr250:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st127;
 tr267:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -7065,7 +7083,7 @@ st127:
 	if ( ++p == pe )
 		goto _test_eof127;
 case 127:
-/* #line 7069 "bel-parse-statement.c" */
+/* #line 7087 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -7078,31 +7096,31 @@ case 127:
 	}
 	goto tr260;
 tr253:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st128;
 tr259:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -7111,7 +7129,7 @@ st128:
 	if ( ++p == pe )
 		goto _test_eof128;
 case 128:
-/* #line 7115 "bel-parse-statement.c" */
+/* #line 7133 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -7124,40 +7142,40 @@ case 128:
 	}
 	goto tr254;
 tr268:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st129;
 tr224:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st129;
 tr278:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -7167,7 +7185,7 @@ st129:
 	if ( ++p == pe )
 		goto _test_eof129;
 case 129:
-/* #line 7171 "bel-parse-statement.c" */
+/* #line 7189 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -7177,11 +7195,11 @@ case 129:
 	}
 	goto tr268;
 tr269:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -7190,7 +7208,7 @@ st130:
 	if ( ++p == pe )
 		goto _test_eof130;
 case 130:
-/* #line 7194 "bel-parse-statement.c" */
+/* #line 7212 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -7200,11 +7218,11 @@ case 130:
 	}
 	goto tr41;
 tr270:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -7213,7 +7231,7 @@ st131:
 	if ( ++p == pe )
 		goto _test_eof131;
 case 131:
-/* #line 7217 "bel-parse-statement.c" */
+/* #line 7235 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -7223,26 +7241,26 @@ case 131:
 	}
 	goto tr268;
 tr271:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st132;
 tr364:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -7251,7 +7269,7 @@ st132:
 	if ( ++p == pe )
 		goto _test_eof132;
 case 132:
-/* #line 7255 "bel-parse-statement.c" */
+/* #line 7273 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -7263,11 +7281,11 @@ case 132:
 	}
 	goto tr268;
 tr272:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -7289,26 +7307,26 @@ tr272:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st208;
 tr293:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -7330,7 +7348,7 @@ tr293:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -7340,7 +7358,7 @@ st208:
 	if ( ++p == pe )
 		goto _test_eof208;
 case 208:
-/* #line 7344 "bel-parse-statement.c" */
+/* #line 7362 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -7350,11 +7368,11 @@ case 208:
 	}
 	goto tr268;
 tr273:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -7376,21 +7394,21 @@ tr273:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st133;
 tr283:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -7417,7 +7435,7 @@ st133:
 	if ( ++p == pe )
 		goto _test_eof133;
 case 133:
-/* #line 7421 "bel-parse-statement.c" */
+/* #line 7439 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr122;
 		case 32: goto tr122;
@@ -7430,30 +7448,30 @@ case 133:
 	}
 	goto tr274;
 tr280:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st134;
 tr274:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -7463,7 +7481,7 @@ st134:
 	if ( ++p == pe )
 		goto _test_eof134;
 case 134:
-/* #line 7467 "bel-parse-statement.c" */
+/* #line 7485 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -7476,11 +7494,11 @@ case 134:
 	}
 	goto tr280;
 tr281:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -7489,7 +7507,7 @@ st135:
 	if ( ++p == pe )
 		goto _test_eof135;
 case 135:
-/* #line 7493 "bel-parse-statement.c" */
+/* #line 7511 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -7500,11 +7518,11 @@ case 135:
 	}
 	goto tr233;
 tr298:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -7526,26 +7544,26 @@ tr298:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st209;
 tr282:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -7567,7 +7585,7 @@ tr282:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -7577,7 +7595,7 @@ st209:
 	if ( ++p == pe )
 		goto _test_eof209;
 case 209:
-/* #line 7581 "bel-parse-statement.c" */
+/* #line 7599 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -7589,30 +7607,30 @@ case 209:
 	}
 	goto tr287;
 tr287:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st136;
 tr277:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -7622,7 +7640,7 @@ st136:
 	if ( ++p == pe )
 		goto _test_eof136;
 case 136:
-/* #line 7626 "bel-parse-statement.c" */
+/* #line 7644 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -7634,15 +7652,15 @@ case 136:
 	}
 	goto tr287;
 tr284:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -7663,7 +7681,7 @@ st137:
 	if ( ++p == pe )
 		goto _test_eof137;
 case 137:
-/* #line 7667 "bel-parse-statement.c" */
+/* #line 7685 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr144;
 		case 32: goto tr144;
@@ -7676,25 +7694,25 @@ case 137:
 	}
 	goto tr289;
 tr292:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st138;
 tr289:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -7704,7 +7722,7 @@ st138:
 	if ( ++p == pe )
 		goto _test_eof138;
 case 138:
-/* #line 7708 "bel-parse-statement.c" */
+/* #line 7726 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -7717,25 +7735,25 @@ case 138:
 	}
 	goto tr292;
 tr294:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st139;
 tr291:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -7745,7 +7763,7 @@ st139:
 	if ( ++p == pe )
 		goto _test_eof139;
 case 139:
-/* #line 7749 "bel-parse-statement.c" */
+/* #line 7767 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -7758,15 +7776,15 @@ case 139:
 	}
 	goto tr292;
 tr290:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -7776,7 +7794,7 @@ st140:
 	if ( ++p == pe )
 		goto _test_eof140;
 case 140:
-/* #line 7780 "bel-parse-statement.c" */
+/* #line 7798 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -7788,11 +7806,11 @@ case 140:
 	}
 	goto tr242;
 tr288:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -7801,7 +7819,7 @@ st141:
 	if ( ++p == pe )
 		goto _test_eof141;
 case 141:
-/* #line 7805 "bel-parse-statement.c" */
+/* #line 7823 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -7813,11 +7831,11 @@ case 141:
 	}
 	goto tr287;
 tr297:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -7826,7 +7844,7 @@ st142:
 	if ( ++p == pe )
 		goto _test_eof142;
 case 142:
-/* #line 7830 "bel-parse-statement.c" */
+/* #line 7848 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -7839,30 +7857,30 @@ case 142:
 	}
 	goto tr287;
 tr285:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st143;
 tr279:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -7872,7 +7890,7 @@ st143:
 	if ( ++p == pe )
 		goto _test_eof143;
 case 143:
-/* #line 7876 "bel-parse-statement.c" */
+/* #line 7894 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -7885,20 +7903,20 @@ case 143:
 	}
 	goto tr280;
 tr275:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -7908,7 +7926,7 @@ st144:
 	if ( ++p == pe )
 		goto _test_eof144;
 case 144:
-/* #line 7912 "bel-parse-statement.c" */
+/* #line 7930 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -7921,11 +7939,11 @@ case 144:
 	}
 	goto tr260;
 tr25:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -7947,26 +7965,26 @@ tr25:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st210;
 tr307:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -7988,7 +8006,7 @@ tr307:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -7998,7 +8016,7 @@ st210:
 	if ( ++p == pe )
 		goto _test_eof210;
 case 210:
-/* #line 8002 "bel-parse-statement.c" */
+/* #line 8020 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st0;
 		case 32: goto st0;
@@ -8007,11 +8025,11 @@ case 210:
 	}
 	goto tr23;
 tr26:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -8033,21 +8051,21 @@ tr26:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st145;
 tr308:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -8074,7 +8092,7 @@ st145:
 	if ( ++p == pe )
 		goto _test_eof145;
 case 145:
-/* #line 8078 "bel-parse-statement.c" */
+/* #line 8096 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st12;
 		case 32: goto st12;
@@ -8086,30 +8104,30 @@ case 145:
 	}
 	goto tr300;
 tr306:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st146;
 tr300:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -8119,7 +8137,7 @@ st146:
 	if ( ++p == pe )
 		goto _test_eof146;
 case 146:
-/* #line 8123 "bel-parse-statement.c" */
+/* #line 8141 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -8131,45 +8149,45 @@ case 146:
 	}
 	goto tr306;
 tr309:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st147;
 tr301:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st147;
 tr324:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -8179,7 +8197,7 @@ st147:
 	if ( ++p == pe )
 		goto _test_eof147;
 case 147:
-/* #line 8183 "bel-parse-statement.c" */
+/* #line 8201 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -8190,11 +8208,11 @@ case 147:
 	}
 	goto tr309;
 tr310:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -8203,7 +8221,7 @@ st148:
 	if ( ++p == pe )
 		goto _test_eof148;
 case 148:
-/* #line 8207 "bel-parse-statement.c" */
+/* #line 8225 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -8214,7 +8232,7 @@ case 148:
 	}
 	goto tr23;
 tr311:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -8230,17 +8248,17 @@ tr311:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st149;
 tr325:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -8256,15 +8274,15 @@ tr325:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -8274,7 +8292,7 @@ st149:
 	if ( ++p == pe )
 		goto _test_eof149;
 case 149:
-/* #line 8278 "bel-parse-statement.c" */
+/* #line 8296 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr198;
 		case 32: goto tr198;
@@ -8287,26 +8305,26 @@ case 149:
 	}
 	goto tr313;
 tr316:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st150;
 tr313:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -8315,7 +8333,7 @@ st150:
 	if ( ++p == pe )
 		goto _test_eof150;
 case 150:
-/* #line 8319 "bel-parse-statement.c" */
+/* #line 8337 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -8328,26 +8346,26 @@ case 150:
 	}
 	goto tr316;
 tr317:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st151;
 tr315:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -8356,7 +8374,7 @@ st151:
 	if ( ++p == pe )
 		goto _test_eof151;
 case 151:
-/* #line 8360 "bel-parse-statement.c" */
+/* #line 8378 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -8369,16 +8387,16 @@ case 151:
 	}
 	goto tr316;
 tr314:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -8387,7 +8405,7 @@ st152:
 	if ( ++p == pe )
 		goto _test_eof152;
 case 152:
-/* #line 8391 "bel-parse-statement.c" */
+/* #line 8409 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -8399,11 +8417,11 @@ case 152:
 	}
 	goto tr268;
 tr312:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -8412,7 +8430,7 @@ st153:
 	if ( ++p == pe )
 		goto _test_eof153;
 case 153:
-/* #line 8416 "bel-parse-statement.c" */
+/* #line 8434 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -8423,30 +8441,30 @@ case 153:
 	}
 	goto tr309;
 tr318:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st154;
 tr322:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -8456,7 +8474,7 @@ st154:
 	if ( ++p == pe )
 		goto _test_eof154;
 case 154:
-/* #line 8460 "bel-parse-statement.c" */
+/* #line 8478 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -8469,11 +8487,11 @@ case 154:
 	}
 	goto tr309;
 tr382:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -8495,26 +8513,26 @@ tr382:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st211;
 tr319:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -8536,7 +8554,7 @@ tr319:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -8546,7 +8564,7 @@ st211:
 	if ( ++p == pe )
 		goto _test_eof211;
 case 211:
-/* #line 8550 "bel-parse-statement.c" */
+/* #line 8568 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 32: goto tr51;
@@ -8557,11 +8575,11 @@ case 211:
 	}
 	goto tr309;
 tr383:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -8583,21 +8601,21 @@ tr383:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st155;
 tr320:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -8624,7 +8642,7 @@ st155:
 	if ( ++p == pe )
 		goto _test_eof155;
 case 155:
-/* #line 8628 "bel-parse-statement.c" */
+/* #line 8646 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr60;
 		case 32: goto tr60;
@@ -8637,30 +8655,30 @@ case 155:
 	}
 	goto tr321;
 tr327:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st156;
 tr321:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -8670,7 +8688,7 @@ st156:
 	if ( ++p == pe )
 		goto _test_eof156;
 case 156:
-/* #line 8674 "bel-parse-statement.c" */
+/* #line 8692 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -8683,30 +8701,30 @@ case 156:
 	}
 	goto tr327;
 tr328:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st157;
 tr326:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -8716,7 +8734,7 @@ st157:
 	if ( ++p == pe )
 		goto _test_eof157;
 case 157:
-/* #line 8720 "bel-parse-statement.c" */
+/* #line 8738 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr55;
 		case 32: goto tr55;
@@ -8729,65 +8747,65 @@ case 157:
 	}
 	goto tr327;
 tr17:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st158;
 tr329:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st158;
 tr374:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
 	goto st158;
 tr375:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -8797,7 +8815,7 @@ st158:
 	if ( ++p == pe )
 		goto _test_eof158;
 case 158:
-/* #line 8801 "bel-parse-statement.c" */
+/* #line 8819 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -8808,11 +8826,11 @@ case 158:
 	}
 	goto tr329;
 tr330:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -8821,7 +8839,7 @@ st159:
 	if ( ++p == pe )
 		goto _test_eof159;
 case 159:
-/* #line 8825 "bel-parse-statement.c" */
+/* #line 8843 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 32: goto tr22;
@@ -8832,11 +8850,11 @@ case 159:
 	}
 	goto tr23;
 tr331:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -8857,22 +8875,22 @@ tr331:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 160; goto st9;}
         }
 	goto st160;
 tr362:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -8893,17 +8911,17 @@ tr362:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 160; goto st9;}
         }
 	goto st160;
 tr373:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 119 "bel-parse-statement.rl" */
+/* #line 137 "bel-parse-statement.rl" */
 	{
             bel_ast_node* term_top = stack_peek(term_stack);
 
@@ -8924,11 +8942,11 @@ tr373:
             // push new nested term onto stack
             stack_push(term_stack, term);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 160; goto st9;}
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -8938,7 +8956,7 @@ st160:
 	if ( ++p == pe )
 		goto _test_eof160;
 case 160:
-/* #line 8942 "bel-parse-statement.c" */
+/* #line 8960 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr120;
 		case 32: goto tr120;
@@ -8950,17 +8968,17 @@ case 160:
 	}
 	goto tr334;
 tr334:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st161;
 tr347:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
@@ -8970,7 +8988,7 @@ st161:
 	if ( ++p == pe )
 		goto _test_eof161;
 case 161:
-/* #line 8974 "bel-parse-statement.c" */
+/* #line 8992 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -8980,13 +8998,13 @@ case 161:
 	}
 	goto tr334;
 tr340:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st162;
 tr337:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -9002,7 +9020,7 @@ tr337:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -9011,7 +9029,7 @@ st162:
 	if ( ++p == pe )
 		goto _test_eof162;
 case 162:
-/* #line 9015 "bel-parse-statement.c" */
+/* #line 9033 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr340;
 		case 32: goto tr340;
@@ -9024,7 +9042,7 @@ case 162:
 		goto tr114;
 	goto tr339;
 tr338:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -9033,7 +9051,7 @@ st163:
 	if ( ++p == pe )
 		goto _test_eof163;
 case 163:
-/* #line 9037 "bel-parse-statement.c" */
+/* #line 9055 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -9043,7 +9061,7 @@ case 163:
 	}
 	goto tr334;
 tr342:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
@@ -9052,7 +9070,7 @@ st164:
 	if ( ++p == pe )
 		goto _test_eof164;
 case 164:
-/* #line 9056 "bel-parse-statement.c" */
+/* #line 9074 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -9064,22 +9082,22 @@ case 164:
 	}
 	goto tr334;
 tr335:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st212;
 tr343:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -9101,7 +9119,7 @@ tr343:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -9111,7 +9129,7 @@ st212:
 	if ( ++p == pe )
 		goto _test_eof212;
 case 212:
-/* #line 9115 "bel-parse-statement.c" */
+/* #line 9133 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -9121,17 +9139,17 @@ case 212:
 	}
 	goto tr334;
 tr336:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
 	goto st165;
 tr344:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -9158,7 +9176,7 @@ st165:
 	if ( ++p == pe )
 		goto _test_eof165;
 case 165:
-/* #line 9162 "bel-parse-statement.c" */
+/* #line 9180 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr122;
 		case 32: goto tr122;
@@ -9171,31 +9189,31 @@ case 165:
 	}
 	goto tr345;
 tr352:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st166;
 tr345:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9204,7 +9222,7 @@ st166:
 	if ( ++p == pe )
 		goto _test_eof166;
 case 166:
-/* #line 9208 "bel-parse-statement.c" */
+/* #line 9226 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -9217,11 +9235,11 @@ case 166:
 	}
 	goto tr352;
 tr353:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -9243,11 +9261,11 @@ tr353:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -9257,7 +9275,7 @@ st213:
 	if ( ++p == pe )
 		goto _test_eof213;
 case 213:
-/* #line 9261 "bel-parse-statement.c" */
+/* #line 9279 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -9268,46 +9286,46 @@ case 213:
 	}
 	goto tr357;
 tr357:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st167;
 tr349:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st167;
 tr348:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9316,7 +9334,7 @@ st167:
 	if ( ++p == pe )
 		goto _test_eof167;
 case 167:
-/* #line 9320 "bel-parse-statement.c" */
+/* #line 9338 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -9327,7 +9345,7 @@ case 167:
 	}
 	goto tr357;
 tr355:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -9343,17 +9361,17 @@ tr355:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st168;
 tr350:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -9369,16 +9387,16 @@ tr350:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9387,7 +9405,7 @@ st168:
 	if ( ++p == pe )
 		goto _test_eof168;
 case 168:
-/* #line 9391 "bel-parse-statement.c" */
+/* #line 9409 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr340;
 		case 32: goto tr340;
@@ -9400,11 +9418,11 @@ case 168:
 	}
 	goto tr359;
 tr358:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9413,7 +9431,7 @@ st169:
 	if ( ++p == pe )
 		goto _test_eof169;
 case 169:
-/* #line 9417 "bel-parse-statement.c" */
+/* #line 9435 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -9424,11 +9442,11 @@ case 169:
 	}
 	goto tr357;
 tr361:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9437,7 +9455,7 @@ st170:
 	if ( ++p == pe )
 		goto _test_eof170;
 case 170:
-/* #line 9441 "bel-parse-statement.c" */
+/* #line 9459 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -9450,11 +9468,11 @@ case 170:
 	}
 	goto tr357;
 tr354:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -9476,7 +9494,7 @@ tr354:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9485,7 +9503,7 @@ st171:
 	if ( ++p == pe )
 		goto _test_eof171;
 case 171:
-/* #line 9489 "bel-parse-statement.c" */
+/* #line 9507 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr122;
 		case 32: goto tr122;
@@ -9498,21 +9516,21 @@ case 171:
 	}
 	goto tr345;
 tr346:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9521,7 +9539,7 @@ st172:
 	if ( ++p == pe )
 		goto _test_eof172;
 case 172:
-/* #line 9525 "bel-parse-statement.c" */
+/* #line 9543 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -9534,31 +9552,31 @@ case 172:
 	}
 	goto tr184;
 tr356:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st173;
 tr351:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9567,7 +9585,7 @@ st173:
 	if ( ++p == pe )
 		goto _test_eof173;
 case 173:
-/* #line 9571 "bel-parse-statement.c" */
+/* #line 9589 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -9580,7 +9598,7 @@ case 173:
 	}
 	goto tr352;
 tr332:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -9596,17 +9614,17 @@ tr332:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st174;
 tr376:
-/* #line 140 "bel-parse-statement.rl" */
+/* #line 158 "bel-parse-statement.rl" */
 	{
             term = stack_peek(term_stack);
 
@@ -9622,15 +9640,15 @@ tr376:
             arg->token->left         = current_nv;
             arg->token->right        = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -9640,7 +9658,7 @@ st174:
 	if ( ++p == pe )
 		goto _test_eof174;
 case 174:
-/* #line 9644 "bel-parse-statement.c" */
+/* #line 9662 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr340;
 		case 32: goto tr340;
@@ -9653,26 +9671,26 @@ case 174:
 	}
 	goto tr363;
 tr366:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st175;
 tr363:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9681,7 +9699,7 @@ st175:
 	if ( ++p == pe )
 		goto _test_eof175;
 case 175:
-/* #line 9685 "bel-parse-statement.c" */
+/* #line 9703 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -9694,26 +9712,26 @@ case 175:
 	}
 	goto tr366;
 tr367:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st176;
 tr365:
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9722,7 +9740,7 @@ st176:
 	if ( ++p == pe )
 		goto _test_eof176;
 case 176:
-/* #line 9726 "bel-parse-statement.c" */
+/* #line 9744 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -9735,11 +9753,11 @@ case 176:
 	}
 	goto tr366;
 tr333:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9748,7 +9766,7 @@ st177:
 	if ( ++p == pe )
 		goto _test_eof177;
 case 177:
-/* #line 9752 "bel-parse-statement.c" */
+/* #line 9770 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -9759,11 +9777,11 @@ case 177:
 	}
 	goto tr329;
 tr368:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -9772,7 +9790,7 @@ st178:
 	if ( ++p == pe )
 		goto _test_eof178;
 case 178:
-/* #line 9776 "bel-parse-statement.c" */
+/* #line 9794 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -9785,11 +9803,11 @@ case 178:
 	}
 	goto tr329;
 tr369:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -9811,26 +9829,26 @@ tr369:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
         }
 	goto st214;
 tr379:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -9852,7 +9870,7 @@ tr379:
 
             current_nv = 0;
         }
-/* #line 182 "bel-parse-statement.rl" */
+/* #line 200 "bel-parse-statement.rl" */
 	{
             term = stack_pop(term_stack);
             {cs = stack[--top];goto _again;}
@@ -9862,7 +9880,7 @@ st214:
 	if ( ++p == pe )
 		goto _test_eof214;
 case 214:
-/* #line 9866 "bel-parse-statement.c" */
+/* #line 9884 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr114;
 		case 32: goto tr114;
@@ -9873,11 +9891,11 @@ case 214:
 	}
 	goto tr329;
 tr370:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -9899,21 +9917,21 @@ tr370:
 
             current_nv = 0;
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st179;
 tr380:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 156 "bel-parse-statement.rl" */
+/* #line 174 "bel-parse-statement.rl" */
 	{
             if (!current_nv) {
                 term = stack_peek(term_stack);
@@ -9940,7 +9958,7 @@ st179:
 	if ( ++p == pe )
 		goto _test_eof179;
 case 179:
-/* #line 9944 "bel-parse-statement.c" */
+/* #line 9962 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr122;
 		case 32: goto tr122;
@@ -9953,30 +9971,30 @@ case 179:
 	}
 	goto tr371;
 tr378:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st180;
 tr371:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -9986,7 +10004,7 @@ st180:
 	if ( ++p == pe )
 		goto _test_eof180;
 case 180:
-/* #line 9990 "bel-parse-statement.c" */
+/* #line 10008 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -9999,30 +10017,30 @@ case 180:
 	}
 	goto tr378;
 tr381:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st181;
 tr377:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -10032,7 +10050,7 @@ st181:
 	if ( ++p == pe )
 		goto _test_eof181;
 case 181:
-/* #line 10036 "bel-parse-statement.c" */
+/* #line 10054 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr117;
 		case 32: goto tr117;
@@ -10045,20 +10063,20 @@ case 181:
 	}
 	goto tr378;
 tr372:
-/* #line 97 "bel-parse-statement.rl" */
+/* #line 115 "bel-parse-statement.rl" */
 	{
             value[vi++] = (*p);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
-/* #line 84 "bel-parse-statement.rl" */
+/* #line 102 "bel-parse-statement.rl" */
 	{
             vi = 0;
             memset(value, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
@@ -10068,7 +10086,7 @@ st182:
 	if ( ++p == pe )
 		goto _test_eof182;
 case 182:
-/* #line 10072 "bel-parse-statement.c" */
+/* #line 10090 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr149;
 		case 32: goto tr149;
@@ -10091,18 +10109,18 @@ case 183:
 	}
 	goto tr384;
 tr384:
-/* #line 74 "bel-parse-statement.rl" */
+/* #line 92 "bel-parse-statement.rl" */
 	{
             fi = 0;
             memset(function, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
 	goto st184;
 tr385:
-/* #line 89 "bel-parse-statement.rl" */
+/* #line 107 "bel-parse-statement.rl" */
 	{
             function[fi++] = (*p);
         }
@@ -10111,7 +10129,7 @@ st184:
 	if ( ++p == pe )
 		goto _test_eof184;
 case 184:
-/* #line 10115 "bel-parse-statement.c" */
+/* #line 10133 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto tr386;
 		case 32: goto tr386;
@@ -10119,7 +10137,7 @@ case 184:
 	}
 	goto tr385;
 tr386:
-/* #line 101 "bel-parse-statement.rl" */
+/* #line 119 "bel-parse-statement.rl" */
 	{
             term               = stack_peek(term_stack);
             term->token->left  = bel_new_ast_node_value(BEL_VALUE_FX, function);
@@ -10130,7 +10148,7 @@ st185:
 	if ( ++p == pe )
 		goto _test_eof185;
 case 185:
-/* #line 10134 "bel-parse-statement.c" */
+/* #line 10152 "bel-parse-statement.c" */
 	switch( (*p) ) {
 		case 9: goto st185;
 		case 32: goto st185;
@@ -10138,19 +10156,19 @@ case 185:
 	}
 	goto st0;
 tr387:
-/* #line 101 "bel-parse-statement.rl" */
+/* #line 119 "bel-parse-statement.rl" */
 	{
             term               = stack_peek(term_stack);
             term->token->left  = bel_new_ast_node_value(BEL_VALUE_FX, function);
             term->token->right = bel_new_ast_node_token(BEL_TOKEN_ARG);
         }
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 186; goto st9;}
         }
 	goto st186;
 tr389:
-/* #line 178 "bel-parse-statement.rl" */
+/* #line 196 "bel-parse-statement.rl" */
 	{
             {stack[top++] = 186; goto st9;}
         }
@@ -10159,12 +10177,12 @@ st186:
 	if ( ++p == pe )
 		goto _test_eof186;
 case 186:
-/* #line 10163 "bel-parse-statement.c" */
+/* #line 10181 "bel-parse-statement.c" */
 	goto tr390;
 tr390:
-/* #line 252 "bel-parse-statement.rl" */
+/* #line 270 "bel-parse-statement.rl" */
 	{ p--; }
-/* #line 195 "bel-parse-statement.rl" */
+/* #line 213 "bel-parse-statement.rl" */
 	{
             statement = stack_peek(statement_stack);
             if (statement->token->left == NULL) {
@@ -10188,7 +10206,7 @@ st215:
 	if ( ++p == pe )
 		goto _test_eof215;
 case 215:
-/* #line 10192 "bel-parse-statement.c" */
+/* #line 10210 "bel-parse-statement.c" */
 	goto st0;
 	}
 	_test_eof1: cs = 1; goto _test_eof; 
@@ -10411,7 +10429,7 @@ case 215:
 	_out: {}
 	}
 
-/* #line 286 "bel-parse-statement.rl" */
+/* #line 304 "bel-parse-statement.rl" */
 
 
     // free allocations
@@ -10429,5 +10447,101 @@ case 215:
 
     return ast;
 };
+
+/* private */
+bel_ast* _create_statement_ast() {
+    bel_ast*      ast;
+    bel_ast_node* statement;
+
+    ast       = bel_new_ast();
+    statement = _create_statement_ast_node();
+    ast->root = statement;
+
+    return ast;
+};
+
+/* private - optimistic subject creation */
+bel_ast_node* _create_statement_ast_node() {
+    bel_ast_node* statement;
+    bel_ast_node* subject;
+    bel_ast_node* object;
+    bel_ast_node* term;
+
+    statement = bel_new_ast_node_token(BEL_TOKEN_STATEMENT);
+    subject   = bel_new_ast_node_token(BEL_TOKEN_SUBJECT);
+    object    = bel_new_ast_node_token(BEL_TOKEN_OBJECT);
+    term      = _create_term_ast_node();
+
+    statement->token->left  = subject;
+    statement->token->right = object;
+    subject->token->left    = term;
+
+    return statement;
+};
+
+/* private */
+bel_ast_node* _create_term_ast_node() {
+    bel_ast_node* term;
+    bel_ast_node* fx;
+    bel_ast_node* arg;
+
+    term = bel_new_ast_node_token(BEL_TOKEN_TERM);
+    fx   = bel_new_ast_node_value(BEL_VALUE_FX, NULL);
+    arg  = bel_new_ast_node_token(BEL_TOKEN_ARG);
+
+    term->token->left  = fx;
+    term->token->right = arg;
+
+    return term;
+};
+
+/* private */
+bel_ast_node* _create_arg_nv_ast_node() {
+    bel_ast_node* arg;
+    bel_ast_node* nv;
+    bel_ast_node* arg_placeholder;
+
+    arg              = bel_new_ast_node_token(BEL_TOKEN_ARG);
+    nv               = _create_nv_ast_node();
+    arg_placeholder  = bel_new_ast_node_token(BEL_TOKEN_ARG);
+
+    arg->token->left  = nv;
+    arg->token->right = arg_placeholder;
+
+    return arg;
+};
+
+/* private */
+bel_ast_node* _create_arg_term_ast_node() {
+    bel_ast_node* arg;
+    bel_ast_node* term;
+    bel_ast_node* arg_placeholder;
+
+    arg              = bel_new_ast_node_token(BEL_TOKEN_ARG);
+    term             = _create_nv_ast_node();
+    arg_placeholder  = bel_new_ast_node_token(BEL_TOKEN_ARG);
+
+    arg->token->left  = term;
+    arg->token->right = arg_placeholder;
+
+    return arg;
+};
+
+/* private */
+bel_ast_node* _create_nv_ast_node() {
+    bel_ast_node* nv;
+    bel_ast_node* pfx;
+    bel_ast_node* val;
+
+    nv   = bel_new_ast_node_token(BEL_TOKEN_NV);
+    pfx  = bel_new_ast_node_value(BEL_VALUE_PFX, NULL);
+    val  = bel_new_ast_node_value(BEL_VALUE_VAL, NULL);
+
+    nv->token->left  = pfx;
+    nv->token->right = val;
+
+    return nv;
+};
+
 // vim: ft=ragel sw=4 ts=4 sts=4 expandtab
 
