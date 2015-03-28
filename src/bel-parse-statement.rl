@@ -227,26 +227,29 @@ bel_ast* bel_parse_statement(char* line) {
             fret;
         }
 
+        # Chracter class definitions
         SP               = [ \t];
         NL               = '\n' | '\r' '\n'?;
         O_PAREN          = '(';
         C_PAREN          = ')';
-        COLON            = ':';
+        NOT_SPACE         = [^ \t\n];
+        FUNCTION_CHAR     = [^ \t(];
+        HEAD_PREFIX_CHAR  = [^ \t:];
+        TAIL_PREFIX_CHAR  = [^ \t:,];
 
-        IDENT            = [a-zA-Z0-9_];
-        NOT_SPACE        = [^ \t\n];
-        NOT_OPAREN       = [^ \t(];
-        NOT_COLON        = [^ \t:];
-        NOT_COLON_COMMA  = [^ \t:,];
+        # Complete token definitions
+        STRING            = '"' ('\\\"' | [^"])* '"';
+        VALUE             = [^ \t,:()"]+;
 
+        # BEL structure definitions
+        FUNCTION         = FUNCTION_CHAR+            >fxc  $fxn            %FX;
+        NESTED_FUNCTION  = FUNCTION_CHAR+            >fxc  $fxn            %NESTED_FX;
+        HEAD_PREFIX      = (HEAD_PREFIX_CHAR+        >valc $valn ':')?     @PFX;
+        TAIL_PREFIX      = (TAIL_PREFIX_CHAR+        >valc $valn ':')?     @PFX;
+        STRING_OR_TOKEN  = (STRING|VALUE)             >valc $valn           %VAL;
+
+        # Control definitions
         HOLD_ANY_CHAR    = any @{ fhold; };
-        IDENT_TOKEN      = IDENT+;
-        STRING_TOKEN     = '"' ('\\\"' | [^"])* '"';
-        FUNCTION         = NOT_OPAREN+                >fxc  $fxn            %FX;
-        NESTED_FUNCTION  = NOT_OPAREN+                >fxc  $fxn            %NESTED_FX;
-        HEAD_PREFIX      = (NOT_COLON+                >valc $valn ':')?     @PFX;
-        TAIL_PREFIX      = (NOT_COLON_COMMA+          >valc $valn ':')?     @PFX;
-        STRING_OR_TOKEN  = (STRING_TOKEN|IDENT_TOKEN) >valc $valn           %VAL;
 
         arguments :=
             SP*
@@ -268,10 +271,10 @@ bel_ast* bel_parse_statement(char* line) {
         ;
 
         statement :=
-            SP* IDENT @CALL_TERM SP+ NOT_SPACE+ >relc $reln @REL
+            SP* FUNCTION_CHAR @CALL_TERM SP+ NOT_SPACE+ >relc $reln @REL
             SP+
             (
-                ( IDENT @CALL_TERM SP* C_PAREN? @RET_STATEMENT NL    )
+                ( FUNCTION_CHAR @CALL_TERM SP* C_PAREN? @RET_STATEMENT NL    )
                   |
                 ( O_PAREN @CALL_STATEMENT SP* C_PAREN @RET_STATEMENT )
             )
@@ -297,5 +300,5 @@ bel_ast* bel_parse_statement(char* line) {
 
     return ast;
 };
-// vim: ft=c sw=4 ts=4 sts=4 expandtab
+// vim: ft=ragel sw=4 ts=4 sts=4 expandtab
 
