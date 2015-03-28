@@ -211,4 +211,51 @@
             "STATEMENT SUBJECT TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(=>) (null) STATEMENT SUBJECT TERM fx(r) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(->) (null) STATEMENT SUBJECT TERM fx(act) ARG TERM fx(p) ARG NV pfx(HGNC) val(AKARP7) ARG (null) (null) ARG (null) (null) (null) OBJECT REL rel(-|) (null) TERM fx(complex) ARG NV pfx(SCOMP) val(\"AP-1 Complex\") ARG (null) (null) ") == 0,
         "[statement_ast] failed to parse multi-nested statement with spacing");
 
+#test statement_spacing
+    char leading_spaces[LINE_CHAR_LEN]   = "    p(HGNC:AKT1) -- r(HGNC:AKT1)";
+    char leading_tabs[LINE_CHAR_LEN]     = "\t\tp(HGNC:AKT1) -- r(HGNC:AKT1)";
+    char trailing_spaces[LINE_CHAR_LEN]  = "p(HGNC:AKT1) -- r(HGNC:AKT1)    ";
+    char trailing_tabs[LINE_CHAR_LEN]    = "p(HGNC:AKT1) -- r(HGNC:AKT1)\t\t";
+    char function_spacing[LINE_CHAR_LEN] = " p (  \tHGNC:AKT1\t  )   --   r (\t  HGNC:AKT1  \t) ";
+    char prefix_spacing[LINE_CHAR_LEN]   = "p( HGNC: AKT1 )  --  r( HGNC: AKT1 )";
+    const char* expected_ast             = "STATEMENT SUBJECT TERM fx(p) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) (null) OBJECT REL rel(--) (null) TERM fx(r) ARG NV pfx(HGNC) val(AKT1) ARG (null) (null) ";
+
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(leading_spaces)),
+            expected_ast
+        ) == 0,
+        "[statement_spacing] failed to parse statement with leading spaces");
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(leading_tabs)),
+            expected_ast
+        ) == 0,
+        "[statement_spacing] failed to parse statement with leading tabs");
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(trailing_spaces)),
+            expected_ast
+        ) == 0,
+        "[statement_spacing] failed to parse statement with trailing spaces");
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(trailing_tabs)),
+            expected_ast
+        ) == 0,
+        "[statement_spacing] failed to parse statement with trailing tabs");
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(function_spacing)),
+            expected_ast
+        ) == 0,
+        "[statement_spacing] failed to parse statement with spacing within function");
+    fprintf(stdout, "%s\n", bel_ast_as_string(bel_parse_statement(prefix_spacing)));
+    fail_unless(
+        strcmp(
+            bel_ast_as_string(bel_parse_statement(prefix_spacing)),
+            expected_ast
+        ) == 0,
+        "[statement_spacing] failed to parse statement with spacing within prefix");
+
 // vim: ft=c sw=4 ts=4 sts=4 expandtab

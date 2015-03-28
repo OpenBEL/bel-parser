@@ -60,8 +60,6 @@ bel_ast* bel_parse_statement(char* line) {
     statement_stack   = stack_init(STATEMENT_STACK_SIZE);
     statement         = bel_new_ast_node_token(BEL_TOKEN_STATEMENT);
     parent_statement  = NULL;
-    /* subject           = bel_new_ast_node_token(BEL_TOKEN_SUBJECT); */
-    /* object            = bel_new_ast_node_token(BEL_TOKEN_OBJECT); */
     term              = NULL;
     ast               = bel_new_ast();
     ast->root         = statement;
@@ -229,39 +227,48 @@ bel_ast* bel_parse_statement(char* line) {
             fret;
         }
 
-        SP               = ' ' | '\t';
+        SP               = [ \t];
         NL               = '\n' | '\r' '\n'?;
         O_PAREN          = '(';
         C_PAREN          = ')';
         COLON            = ':';
 
         IDENT            = [a-zA-Z0-9_];
-        NON_SPACE        = [^ \t\n];
+        NOT_SPACE        = [^ \t\n];
+        NOT_OPAREN       = [^ \t(];
+        NOT_COLON        = [^ \t:];
+        NOT_COLON_COMMA  = [^ \t:,];
 
+        HOLD_ANY_CHAR    = any @{ fhold; };
         IDENT_TOKEN      = IDENT+;
-        NON_SPACED_TOKEN = NON_SPACE+;
         STRING_TOKEN     = '"' ('\\\"' | [^"])* '"';
+        FUNCTION         = NOT_OPAREN+                >fxc  $fxn            %FX;
+        NESTED_FUNCTION  = NOT_OPAREN+                >fxc  $fxn            %NESTED_FX;
+        HEAD_PREFIX      = (NOT_COLON+                >valc $valn ':')?     @PFX;
+        TAIL_PREFIX      = (NOT_COLON_COMMA+          >valc $valn ':')?     @PFX;
+        STRING_OR_TOKEN  = (STRING_TOKEN|IDENT_TOKEN) >valc $valn           %VAL;
 
         arguments :=
+            SP*
             (
-                (IDENT_TOKEN >valc $valn ':')? @PFX (STRING_TOKEN|IDENT_TOKEN) >valc $valn %VAL |
-                IDENT_TOKEN  >fxc $fxn %NESTED_FX O_PAREN @CALL_ARGUMENTS
+                HEAD_PREFIX SP* STRING_OR_TOKEN |
+                NESTED_FUNCTION O_PAREN @CALL_ARGUMENTS
             )
             (
                 SP* ',' SP*
                 (
-                    (IDENT_TOKEN >valc $valn ':')? @PFX (STRING_TOKEN|IDENT_TOKEN) >valc $valn %VAL |
-                    IDENT_TOKEN  >fxc $fxn %NESTED_FX O_PAREN @CALL_ARGUMENTS
+                    TAIL_PREFIX SP* STRING_OR_TOKEN |
+                    NESTED_FUNCTION O_PAREN @CALL_ARGUMENTS
                 )
-            )* C_PAREN @RET_ARGUMENTS
+            )* SP* C_PAREN @RET_ARGUMENTS
         ;
 
         term :=
-            IDENT_TOKEN >fxc $fxn %FX O_PAREN >CALL_ARGUMENTS any @{ fhold; } @RET_TERM
+            FUNCTION SP* O_PAREN >CALL_ARGUMENTS HOLD_ANY_CHAR @RET_TERM
         ;
 
         statement :=
-            SP* IDENT @CALL_TERM SP+ NON_SPACED_TOKEN >relc $reln @REL
+            SP* IDENT @CALL_TERM SP+ NOT_SPACE+ >relc $reln @REL
             SP+
             (
                 ( IDENT @CALL_TERM SP* C_PAREN? @RET_STATEMENT NL    )
