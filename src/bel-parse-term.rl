@@ -139,7 +139,6 @@ bel_ast* bel_parse_term(char* line) {
         action TOKEN {
             wildcard_node->token->right->value->start_position = (ts - input) - whitespace_count;
             wildcard_node->token->right->value->end_position   = (te - input) - whitespace_count;
-//            fprintf(stdout, "value: %s, start: %d, end: %d\n", wildcard_node->token->right->value->value, wildcard_node->token->right->value->start_position, wildcard_node->token->right->value->end_position);
             wildcard_node->token->is_complete = 1;
             arg = stack_peek(arg_stack);
             arg->token->is_complete = 1;
@@ -345,7 +344,9 @@ bel_ast_node* _set_wildcard_as_term_node(bel_ast_node* wildcard_node) {
     // - Move value pointer from right to left.
     fx_node = bel_new_ast_node_value(
         BEL_VALUE_FX,
-        wildcard_node->token->right->value->value
+        wildcard_node->token->right->value->value,
+        wildcard_node->token->right->value->start_position,
+        wildcard_node->token->right->value->end_position
     );
 
     bel_free_ast_node(wildcard_node->token->left);

@@ -6,37 +6,40 @@
 // Test constraint
 #define LINE_CHAR_LEN 1024 * 32 // 32 kilobytes
 
-#test statement_part_completion
-    char empty                       [LINE_CHAR_LEN] = "";
-    char partial_function            [LINE_CHAR_LEN] = "a";
-    char partial_string_function     [LINE_CHAR_LEN] = "\"a\"";
-    char incomplete_namespace_value  [LINE_CHAR_LEN] = "a:";
-    char namespace_value             [LINE_CHAR_LEN] = "a:b";
-    char multiple_namespace_value    [LINE_CHAR_LEN] = "a:b, c:d";
+static void assert_ast_equals(const char* expr, const char* expected_ast) {
+    ck_assert_str_eq(
+        bel_ast_as_string(bel_parse_term((char*) expr)),
+        (char *) expected_ast
+    );
+}
 
-    ck_assert_str_eq(
-        bel_ast_as_string(bel_parse_term(empty)),
-        "NULL[0] (null) (null) "
-    );
-    ck_assert_str_eq(
-        bel_ast_as_string(bel_parse_term(partial_function)),
-        "ARG[1] NV[1] pfx((null)) val(a) ARG[0] (null) (null) "
-    );
-    ck_assert_str_eq(
-        bel_ast_as_string(bel_parse_term(partial_string_function)),
-        "ARG[1] NV[1] pfx((null)) val(\"a\") ARG[0] (null) (null) "
-        );
-    ck_assert_str_eq(
-        bel_ast_as_string(bel_parse_term(incomplete_namespace_value)),
-        "ARG[0] NV[0] pfx(a) val((null)) ARG[0] (null) (null) "
-    );
-    ck_assert_str_eq(
-        bel_ast_as_string(bel_parse_term(namespace_value)),
-        "ARG[1] NV[1] pfx(a) val(b) ARG[0] (null) (null) "
-    );
-    ck_assert_str_eq(
-        bel_ast_as_string(bel_parse_term(multiple_namespace_value)),
-        "ARG[1] NV[1] pfx(a) val(b) ARG[1] NV[1] pfx(c) val(d) ARG[0] (null) (null) "
-    );
+#test empty_expressions
+    assert_ast_equals("",     "NULL[0] (null) (null) ");
+    assert_ast_equals("  ",   "NULL[0] (null) (null) ");
+    assert_ast_equals("\t\t", "NULL[0] (null) (null) ");
+
+#test arg_value_expressions
+    assert_ast_equals("a",             "ARG[1] NV[1] pfx((null)) val(a)[0, 1] ARG[0] (null) (null) ");
+    assert_ast_equals("a",             "ARG[1] NV[1] pfx((null)) val(a)[0, 1] ARG[0] (null) (null) ");
+    assert_ast_equals("abc",           "ARG[1] NV[1] pfx((null)) val(abc)[0, 3] ARG[0] (null) (null) ");
+    assert_ast_equals("a_b_c",         "ARG[1] NV[1] pfx((null)) val(a_b_c)[0, 5] ARG[0] (null) (null) ");
+    assert_ast_equals("\"a b c\"",     "ARG[1] NV[1] pfx((null)) val(\"a b c\")[0, 7] ARG[0] (null) (null) ");
+
+#test arg_namespace_value_expressions
+    assert_ast_equals("a:b",           "ARG[1] NV[1] pfx(a)[0, 1] val(b)[2, 3] ARG[0] (null) (null) ");
+    assert_ast_equals("abc:d",         "ARG[1] NV[1] pfx(abc)[0, 3] val(d)[4, 5] ARG[0] (null) (null) ");
+    assert_ast_equals("ABC:d",         "ARG[1] NV[1] pfx(ABC)[0, 3] val(d)[4, 5] ARG[0] (null) (null) ");
+    assert_ast_equals("ABC:\"DEF\"",   "ARG[1] NV[1] pfx(ABC)[0, 3] val(\"DEF\")[4, 9] ARG[0] (null) (null) ");
+    assert_ast_equals("a:b, c",        "ARG[1] NV[1] pfx(a)[0, 1] val(b)[2, 3] ARG[1] NV[1] pfx((null)) val(c)[4, 5] ARG[0] (null) (null) ");
+    assert_ast_equals("a, b:c",        "ARG[1] NV[1] pfx((null)) val(a)[0, 1] ARG[1] NV[1] pfx(b)[2, 3] val(c)[4, 5] ARG[0] (null) (null) ");
+    assert_ast_equals("a:b, c, d:e",   "ARG[1] NV[1] pfx(a)[0, 1] val(b)[2, 3] ARG[1] NV[1] pfx((null)) val(c)[4, 5] ARG[1] NV[1] pfx(d)[6, 7] val(e)[8, 9] ARG[0] (null) (null) ");
+
+#test spacing_in_expressions
+    // whitespace is not subtracted in positions
+    assert_ast_equals("  a",               "ARG[1] NV[1] pfx((null)) val(a)[0, 1] ARG[0] (null) (null) ");
+    assert_ast_equals("a  ",               "ARG[1] NV[1] pfx((null)) val(a)[0, 1] ARG[0] (null) (null) ");
+    assert_ast_equals(" a ",               "ARG[1] NV[1] pfx((null)) val(a)[0, 1] ARG[0] (null) (null) ");
+    assert_ast_equals(" a , b ",           "ARG[1] NV[1] pfx((null)) val(a)[0, 1] ARG[1] NV[1] pfx((null)) val(b)[2, 3] ARG[0] (null) (null) ");
+    assert_ast_equals("\ta : b,\tc : d\t", "ARG[1] NV[1] pfx(a)[0, 1] val(b)[2, 3] ARG[1] NV[1] pfx(c)[4, 5] val(d)[6, 7] ARG[0] (null) (null) ");
 
 // vim: ft=c sw=4 ts=4 sts=4 expandtab

@@ -67,7 +67,8 @@ typedef struct {
 
 bel_ast_node* bel_new_ast_node_token(bel_ast_token_type type);
 
-bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char* value);
+bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char* value,
+        int start_position, int end_position);
 
 bel_ast_node* bel_copy_ast_node(bel_ast_node* node);
 
