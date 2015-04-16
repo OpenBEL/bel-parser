@@ -48,8 +48,8 @@ struct bel_ast_node_token {
     bel_ast_token_type ttype;
     bel_ast_node*      left;
     bel_ast_node*      right;
-    int                token_start_position;
-    int                token_end_position;
+    int                start_position;
+    int                end_position;
     int                is_complete;
 };
 
@@ -57,6 +57,8 @@ struct bel_ast_node_value {
     bel_ast_node_type  type;
     bel_ast_value_type vtype;
     char*              value;
+    int                start_position;
+    int                end_position;
 };
 
 typedef struct {

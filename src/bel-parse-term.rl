@@ -60,6 +60,7 @@ bel_ast* bel_parse_term(char* line) {
     bel_ast_node*   term;
     char            *token;
     int             ti;
+    int             whitespace_count;
 
     // Copy line to C stack; Append new line if needed.
     int             line_length = strlen(line);
@@ -84,17 +85,20 @@ bel_ast* bel_parse_term(char* line) {
     arg               = NULL;
     term              = NULL;
     ast->root         = wildcard_node;
-    ti                = 0;
     token             = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
+    ti                = 0;
+    whitespace_count   = 0;
     memset(token, '\0', BEL_VALUE_CHAR_LEN);
 
     %%{
         action clear {
             ti = 0;
+            ts = p;
             memset(token, '\0', BEL_VALUE_CHAR_LEN);
         }
 
         action buffer {
+            te = p;
             if (!wildcard_node) {
                 wildcard_node = _create_wildcard_arg_ast_node();
 
@@ -133,6 +137,9 @@ bel_ast* bel_parse_term(char* line) {
         TOKEN            = (STRING|VALUE);
 
         action TOKEN {
+            wildcard_node->token->right->value->start_position = (ts - input) - whitespace_count;
+            wildcard_node->token->right->value->end_position   = (te - input) - whitespace_count;
+//            fprintf(stdout, "value: %s, start: %d, end: %d\n", wildcard_node->token->right->value->value, wildcard_node->token->right->value->start_position, wildcard_node->token->right->value->end_position);
             wildcard_node->token->is_complete = 1;
             arg = stack_peek(arg_stack);
             arg->token->is_complete = 1;
@@ -223,7 +230,7 @@ bel_ast* bel_parse_term(char* line) {
         }
 
         action DROP {
-
+            whitespace_count++;
         }
 
         term := |*
@@ -233,7 +240,7 @@ bel_ast* bel_parse_term(char* line) {
           OP              => OPEN_PAREN;
           CP              => CLOSE_PAREN;
           '\n'            => EOL;
-          _*              => DROP;
+          _               => DROP;
         *|;
 
         # Initialize and execute.

@@ -13,8 +13,8 @@ bel_ast_node* bel_new_ast_node_token(bel_ast_token_type type) {
     node->token->left                 = NULL;
     node->token->right                = NULL;
 	node->token->is_complete          = 0;
-	node->token->token_start_position = -1;
-	node->token->token_end_position   = -1;
+	node->token->start_position       = -1;
+	node->token->end_position         = -1;
     return node;
 };
 
@@ -66,8 +66,8 @@ bel_ast_node* bel_copy_ast_node(bel_ast_node* node) {
 		copy_node->token->left                 = bel_copy_ast_node(node->token->left);
 		copy_node->token->right                = bel_copy_ast_node(node->token->right);
 		copy_node->token->is_complete          = node->token->is_complete;
-		copy_node->token->token_start_position = node->token->token_start_position;
-		copy_node->token->token_end_position   = node->token->token_end_position;
+		copy_node->token->start_position       = node->token->start_position;
+		copy_node->token->end_position         = node->token->end_position;
 	}
 
 	return copy_node;

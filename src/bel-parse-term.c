@@ -69,6 +69,7 @@ bel_ast* bel_parse_term(char* line) {
     bel_ast_node*   term;
     char            *token;
     int             ti;
+    int             whitespace_count;
 
     // Copy line to C stack; Append new line if needed.
     int             line_length = strlen(line);
@@ -93,12 +94,13 @@ bel_ast* bel_parse_term(char* line) {
     arg               = NULL;
     term              = NULL;
     ast->root         = wildcard_node;
-    ti                = 0;
     token             = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
+    ti                = 0;
+    whitespace_count   = 0;
     memset(token, '\0', BEL_VALUE_CHAR_LEN);
 
     
-/* #line 102 "bel-parse-term.c" */
+/* #line 104 "bel-parse-term.c" */
 	{
 	cs = set_start;
 	ts = 0;
@@ -106,15 +108,16 @@ bel_ast* bel_parse_term(char* line) {
 	act = 0;
 	}
 
-/* #line 110 "bel-parse-term.c" */
+/* #line 112 "bel-parse-term.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 97 "bel-parse-term.rl" */
+/* #line 100 "bel-parse-term.rl" */
 	{
+            te = p;
             if (!wildcard_node) {
                 wildcard_node = _create_wildcard_arg_ast_node();
 
@@ -137,15 +140,24 @@ tr1:
 
             wildcard_node->token->right->value->value[ti++] = (*p);
         }
-/* #line 135 "bel-parse-term.rl" */
+/* #line 139 "bel-parse-term.rl" */
 	{te = p+1;{
+            wildcard_node->token->right->value->start_position = (ts - input) - whitespace_count;
+            wildcard_node->token->right->value->end_position   = (te - input) - whitespace_count;
+//            fprintf(stdout, "value: %s, start: %d, end: %d\n", wildcard_node->token->right->value->value, wildcard_node->token->right->value->start_position, wildcard_node->token->right->value->end_position);
             wildcard_node->token->is_complete = 1;
             arg = stack_peek(arg_stack);
             arg->token->is_complete = 1;
         }}
 	goto st2;
+tr4:
+/* #line 232 "bel-parse-term.rl" */
+	{te = p+1;{
+            whitespace_count++;
+        }}
+	goto st2;
 tr5:
-/* #line 188 "bel-parse-term.rl" */
+/* #line 195 "bel-parse-term.rl" */
 	{te = p+1;{
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
@@ -154,7 +166,7 @@ tr5:
         }}
 	goto st2;
 tr7:
-/* #line 141 "bel-parse-term.rl" */
+/* #line 148 "bel-parse-term.rl" */
 	{te = p+1;{
             _set_wildcard_as_term_node(wildcard_node);
             wildcard_node->token->is_complete = 0;
@@ -164,7 +176,7 @@ tr7:
         }}
 	goto st2;
 tr8:
-/* #line 149 "bel-parse-term.rl" */
+/* #line 156 "bel-parse-term.rl" */
 	{te = p+1;{
             // mark term complete
             term->token->is_complete = 1;
@@ -205,7 +217,7 @@ tr8:
         }}
 	goto st2;
 tr9:
-/* #line 209 "bel-parse-term.rl" */
+/* #line 216 "bel-parse-term.rl" */
 	{te = p+1;{
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
@@ -223,7 +235,7 @@ tr9:
         }}
 	goto st2;
 tr10:
-/* #line 195 "bel-parse-term.rl" */
+/* #line 202 "bel-parse-term.rl" */
 	{te = p+1;{
             _swap_left_right(wildcard_node);
 
@@ -239,17 +251,14 @@ tr10:
         }}
 	goto st2;
 tr11:
-/* #line 135 "bel-parse-term.rl" */
+/* #line 139 "bel-parse-term.rl" */
 	{te = p;p--;{
+            wildcard_node->token->right->value->start_position = (ts - input) - whitespace_count;
+            wildcard_node->token->right->value->end_position   = (te - input) - whitespace_count;
+//            fprintf(stdout, "value: %s, start: %d, end: %d\n", wildcard_node->token->right->value->value, wildcard_node->token->right->value->start_position, wildcard_node->token->right->value->end_position);
             wildcard_node->token->is_complete = 1;
             arg = stack_peek(arg_stack);
             arg->token->is_complete = 1;
-        }}
-	goto st2;
-tr13:
-/* #line 225 "bel-parse-term.rl" */
-	{te = p;p--;{
-
         }}
 	goto st2;
 st2:
@@ -260,11 +269,11 @@ st2:
 case 2:
 /* #line 1 "NONE" */
 	{ts = p;}
-/* #line 264 "bel-parse-term.c" */
+/* #line 273 "bel-parse-term.c" */
 	switch( (*p) ) {
-		case 9: goto st4;
+		case 9: goto tr4;
 		case 10: goto tr5;
-		case 32: goto st4;
+		case 32: goto tr4;
 		case 34: goto tr6;
 		case 40: goto tr7;
 		case 41: goto tr8;
@@ -273,8 +282,9 @@ case 2:
 	}
 	goto tr3;
 tr12:
-/* #line 97 "bel-parse-term.rl" */
+/* #line 100 "bel-parse-term.rl" */
 	{
+            te = p;
             if (!wildcard_node) {
                 wildcard_node = _create_wildcard_arg_ast_node();
 
@@ -299,13 +309,15 @@ tr12:
         }
 	goto st3;
 tr3:
-/* #line 92 "bel-parse-term.rl" */
+/* #line 94 "bel-parse-term.rl" */
 	{
             ti = 0;
+            ts = p;
             memset(token, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-term.rl" */
+/* #line 100 "bel-parse-term.rl" */
 	{
+            te = p;
             if (!wildcard_node) {
                 wildcard_node = _create_wildcard_arg_ast_node();
 
@@ -333,7 +345,7 @@ st3:
 	if ( ++p == pe )
 		goto _test_eof3;
 case 3:
-/* #line 337 "bel-parse-term.c" */
+/* #line 349 "bel-parse-term.c" */
 	switch( (*p) ) {
 		case 32: goto tr11;
 		case 34: goto tr11;
@@ -346,18 +358,10 @@ case 3:
 	} else if ( (*p) >= 9 )
 		goto tr11;
 	goto tr12;
-st4:
-	if ( ++p == pe )
-		goto _test_eof4;
-case 4:
-	switch( (*p) ) {
-		case 9: goto st4;
-		case 32: goto st4;
-	}
-	goto tr13;
 tr0:
-/* #line 97 "bel-parse-term.rl" */
+/* #line 100 "bel-parse-term.rl" */
 	{
+            te = p;
             if (!wildcard_node) {
                 wildcard_node = _create_wildcard_arg_ast_node();
 
@@ -382,13 +386,15 @@ tr0:
         }
 	goto st0;
 tr6:
-/* #line 92 "bel-parse-term.rl" */
+/* #line 94 "bel-parse-term.rl" */
 	{
             ti = 0;
+            ts = p;
             memset(token, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 97 "bel-parse-term.rl" */
+/* #line 100 "bel-parse-term.rl" */
 	{
+            te = p;
             if (!wildcard_node) {
                 wildcard_node = _create_wildcard_arg_ast_node();
 
@@ -416,15 +422,16 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 420 "bel-parse-term.c" */
+/* #line 426 "bel-parse-term.c" */
 	switch( (*p) ) {
 		case 34: goto tr1;
 		case 92: goto tr2;
 	}
 	goto tr0;
 tr2:
-/* #line 97 "bel-parse-term.rl" */
+/* #line 100 "bel-parse-term.rl" */
 	{
+            te = p;
             if (!wildcard_node) {
                 wildcard_node = _create_wildcard_arg_ast_node();
 
@@ -452,14 +459,13 @@ st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 456 "bel-parse-term.c" */
+/* #line 463 "bel-parse-term.c" */
 	if ( (*p) == 92 )
 		goto tr2;
 	goto tr0;
 	}
 	_test_eof2: cs = 2; goto _test_eof; 
 	_test_eof3: cs = 3; goto _test_eof; 
-	_test_eof4: cs = 4; goto _test_eof; 
 	_test_eof0: cs = 0; goto _test_eof; 
 	_test_eof1: cs = 1; goto _test_eof; 
 
@@ -468,13 +474,12 @@ case 1:
 	{
 	switch ( cs ) {
 	case 3: goto tr11;
-	case 4: goto tr13;
 	}
 	}
 
 	}
 
-/* #line 242 "bel-parse-term.rl" */
+/* #line 249 "bel-parse-term.rl" */
 
 
     if (!ast->root) {
