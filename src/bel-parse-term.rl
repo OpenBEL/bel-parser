@@ -57,7 +57,6 @@ bel_ast* bel_parse_term(char* line) {
     bel_node_stack* arg_stack;
     bel_ast_node*   wildcard_node;
     bel_ast_node*   arg;
-    bel_ast_node*   last;
     bel_ast_node*   term;
     char            *token;
     int             ti;
@@ -75,6 +74,7 @@ bel_ast* bel_parse_term(char* line) {
     // ragel - assignments
     p                 = input;
     pe                = input + strlen(input);
+    eof               = pe;
     stack             = malloc(sizeof(int) * STACK_SIZE);
 
     // state - initial assignments
@@ -82,7 +82,6 @@ bel_ast* bel_parse_term(char* line) {
     arg_stack         = stack_init(STACK_SIZE);
     wildcard_node     = NULL;
     arg               = NULL;
-    last              = NULL;
     term              = NULL;
     ast->root         = wildcard_node;
     ti                = 0;
@@ -181,7 +180,6 @@ bel_ast* bel_parse_term(char* line) {
 
             while (arg->token->left || arg->token->right) {
                 arg = arg->token->right;
-                last = arg;
             }
             stack_push(arg_stack, arg);
             wildcard_node = NULL;
