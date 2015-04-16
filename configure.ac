@@ -9,8 +9,12 @@ AC_PROG_CC
 AC_PROG_LIBTOOL
 AC_LANG(C)
 
-#CFLAGS="-ggdb -Wall -Werror -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wmaybe-uninitialized -fPIC -fstack-protector"
-CFLAGS="-ggdb -fPIC -fstack-protector"
+CFLAGS="-ggdb -Wall -Werror -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wmaybe-uninitialized -fPIC -fstack-protector"
+
+# Suppress unused-but-set-variable because ragel scanner does not end up
+# using them.
+CFLAGS+=" -Wno-error=unused-but-set-variable"
+
 AC_CONFIG_MACRO_DIR([m4])
 LT_PREREQ([2.2])
 LT_INIT
