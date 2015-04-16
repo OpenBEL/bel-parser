@@ -21,12 +21,6 @@ static const int set_en_term = 2;
 
 
 /* private */
-bel_ast* _create_term_ast();
-
-/* private */
-bel_ast_node* _create_term_ast_node();
-
-/* private */
 bel_ast_node* _create_wildcard_arg_ast_node();
 
 /* private */
@@ -40,15 +34,6 @@ bel_ast_node* _set_wildcard_as_nv_node(bel_ast_node* node);
 
 /* private */
 void _swap_left_right(bel_ast_node* wildcard_node);
-
-/* private */
-void _mark_subject_node_complete(bel_ast_node* statement_node);
-
-/* private */
-void _mark_object_node_complete(bel_ast_node* statement_node);
-
-/* private */
-void _mark_statement_node_complete(bel_ast_node* statement_node);
 
 bel_ast* bel_parse_term(char* line) {
     // ragel - definitions
@@ -100,7 +85,7 @@ bel_ast* bel_parse_term(char* line) {
     memset(token, '\0', BEL_VALUE_CHAR_LEN);
 
     
-/* #line 104 "bel-parse-term.c" */
+/* #line 89 "bel-parse-term.c" */
 	{
 	cs = set_start;
 	ts = 0;
@@ -108,14 +93,14 @@ bel_ast* bel_parse_term(char* line) {
 	act = 0;
 	}
 
-/* #line 112 "bel-parse-term.c" */
+/* #line 97 "bel-parse-term.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 100 "bel-parse-term.rl" */
+/* #line 85 "bel-parse-term.rl" */
 	{
             te = p;
             if (!wildcard_node) {
@@ -140,7 +125,7 @@ tr1:
 
             wildcard_node->token->right->value->value[ti++] = (*p);
         }
-/* #line 139 "bel-parse-term.rl" */
+/* #line 124 "bel-parse-term.rl" */
 	{te = p+1;{
             wildcard_node->token->right->value->start_position = (ts - input) - whitespace_count;
             wildcard_node->token->right->value->end_position   = (te - input) - whitespace_count;
@@ -150,13 +135,13 @@ tr1:
         }}
 	goto st2;
 tr4:
-/* #line 231 "bel-parse-term.rl" */
+/* #line 216 "bel-parse-term.rl" */
 	{te = p+1;{
             whitespace_count++;
         }}
 	goto st2;
 tr5:
-/* #line 194 "bel-parse-term.rl" */
+/* #line 179 "bel-parse-term.rl" */
 	{te = p+1;{
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
@@ -165,7 +150,7 @@ tr5:
         }}
 	goto st2;
 tr7:
-/* #line 147 "bel-parse-term.rl" */
+/* #line 132 "bel-parse-term.rl" */
 	{te = p+1;{
             _set_wildcard_as_term_node(wildcard_node);
             wildcard_node->token->is_complete = 0;
@@ -175,7 +160,7 @@ tr7:
         }}
 	goto st2;
 tr8:
-/* #line 155 "bel-parse-term.rl" */
+/* #line 140 "bel-parse-term.rl" */
 	{te = p+1;{
             // mark term complete
             term->token->is_complete = 1;
@@ -216,7 +201,7 @@ tr8:
         }}
 	goto st2;
 tr9:
-/* #line 215 "bel-parse-term.rl" */
+/* #line 200 "bel-parse-term.rl" */
 	{te = p+1;{
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
@@ -234,7 +219,7 @@ tr9:
         }}
 	goto st2;
 tr10:
-/* #line 201 "bel-parse-term.rl" */
+/* #line 186 "bel-parse-term.rl" */
 	{te = p+1;{
             _swap_left_right(wildcard_node);
 
@@ -250,7 +235,7 @@ tr10:
         }}
 	goto st2;
 tr11:
-/* #line 139 "bel-parse-term.rl" */
+/* #line 124 "bel-parse-term.rl" */
 	{te = p;p--;{
             wildcard_node->token->right->value->start_position = (ts - input) - whitespace_count;
             wildcard_node->token->right->value->end_position   = (te - input) - whitespace_count;
@@ -267,7 +252,7 @@ st2:
 case 2:
 /* #line 1 "NONE" */
 	{ts = p;}
-/* #line 271 "bel-parse-term.c" */
+/* #line 256 "bel-parse-term.c" */
 	switch( (*p) ) {
 		case 9: goto tr4;
 		case 10: goto tr5;
@@ -280,7 +265,7 @@ case 2:
 	}
 	goto tr3;
 tr12:
-/* #line 100 "bel-parse-term.rl" */
+/* #line 85 "bel-parse-term.rl" */
 	{
             te = p;
             if (!wildcard_node) {
@@ -307,13 +292,13 @@ tr12:
         }
 	goto st3;
 tr3:
-/* #line 94 "bel-parse-term.rl" */
+/* #line 79 "bel-parse-term.rl" */
 	{
             ti = 0;
             ts = p;
             memset(token, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 100 "bel-parse-term.rl" */
+/* #line 85 "bel-parse-term.rl" */
 	{
             te = p;
             if (!wildcard_node) {
@@ -343,7 +328,7 @@ st3:
 	if ( ++p == pe )
 		goto _test_eof3;
 case 3:
-/* #line 347 "bel-parse-term.c" */
+/* #line 332 "bel-parse-term.c" */
 	switch( (*p) ) {
 		case 32: goto tr11;
 		case 34: goto tr11;
@@ -357,7 +342,7 @@ case 3:
 		goto tr11;
 	goto tr12;
 tr0:
-/* #line 100 "bel-parse-term.rl" */
+/* #line 85 "bel-parse-term.rl" */
 	{
             te = p;
             if (!wildcard_node) {
@@ -384,13 +369,13 @@ tr0:
         }
 	goto st0;
 tr6:
-/* #line 94 "bel-parse-term.rl" */
+/* #line 79 "bel-parse-term.rl" */
 	{
             ti = 0;
             ts = p;
             memset(token, '\0', BEL_VALUE_CHAR_LEN);
         }
-/* #line 100 "bel-parse-term.rl" */
+/* #line 85 "bel-parse-term.rl" */
 	{
             te = p;
             if (!wildcard_node) {
@@ -420,14 +405,14 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 424 "bel-parse-term.c" */
+/* #line 409 "bel-parse-term.c" */
 	switch( (*p) ) {
 		case 34: goto tr1;
 		case 92: goto tr2;
 	}
 	goto tr0;
 tr2:
-/* #line 100 "bel-parse-term.rl" */
+/* #line 85 "bel-parse-term.rl" */
 	{
             te = p;
             if (!wildcard_node) {
@@ -457,7 +442,7 @@ st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 461 "bel-parse-term.c" */
+/* #line 446 "bel-parse-term.c" */
 	if ( (*p) == 92 )
 		goto tr2;
 	goto tr0;
@@ -477,7 +462,7 @@ case 1:
 
 	}
 
-/* #line 248 "bel-parse-term.rl" */
+/* #line 233 "bel-parse-term.rl" */
 
 
     if (!ast->root) {
@@ -498,38 +483,6 @@ case 1:
     free(stack);
 
     return ast;
-};
-
-/* private */
-bel_ast* _create_term_ast() {
-    bel_ast*      ast;
-    bel_ast_node* term_node;
-
-    ast       = bel_new_ast();
-    term_node = _create_term_ast_node();
-    ast->root = term_node;
-
-    return ast;
-};
-
-/* private */
-bel_ast_node* _create_term_ast_node() {
-    bel_ast_node* term;
-    bel_ast_node* fx_node;
-    bel_ast_node* arg;
-    char*         fx_value;
-
-    fx_value = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
-    memset(fx_value, '\0', BEL_VALUE_CHAR_LEN);
-
-    term     = bel_new_ast_node_token(BEL_TOKEN_TERM);
-    fx_node  = _mutable_node_value(BEL_VALUE_FX, fx_value);
-    arg      = bel_new_ast_node_token(BEL_TOKEN_ARG);
-
-    term->token->left  = fx_node;
-    term->token->right = arg;
-
-    return term;
 };
 
 /* private */
@@ -616,68 +569,6 @@ void _swap_left_right(bel_ast_node* wildcard_node) {
     left = wildcard_node->token->left;
     wildcard_node->token->left  = wildcard_node->token->right;
     wildcard_node->token->right = left;
-};
-
-void _mark_subject_node_complete(bel_ast_node* statement_node) {
-    bel_ast_node* subject_node;
-    bel_ast_node* term_node;
-
-    assert(statement_node != NULL);
-
-    subject_node   = statement_node->token->left;
-    term_node      = subject_node->token->left;
-
-    if (term_node && term_node->token->is_complete) {
-        subject_node->token->is_complete = 1;
-    }
-};
-
-void _mark_object_node_complete(bel_ast_node* statement_node) {
-    bel_ast_node* object_node;
-    bel_ast_node* rel_node;
-    bel_ast_node* object_term_or_statement_node;
-
-    assert(statement_node != NULL);
-
-    object_node                   = statement_node->token->right;
-    rel_node                      = object_node->token->left;
-    object_term_or_statement_node = object_node->token->right;
-
-    if (rel_node && rel_node->token->is_complete &&
-        (object_term_or_statement_node && object_term_or_statement_node->token->is_complete)) {
-
-        object_node->token->is_complete = 1;
-    }
-};
-
-void _mark_statement_node_complete(bel_ast_node* statement_node) {
-    bel_ast_node* subject_node;
-    bel_ast_node* object_node;
-
-    assert(statement_node != NULL);
-
-    subject_node                  = statement_node->token->left;
-    // SUBJECT is not complete implies the STATEMENT is not complete
-    if (!subject_node->token->is_complete) {
-        statement_node->token->is_complete = 0;
-        return;
-    }
-
-    object_node                   = statement_node->token->right;
-
-    // OBJECT L:NULL R:NULL implies the STATEMENT is subject-only and complete
-    if (object_node->token->left == NULL && object_node->token->right == NULL) {
-        statement_node->token->is_complete = 1;
-        return;
-    }
-
-    if (!object_node->token->is_complete) {
-        statement_node->token->is_complete = 0;
-        return;
-    }
-
-    // SUBJECT is complete and OBJECT L:REL R:TERM|STATEMENT is complete
-    statement_node->token->is_complete = 1;
 };
 
 // vim: ft=ragel sw=4 ts=4 sts=4 expandtab

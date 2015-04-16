@@ -12,12 +12,6 @@
 }%%
 
 /* private */
-bel_ast* _create_term_ast();
-
-/* private */
-bel_ast_node* _create_term_ast_node();
-
-/* private */
 bel_ast_node* _create_wildcard_arg_ast_node();
 
 /* private */
@@ -31,15 +25,6 @@ bel_ast_node* _set_wildcard_as_nv_node(bel_ast_node* node);
 
 /* private */
 void _swap_left_right(bel_ast_node* wildcard_node);
-
-/* private */
-void _mark_subject_node_complete(bel_ast_node* statement_node);
-
-/* private */
-void _mark_object_node_complete(bel_ast_node* statement_node);
-
-/* private */
-void _mark_statement_node_complete(bel_ast_node* statement_node);
 
 bel_ast* bel_parse_term(char* line) {
     // ragel - definitions
@@ -268,38 +253,6 @@ bel_ast* bel_parse_term(char* line) {
 };
 
 /* private */
-bel_ast* _create_term_ast() {
-    bel_ast*      ast;
-    bel_ast_node* term_node;
-
-    ast       = bel_new_ast();
-    term_node = _create_term_ast_node();
-    ast->root = term_node;
-
-    return ast;
-};
-
-/* private */
-bel_ast_node* _create_term_ast_node() {
-    bel_ast_node* term;
-    bel_ast_node* fx_node;
-    bel_ast_node* arg;
-    char*         fx_value;
-
-    fx_value = malloc(sizeof(char) * BEL_VALUE_CHAR_LEN);
-    memset(fx_value, '\0', BEL_VALUE_CHAR_LEN);
-
-    term     = bel_new_ast_node_token(BEL_TOKEN_TERM);
-    fx_node  = _mutable_node_value(BEL_VALUE_FX, fx_value);
-    arg      = bel_new_ast_node_token(BEL_TOKEN_ARG);
-
-    term->token->left  = fx_node;
-    term->token->right = arg;
-
-    return term;
-};
-
-/* private */
 bel_ast_node* _create_wildcard_arg_ast_node() {
     bel_ast_node* arg;
     bel_ast_node* value_node_1;
@@ -383,68 +336,6 @@ void _swap_left_right(bel_ast_node* wildcard_node) {
     left = wildcard_node->token->left;
     wildcard_node->token->left  = wildcard_node->token->right;
     wildcard_node->token->right = left;
-};
-
-void _mark_subject_node_complete(bel_ast_node* statement_node) {
-    bel_ast_node* subject_node;
-    bel_ast_node* term_node;
-
-    assert(statement_node != NULL);
-
-    subject_node   = statement_node->token->left;
-    term_node      = subject_node->token->left;
-
-    if (term_node && term_node->token->is_complete) {
-        subject_node->token->is_complete = 1;
-    }
-};
-
-void _mark_object_node_complete(bel_ast_node* statement_node) {
-    bel_ast_node* object_node;
-    bel_ast_node* rel_node;
-    bel_ast_node* object_term_or_statement_node;
-
-    assert(statement_node != NULL);
-
-    object_node                   = statement_node->token->right;
-    rel_node                      = object_node->token->left;
-    object_term_or_statement_node = object_node->token->right;
-
-    if (rel_node && rel_node->token->is_complete &&
-        (object_term_or_statement_node && object_term_or_statement_node->token->is_complete)) {
-
-        object_node->token->is_complete = 1;
-    }
-};
-
-void _mark_statement_node_complete(bel_ast_node* statement_node) {
-    bel_ast_node* subject_node;
-    bel_ast_node* object_node;
-
-    assert(statement_node != NULL);
-
-    subject_node                  = statement_node->token->left;
-    // SUBJECT is not complete implies the STATEMENT is not complete
-    if (!subject_node->token->is_complete) {
-        statement_node->token->is_complete = 0;
-        return;
-    }
-
-    object_node                   = statement_node->token->right;
-
-    // OBJECT L:NULL R:NULL implies the STATEMENT is subject-only and complete
-    if (object_node->token->left == NULL && object_node->token->right == NULL) {
-        statement_node->token->is_complete = 1;
-        return;
-    }
-
-    if (!object_node->token->is_complete) {
-        statement_node->token->is_complete = 0;
-        return;
-    }
-
-    // SUBJECT is complete and OBJECT L:REL R:TERM|STATEMENT is complete
-    statement_node->token->is_complete = 1;
 };
 
 // vim: ft=ragel sw=4 ts=4 sts=4 expandtab
