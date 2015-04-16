@@ -26,6 +26,9 @@ bel_ast_node* _set_wildcard_as_nv_node(bel_ast_node* node);
 /* private */
 void _swap_left_right(bel_ast_node* wildcard_node);
 
+/* private */
+int _mark_token_complete(bel_ast_node* node);
+
 bel_ast* bel_parse_term(char* line) {
     // ragel - definitions
     int             cs;
@@ -118,13 +121,14 @@ bel_ast* bel_parse_term(char* line) {
 
         # Complete token definitions
         STRING           = ('"' ('\\\"' | [^"])** '"') >clear $buffer;
-        VALUE            = [^ \t\n,:()"]+             >clear $buffer;
+        VALUE            = [^ \t\n,:()"]+              >clear $buffer;
         TOKEN            = (STRING|VALUE);
 
         action TOKEN {
             wildcard_node->token->right->value->start_position = (ts - input) - whitespace_count;
             wildcard_node->token->right->value->end_position   = (te - input) - whitespace_count;
-            wildcard_node->token->is_complete = 1;
+            _mark_token_complete(wildcard_node);
+
             arg = stack_peek(arg_stack);
             arg->token->is_complete = 1;
         }
@@ -138,14 +142,13 @@ bel_ast* bel_parse_term(char* line) {
         }
 
         action CLOSE_PAREN {
-            // mark term complete
-            term->token->is_complete = 1;
-
             // if wildcard is ARG; then set as NV and mark complete
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
-                wildcard_node->token->is_complete = 1;
+                _mark_token_complete(wildcard_node);
             }
+
+            _mark_token_complete(term);
 
             for (i = (arg_stack->top); i > -1; i--) {
                 arg = arg_stack->contents[i];
@@ -179,7 +182,7 @@ bel_ast* bel_parse_term(char* line) {
         action EOL {
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
-                wildcard_node->token->is_complete = 1;
+                _mark_token_complete(wildcard_node);
             }
         }
 
@@ -200,7 +203,7 @@ bel_ast* bel_parse_term(char* line) {
         action COMMA {
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
-                wildcard_node->token->is_complete = 1;
+                _mark_token_complete(wildcard_node);
             }
 
             arg = stack_peek(arg_stack);
@@ -320,11 +323,15 @@ bel_ast_node* _set_wildcard_as_nv_node(bel_ast_node* wildcard_node) {
     if (wildcard_node->token->left->value->value[0] == '\0') {
         free(wildcard_node->token->left->value->value);
         wildcard_node->token->left->value->value = NULL;
+        wildcard_node->token->left->value->start_position = -1;
+        wildcard_node->token->left->value->end_position   = -1;
     }
 
     if (wildcard_node->token->right->value->value[0] == '\0') {
         free(wildcard_node->token->right->value->value);
         wildcard_node->token->right->value->value = NULL;
+        wildcard_node->token->right->value->start_position = -1;
+        wildcard_node->token->right->value->end_position   = -1;
     }
 
     return wildcard_node;
@@ -336,6 +343,52 @@ void _swap_left_right(bel_ast_node* wildcard_node) {
     left = wildcard_node->token->left;
     wildcard_node->token->left  = wildcard_node->token->right;
     wildcard_node->token->right = left;
+};
+
+int _mark_token_complete(bel_ast_node* node) {
+    bel_ast_node* left;
+    bel_ast_node* right;
+    int           start, end;
+
+    if (!node || node->type_info->type != BEL_TOKEN) {
+        return 0;
+    }
+
+    left  = node->token->left;
+    right = node->token->right;
+
+    node->token->is_complete = 1;
+    if (node->token->ttype == BEL_TOKEN_NV) {
+        start = left->value->start_position;
+
+        // no pfx; use val's position
+        if (start == -1) {
+            start = right->value->start_position;
+        }
+
+        // NV always ends with a val
+        end = right->value->end_position;
+
+        node->token->start_position = start;
+        node->token->end_position   = end;
+    } else if (node->token->ttype == BEL_TOKEN_TERM) {
+        start = left->value->start_position;
+        if (right->token->ttype == BEL_TOKEN_ARG &&
+               !right->token->left && !right->token->right) {
+            // empty ARG; end marked to account for open/close parentheses
+            end = start + 2;
+        } else {
+            while (right->token->right->token->left || right->token->right->token->right) {
+                right = right->token->right;
+            }
+            // end marked at last arg's end plus 1 for close parenthesis
+            end = right->token->left->token->end_position + 1;
+        }
+        node->token->start_position = start;
+        node->token->end_position   = end;
+    }
+
+    return 1;
 };
 
 // vim: ft=ragel sw=4 ts=4 sts=4 expandtab

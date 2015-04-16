@@ -139,7 +139,10 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
                     strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_TERM:
-					sprintf(val, "TERM[%d] ", node->token->is_complete);
+					sprintf(val, "TERM[%d][%d, %d] ",
+							node->token->is_complete,
+							node->token->start_position,
+							node->token->end_position);
                     strcat(tree_flat_string, val);
                     break;
 				case BEL_TOKEN_SUBJECT:
