@@ -57,6 +57,7 @@ bel_ast* bel_parse_term(char* line) {
     bel_node_stack* arg_stack;
     bel_ast_node*   wildcard_node;
     bel_ast_node*   arg;
+    bel_ast_node*   last;
     bel_ast_node*   term;
     char            *token;
     int             ti;
@@ -81,6 +82,7 @@ bel_ast* bel_parse_term(char* line) {
     arg_stack         = stack_init(STACK_SIZE);
     wildcard_node     = NULL;
     arg               = NULL;
+    last              = NULL;
     term              = NULL;
     ast->root         = wildcard_node;
     ti                = 0;
@@ -117,74 +119,6 @@ bel_ast* bel_parse_term(char* line) {
             wildcard_node->token->right->value->value[ti++] = fc;
         }
 
-        action A2T {
-            _set_wildcard_as_term_node(wildcard_node);
-            wildcard_node->token->is_complete = 0;
-            term = wildcard_node;
-            stack_push(arg_stack, term->token->right);
-            wildcard_node = NULL;
-        }
-
-        action A2NV {
-            _set_wildcard_as_nv_node(wildcard_node);
-        }
-
-        action SWAP_LR {
-            _swap_left_right(wildcard_node);
-        }
-
-        action COMPLETE {
-            wildcard_node->token->is_complete = 1;
-            arg = stack_peek(arg_stack);
-            arg->token->is_complete = 1;
-        }
-
-        action COMPLETE_TERM {
-            // mark term complete
-            term->token->is_complete = 1;
-
-            // if wildcard is ARG; then set as NV and mark complete
-            if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
-                _set_wildcard_as_nv_node(wildcard_node);
-                wildcard_node->token->is_complete = 1;
-            }
-
-            for (i = (arg_stack->top); i > -1; i--) {
-                arg = arg_stack->contents[i];
-                if (arg->token->left == term) {
-                    arg->token->is_complete = 1;
-                    break;
-                }
-            }
-
-        }
-
-        action INCOMPLETE {
-            if (wildcard_node) {
-                wildcard_node->token->is_complete = 0;
-            }
-            arg = stack_peek(arg_stack);
-            arg->token->is_complete = 0;
-        }
-
-        action NEXT_ARG {
-            arg = stack_peek(arg_stack);
-            arg = arg->token->right;
-            stack_push(arg_stack, arg);
-
-            wildcard_node = NULL;
-        }
-
-        action TRACE_COL {
-        }
-
-        action TRACE_OP {
-        }
-
-        action HOLD {
-            fhold;
-        }
-
         # Chracter class definitions
         _                = [ \t];
         NL               = '\n' | '\r' '\n'?;
@@ -198,49 +132,6 @@ bel_ast* bel_parse_term(char* line) {
         STRING           = ('"' ('\\\"' | [^"])** '"') >clear $buffer;
         VALUE            = [^ \t\n,:()"]+             >clear $buffer;
         TOKEN            = (STRING|VALUE);
-
-        # TODO: It seems like I need to separate arguments from term in order
-        # to support parsing empty arguments that otherwise would need to match
-        # at start of term machine.
-
-#       term :=
-#           _*
-#           TOKEN                      @COMPLETE
-#           END?                       @A2NV
-#           _* <: (
-#             OP                       @TRACE_OP @A2T |
-#             (
-#               COL                    @TRACE_COL @SWAP_LR @INCOMPLETE @A2NV
-#               _*
-#               TOKEN                  @COMPLETE
-#             ) |
-#             (_ | CP | COM)           @{fprintf(stdout, "hit on: %c\n", fc);} @A2NV @HOLD
-#           )
-
-#           _*
-
-#           (
-#             _*
-#             COM                      @NEXT_ARG
-#             _*
-#             TOKEN                    @COMPLETE
-#             END?                     @A2NV
-#             _*
-#             (
-#               OP                     @TRACE_OP @A2T
-#                 |
-#               (
-#                 COL                  @TRACE_COL @SWAP_LR @INCOMPLETE @A2NV
-#                 _*
-#                 TOKEN                @COMPLETE
-#               )
-#                 |
-#               (
-#                 _ | COM              @A2NV @HOLD
-#               )
-#             )
-#           )* CP                      @COMPLETE_TERM
-#       ;
 
         action TOKEN {
             wildcard_node->token->is_complete = 1;
@@ -274,32 +165,32 @@ bel_ast* bel_parse_term(char* line) {
                 }
             }
 
-            arg = stack_pop(arg_stack);
+            stack_pop(arg_stack);
             while (!stack_is_empty(arg_stack)) {
+                arg = stack_pop(arg_stack);
                 if (arg->token->left
                       && arg->token->left->type_info->type == BEL_TOKEN
-                      && arg->token->left->token->ttype == BEL_TOKEN_TERM) {
-                    term = arg->token->left;
+                      && arg->token->left->token->ttype == BEL_TOKEN_TERM
+                      && arg->token->left != term) {
                     stack_push(arg_stack, arg);
+                    term = arg->token->left;
+                    arg  = term->token->right;
                     break;
                 }
-                arg = stack_pop(arg_stack);
             }
 
+            while (arg->token->left || arg->token->right) {
+                arg = arg->token->right;
+                last = arg;
+            }
+            stack_push(arg_stack, arg);
             wildcard_node = NULL;
         }
 
         action EOL {
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
-            } else if (wildcard_node
-                        && wildcard_node->token->ttype == BEL_TOKEN_NV
-                        && wildcard_node->token->right->value->value) {
                 wildcard_node->token->is_complete = 1;
-                if (!stack_is_empty(arg_stack)) {
-                    arg = stack_peek(arg_stack);
-                    arg->token->is_complete = 1;
-                }
             }
         }
 
@@ -320,15 +211,21 @@ bel_ast* bel_parse_term(char* line) {
         action COMMA {
             if (wildcard_node && wildcard_node->token->ttype == BEL_TOKEN_ARG) {
                 _set_wildcard_as_nv_node(wildcard_node);
+                wildcard_node->token->is_complete = 1;
             }
 
             arg = stack_peek(arg_stack);
-            arg = arg->token->right;
-            stack_push(arg_stack, arg);
+            if (arg->token->left || arg->token->right) {
+                while (arg->token->left || arg->token->right) {
+                    arg = arg->token->right;
+                }
+                stack_push(arg_stack, arg);
+            }
             wildcard_node = NULL;
         }
 
         action DROP {
+
         }
 
         term := |*
