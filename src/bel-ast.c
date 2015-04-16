@@ -78,30 +78,6 @@ bel_ast_node* bel_copy_ast_node(bel_ast_node* node) {
 	return copy_node;
 }
 
-bel_ast_node* bel_set_value(bel_ast_node* node, char* value) {
-    char* copy_value;
-
-    if (!node) {
-        // TODO Debug node error to stderr; node is NULL
-        return NULL;
-    }
-
-    if (node->type_info->type != BEL_VALUE) {
-        // TODO Debug node error to stderr; node cannot hold value
-        return NULL;
-    }
-
-    if (value) {
-        copy_value = malloc(strlen(value) + 1);
-        strcpy(copy_value, value);
-    } else {
-        copy_value = NULL;
-    }
-
-	node->value->value = copy_value;
-	return node;
-}
-
 bel_ast* bel_new_ast() {
     bel_ast* ast;
     ast = malloc(sizeof(bel_ast));
@@ -156,7 +132,10 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
                     strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_NV:
-					sprintf(val, "NV[%d] ", node->token->is_complete);
+					sprintf(val, "NV[%d][%d, %d] ",
+							node->token->is_complete,
+							node->token->start_position,
+							node->token->end_position);
                     strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_TERM:
