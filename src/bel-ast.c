@@ -5,12 +5,16 @@
 
 bel_ast_node* bel_new_ast_node_token(bel_ast_token_type type) {
     bel_ast_node* node;
-    node = malloc(sizeof(bel_ast_node));
-    node->token = malloc(sizeof(bel_ast_node_token));
-    node->token->type  = BEL_TOKEN;
-    node->token->ttype = type;
-    node->token->left  = NULL;
-    node->token->right = NULL;
+
+    node                              = malloc(sizeof(bel_ast_node));
+    node->token                       = malloc(sizeof(bel_ast_node_token));
+    node->token->type                 = BEL_TOKEN;
+    node->token->ttype                = type;
+    node->token->left                 = NULL;
+    node->token->right                = NULL;
+	node->token->is_complete          = 0;
+	node->token->token_start_position = -1;
+	node->token->token_end_position   = -1;
     return node;
 };
 
@@ -57,10 +61,13 @@ bel_ast_node* bel_copy_ast_node(bel_ast_node* node) {
 		copy_node->value->value = copy_value;
     } else {
 		copy_node->token = malloc(sizeof(bel_ast_node_token));
-		copy_node->token->type  = node->token->type;
-		copy_node->token->ttype = node->token->ttype;
-		copy_node->token->left  = bel_copy_ast_node(node->token->left);
-		copy_node->token->right = bel_copy_ast_node(node->token->right);
+		copy_node->token->type                 = node->token->type;
+		copy_node->token->ttype                = node->token->ttype;
+		copy_node->token->left                 = bel_copy_ast_node(node->token->left);
+		copy_node->token->right                = bel_copy_ast_node(node->token->right);
+		copy_node->token->is_complete          = node->token->is_complete;
+		copy_node->token->token_start_position = node->token->token_start_position;
+		copy_node->token->token_end_position   = node->token->token_end_position;
 	}
 
 	return copy_node;
@@ -135,26 +142,37 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
     switch(node->type_info->type) {
         case BEL_TOKEN:
             switch(node->type_info->ttype) {
+				case BEL_TOKEN_NULL:
+					sprintf(val, "NULL[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
+                    break;
                 case BEL_TOKEN_ARG:
-                    strcat(tree_flat_string, "ARG ");
+					sprintf(val, "ARG[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_NV:
-                    strcat(tree_flat_string, "NV ");
+					sprintf(val, "NV[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_TERM:
-                    strcat(tree_flat_string, "TERM ");
+					sprintf(val, "TERM[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
 				case BEL_TOKEN_SUBJECT:
-                    strcat(tree_flat_string, "SUBJECT ");
+					sprintf(val, "SUBJECT[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
 				case BEL_TOKEN_REL:
-                    strcat(tree_flat_string, "REL ");
+					sprintf(val, "REL[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
 				case BEL_TOKEN_OBJECT:
-                    strcat(tree_flat_string, "OBJECT ");
+					sprintf(val, "OBJECT[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_STATEMENT:
-                    strcat(tree_flat_string, "STATEMENT ");
+					sprintf(val, "STATEMENT[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
             };
             bel_print_ast_node(node->token->left, tree_flat_string);
@@ -220,5 +238,17 @@ char* bel_ast_as_string(bel_ast* ast) {
 
     tree_flat_string = calloc(1024 * 32, 1);
     bel_print_ast_node(ast->root, tree_flat_string);
+    return tree_flat_string;
+};
+
+char* bel_ast_node_as_string(bel_ast_node* node) {
+    char *tree_flat_string;
+
+    if (!node) {
+        return NULL;
+    }
+
+    tree_flat_string = calloc(1024 * 32, 1);
+    bel_print_ast_node(node, tree_flat_string);
     return tree_flat_string;
 };

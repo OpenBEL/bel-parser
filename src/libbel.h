@@ -8,13 +8,8 @@
 #define BEL_VALUE_CHAR_LEN 512
 
 /*
- * Term stack size: Allows for a nesting of at most 32 terms.
+ * Stack size of the ARG, TERM, and STATEMENT stack.
  */
-#define TERM_STACK_SIZE 32
-
-/*
- * Statement stack size: Allows for a nesting of at most 32 statements.
- */
-#define STATEMENT_STACK_SIZE 32
+#define STACK_SIZE 32
 
 #endif /* not defined _LIBBEL_H */

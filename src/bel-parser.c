@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
             if (verbose) {
                 fprintf(stdout, "using default statement parser\n");
             }
-            tree = bel_parse_statement(line);
+            tree = bel_parse_term(line);
 
             if (!tree->root) {
                 fprintf(stderr, "parse failed\n");

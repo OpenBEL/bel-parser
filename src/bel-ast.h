@@ -13,7 +13,8 @@ typedef enum {
     BEL_TOKEN_REL,
     BEL_TOKEN_TERM,
     BEL_TOKEN_ARG,
-    BEL_TOKEN_NV
+    BEL_TOKEN_NV,
+    BEL_TOKEN_NULL
 } bel_ast_token_type;
 
 typedef enum {
@@ -47,6 +48,9 @@ struct bel_ast_node_token {
     bel_ast_token_type ttype;
     bel_ast_node*      left;
     bel_ast_node*      right;
+    int                token_start_position;
+    int                token_end_position;
+    int                is_complete;
 };
 
 struct bel_ast_node_value {
@@ -78,5 +82,7 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string);
 void bel_print_ast(bel_ast* ast);
 
 char* bel_ast_as_string(bel_ast* ast);
+
+char* bel_ast_node_as_string(bel_ast_node* node);
 
 #endif /* not defined _BEL_AST_H */
