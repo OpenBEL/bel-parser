@@ -6,7 +6,6 @@ aclocal.m4
 autom4te.cache/
 config.log
 config.status
-configure
 libtool
 m4
 /src/belparser
